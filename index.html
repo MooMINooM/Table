@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบจัดการแข่งขันฟุตบอล โนนสวรรค์ เกมส์ 2568 (V.13 Sorted)</title>
+<title>ระบบจัดการแข่งขันฟุตบอล โนนสวรรค์ เกมส์ 2568 (V.14 แยกสนาม-รายการ)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -44,7 +44,8 @@
     
     .gender-section-title { text-align: center; color: #1a5f7a; margin-top: 40px; border-bottom: 3px solid #ffc107; display: inline-block; padding-bottom: 5px; }
 
-    .cat-label { font-size: 0.8em; padding: 2px 6px; border-radius: 3px; color: white; margin-left: 5px; display: inline-block; margin-top: 2px;}
+    /* ปรับแต่งป้ายรายการ */
+    .cat-label { font-size: 0.9em; padding: 4px 8px; border-radius: 4px; color: white; display: inline-block; font-weight: bold; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
     .cat-male { background-color: #2980b9; }
     .cat-female { background-color: #e84393; }
 
@@ -57,7 +58,7 @@
 <div class="container">
     <div class="header">
         <h1>⚽ ระบบจัดการแข่งขันฟุตบอล</h1>
-        <p>โนนสวรรค์ เกมส์ 2568 (V.13 Time Sorted)</p>
+        <p>โนนสวรรค์ เกมส์ 2568 (V.14 แยกสนาม-รายการ)</p>
     </div>
 
     <div class="tabs">
@@ -87,8 +88,7 @@
         "M": ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"]
     };
 
-    // --- ข้อมูลแมตช์ (รวมทีมชายและหญิงตามตารางที่คุยกัน) ---
-    // ระบบจะเรียงตามเวลาให้อัตโนมัติในฟังก์ชัน renderSchedule
+    // --- ข้อมูลแมตช์ ---
     let matches = [
         // === วันที่ 16 ธ.ค. ===
         // --- เช้า (ชาย) ---
@@ -111,15 +111,15 @@
         { id: "W5", day: "day1", time: "15.00", field: "สนาม 1", type: "fb", cat: "หญิง C", groupKey: "C", t1: "ภูพระฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนม่วง" },
 
         // === วันที่ 17 ธ.ค. ===
-        // --- ชาย (นัดสุดท้าย) ---
+        // --- ชาย ---
         { id: "M8", day: "day2", time: "13.00", field: "สนาม 1", type: "fb", cat: "ชาย A", groupKey: "A", t1: "ท่าอุทัย", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
         { id: "M9", day: "day2", time: "13.00", field: "สนาม 2", type: "fb", cat: "ชาย M", groupKey: "M", t1: "ภูพระฯ", t2: "โนนม่วง", s1: "", s2: "", ref: "โนนเมือง" },
         { id: "M10", day: "day2", time: "14.00", field: "สนาม 1", type: "fb", cat: "ชาย B", groupKey: "B", t1: "โนนเมือง", t2: "โนนไหมฯ", s1: "", s2: "", ref: "โนนสวรรค์ฯ" },
         
-        // --- หญิง (นัดสุดท้าย - ตัวอย่าง) ---
+        // --- หญิง ---
         { id: "W8", day: "day2", time: "14.00", field: "สนาม 2", type: "fb", cat: "หญิง A", groupKey: "A", t1: "ท่าอุทัย", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
 
-        // --- รอบ 8 ทีม (Knockout) ---
+        // --- รอบ 8 ทีม ---
         { id: "QF1", day: "day2", time: "15.00", field: "สนาม 1", type: "fb", cat: "ชาย รอบ 8 (1)", t1: "(ที่ 1 สาย A)", t2: "(ที่ 3 ดีสุด)", s1: "", s2: "", ref: "ทีมตกรอบ", next: "SF1", slot: 1 },
         { id: "QF2", day: "day2", time: "15.00", field: "สนาม 2", type: "fb", cat: "ชาย รอบ 8 (2)", t1: "(ที่ 1 สาย B)", t2: "(ที่ 3 รอง)", s1: "", s2: "", ref: "ทีมตกรอบ", next: "SF1", slot: 2 },
         { id: "QF3", day: "day2", time: "16.00", field: "สนาม 1", type: "fb", cat: "ชาย รอบ 8 (3)", t1: "(ที่ 1 สาย C)", t2: "(ที่ 2 สาย A)", s1: "", s2: "", ref: "ทีมตกรอบ", next: "SF2", slot: 1 },
@@ -160,15 +160,18 @@
         // กรองเฉพาะวัน และเรียงตามเวลา
         const dayMatches = matches.filter(m => m.day === day).sort((a, b) => a.time.localeCompare(b.time));
         
+        // --- 1. เพิ่มคอลัมน์สนามและรายการแยกกัน ---
         let html = `<div class="table-responsive"><table><thead><tr>
-            <th width="10%">เวลา</th><th width="20%">สนาม/รายการ</th>
+            <th width="10%">เวลา</th>
+            <th width="15%">สนาม</th>
+            <th width="15%">รายการ</th>
             <th width="35%">คู่แข่งขัน (ผลคะแนน)</th>
-            <th width="25%">กรรมการ</th>
+            <th width="15%">กรรมการ</th>
             <th width="10%">สถานะ</th>
         </tr></thead><tbody>`;
 
         if (dayMatches.length === 0) {
-            html += `<tr><td colspan="5" style="text-align:center; padding:20px;">ไม่มีรายการแข่งขันในวันนี้</td></tr>`;
+            html += `<tr><td colspan="6" style="text-align:center; padding:20px;">ไม่มีรายการแข่งขันในวันนี้</td></tr>`;
         } else {
             dayMatches.forEach(m => {
                 let s1 = parseInt(m.s1 || -1), s2 = parseInt(m.s2 || -1);
@@ -180,7 +183,8 @@
 
                 html += `<tr>
                     <td><b>${m.time}</b></td>
-                    <td>${m.field}<br><span class="cat-label ${catClass}">${m.cat}</span></td>
+                    <td>${m.field}</td>
+                    <td><span class="cat-label ${catClass}">${m.cat}</span></td>
                     <td>
                         <div style="display:flex; align-items:center; gap:5px;">
                             <span style="flex:1; text-align:right; ${win1}">${m.t1}</span>
@@ -282,10 +286,10 @@
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
     }
 
-    function saveData() { localStorage.setItem('ns_games_v13_sorted', JSON.stringify(matches)); }
+    function saveData() { localStorage.setItem('ns_games_v14_final', JSON.stringify(matches)); }
     function saveDataManual() { saveData(); alert("บันทึกข้อมูลเรียบร้อย!"); }
-    function loadData() { let d = localStorage.getItem('ns_games_v13_sorted'); if(d) matches = JSON.parse(d); }
-    function resetData() { if(confirm("ล้างข้อมูลทั้งหมด?")) { localStorage.removeItem('ns_games_v13_sorted'); location.reload(); } }
+    function loadData() { let d = localStorage.getItem('ns_games_v14_final'); if(d) matches = JSON.parse(d); }
+    function resetData() { if(confirm("ล้างข้อมูลทั้งหมด?")) { localStorage.removeItem('ns_games_v14_final'); location.reload(); } }
 </script>
 
 </body>
