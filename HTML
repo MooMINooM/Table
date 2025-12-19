@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตารางการแข่งขัน โนนสวรรค์ เกมส์ 2568</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+    /* ตั้งค่าพื้นฐาน */
+    body { font-family: 'Sarabun', sans-serif; margin: 0; padding: 10px; background-color: #f8f9fa; color: #333; }
+    h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; font-size: 1.5em; }
+    h2 { text-align: center; font-size: 1em; color: #7f8c8d; margin-top: 0; margin-bottom: 20px; }
+    h3 { margin-top: 25px; color: #444; border-left: 5px solid #2ecc71; padding-left: 10px; font-size: 1.1em; }
+    
+    /* การจัดการ Tabs (ปุ่มเลือกวัน) */
+    .tab { overflow: hidden; border: 1px solid #ddd; background-color: #fff; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .tab button { background-color: #fff; border: none; outline: none; cursor: pointer; padding: 12px 10px; transition: 0.3s; font-size: 15px; flex-grow: 1; font-weight: bold; font-family: 'Sarabun', sans-serif; color: #555; border-bottom: 3px solid transparent; }
+    .tab button:hover { background-color: #f1f1f1; }
+    .tab button.active { color: #007bff; border-bottom: 3px solid #007bff; background-color: #f0f7ff; }
+
+    /* เนื้อหาใน Tab */
+    .tabcontent { display: none; padding: 15px; border: 1px solid #ddd; border-top: none; background-color: white; border-radius: 0 0 8px 8px; animation: fadeEffect 0.5s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+
+    /* ตาราง */
+    .table-container { overflow-x: auto; margin-bottom: 15px; border-radius: 5px; border: 1px solid #eee; }
+    table { border-collapse: collapse; width: 100%; min-width: 700px; font-size: 14px; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) { background-color: #fdfdfd; }
+    tr:hover { background-color: #f1f1f1; }
+    
+    /* สีหัวตารางแยกประเภทกีฬา */
+    th.football { background-color: #28a745; color: white; border-bottom: 2px solid #218838; } /* ฟุตบอล - เขียว */
+    th.volleyball { background-color: #fd7e14; color: white; border-bottom: 2px solid #e36d0a; } /* วอลเลย์ - ส้ม */
+    th.others { background-color: #17a2b8; color: white; border-bottom: 2px solid #138496; } /* อื่นๆ - ฟ้า */
+    th.final { background-color: #ffc107; color: #333; border-bottom: 2px solid #e0a800; } /* ชิงชนะเลิศ - ทอง */
+
+    /* การตกแต่งข้อความ */
+    .time-badge { background-color: #eee; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.9em; display: inline-block; min-width: 45px; text-align: center; }
+    .field-badge { font-weight: bold; color: #555; display: block; font-size: 0.9em; margin-bottom: 2px; }
+    .category-badge { font-size: 0.8em; color: #888; }
+    .match-pair { font-weight: 600; color: #0056b3; display: block; }
+    .referee-box { background-color: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: #e74c3c; border: 1px dashed #dcdcdc; display: inline-block; margin-top: 3px; }
+    .referee-icon { margin-right: 3px; }
+
+    /* หมายเหตุ */
+    .note { text-align: center; color: #e74c3c; font-size: 0.9em; margin-top: 10px; padding: 10px; background-color: #fff5f5; border-radius: 5px; border: 1px solid #ffebea; }
+
+    /* Responsive มือถือ */
+    @media screen and (max-width: 600px) {
+        .tab button { width: 50%; font-size: 13px; padding: 10px 5px; }
+        h1 { font-size: 1.2em; }
+        th, td { padding: 8px; }
+        .match-pair { font-size: 0.95em; }
+    }
+</style>
+</head>
+<body>
+
+<h1>🏆 ตารางการแข่งขัน "โนนสวรรค์ เกมส์ 2568"</h1>
+<h2>16 - 19 ธันวาคม 2568</h2>
+
+<div class="tab">
+  <button class="tablinks" onclick="openDay(event, 'Day1')" id="defaultOpen">16 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(รอบแบ่งกลุ่ม)</span></button>
+  <button class="tablinks" onclick="openDay(event, 'Day2')">17 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(รอบ 8 ทีม)</span></button>
+  <button class="tablinks" onclick="openDay(event, 'Day3')">18 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(รอบรองฯ)</span></button>
+  <button class="tablinks" onclick="openDay(event, 'Day4')">19 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(ชิงชนะเลิศ)</span></button>
+</div>
+
+<div id="Day1" class="tabcontent">
+  
+  <h3>☀️ ช่วงเช้า (08.30 - 12.00) : ชายแข่งบอล / หญิงแข่งกีฬารอง</h3>
+  
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="football" width="10%">เวลา</th>
+          <th class="football" width="25%">สนาม</th>
+          <th class="football">คู่แข่งขัน (ชาย)</th>
+          <th class="football" width="25%">กรรมการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">สนาม 1</span> <span class="category-badge">ป.4-6</span></td>
+          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
+          <td><div class="referee-box">👮‍♂️ ด้วงฯ-ชำฯ</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">สนาม 2</span> <span class="category-badge">มัธยม</span></td>
+          <td><span class="match-pair">หนองกุงศรีฯ vs ภูพระฯ</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนม่วง</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">สนาม 3</span> <span class="category-badge">ป.1-3</span></td>
+          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
+          <td><div class="referee-box">👮‍♂️ ด้วงฯ-ชำฯ</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">อนุบาล</span> <span class="category-badge">อนุบาล</span></td>
+          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนม่วง</div></td>
+        </tr>
+        <tr style="border-top: 2px solid #eee;">
+          <td><span class="time-badge">09.30</span></td>
+          <td><span class="field-badge">สนาม 1</span> <span class="category-badge">ป.4-6</span></td>
+          <td><span class="match-pair">โนนสวรรค์ฯ vs โนนเมือง</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนไหม</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">09.30</span></td>
+          <td><span class="field-badge">สนาม 2</span> <span class="category-badge">มัธยม</span></td>
+          <td><span class="match-pair">โนนม่วง vs โนนเมือง</span></td>
+          <td><div class="referee-box">👮‍♂️ หนองกุงศรีฯ</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">09.30</span></td>
+          <td><span class="field-badge">สนาม 3 / อนุบาล</span></td>
+          <td><span class="match-pair">โนนสวรรค์ฯ vs โนนเมือง</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนไหม / ภูพระฯ</div></td>
+        </tr>
+        <tr style="border-top: 2px solid #eee;">
+          <td><span class="time-badge">10.30</span></td>
+          <td><span class="field-badge">สนาม 1</span> <span class="category-badge">ป.4-6</span></td>
+          <td><span class="match-pair">ภูพระฯ vs หนองกุงศรีฯ</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนม่วง</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">10.30</span></td>
+          <td><span class="field-badge">สนาม 2</span> <span class="category-badge">มัธยม</span></td>
+          <td><span class="match-pair">หนองกุงศรีฯ vs โนนเมือง</span></td>
+          <td><div class="referee-box">👮‍♂️ ภูพระฯ</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="volleyball" width="10%">เวลา</th>
+          <th class="volleyball" width="25%">รายการ</th>
+          <th class="volleyball">คู่แข่งขัน (หญิง)</th>
+          <th class="volleyball" width="25%">กรรมการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">วอลเลย์บอล</span></td>
+          <td><span class="match-pair">ท่าอุทัย vs ด้วงฯ / โนนไหม vs โนนสวรรค์</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนสวาท / โนนเมือง</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">ตะกร้อ/เปตอง</span></td>
+          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
+          <td><div class="referee-box">👮‍♂️ ด้วงฯ-ชำฯ</div></td>
+        </tr>
+         <tr>
+          <td><span class="time-badge">09.30</span></td>
+          <td><span class="field-badge">วอลเลย์บอล</span></td>
+          <td><span class="match-pair">โนนม่วง vs ภูพระ / ด้วงฯ vs โนนสวาท</span></td>
+          <td><div class="referee-box">👮‍♂️ หนองกุงศรี / ท่าอุทัย</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3>🌤️ ช่วงบ่าย (13.00 - 16.30) : สลับฝั่ง (หญิงแข่งบอล)</h3>
+  
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="others" width="10%">เวลา</th>
+          <th class="others" width="25%">รายการ</th>
+          <th class="others">คู่แข่งขัน</th>
+          <th class="others" width="25%">กรรมการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="time-badge">13.00</span></td>
+          <td><span class="field-badge">ฟุตบอลหญิง</span> <span class="category-badge">ทุกสนาม</span></td>
+          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย / หนองกุงศรีฯ vs ภูพระฯ</span></td>
+          <td><div class="referee-box">👮‍♂️ ด้วงฯ / โนนม่วง</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">13.00</span></td>
+          <td><span class="field-badge">วอลเลย์ชาย</span></td>
+          <td><span class="match-pair">ท่าอุทัย vs ด้วงฯ / โนนไหม vs โนนสวรรค์</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนสวาท / โนนเมือง</div></td>
+        </tr>
+         <tr>
+          <td><span class="time-badge">14.00</span></td>
+          <td><span class="field-badge">ฟุตบอลหญิง</span></td>
+          <td><span class="match-pair">โนนสวรรค์ฯ vs โนนเมือง / โนนม่วง vs โนนเมือง</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนไหม / หนองกุงศรี</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="Day2" class="tabcontent">
+  <div class="note">⚠️ วันนี้เริ่มแข่งขันเวลา 13.00 น. เป็นต้นไป</div>
+  
+  <h3>⚽ ฟุตบอล (นัดสุดท้าย & รอบ 8 ทีม)</h3>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="football" width="10%">เวลา</th>
+          <th class="football" width="25%">สนาม/รุ่น</th>
+          <th class="football">คู่แข่งขัน</th>
+          <th class="football" width="25%">กรรมการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="time-badge">13.00</span></td>
+          <td><span class="field-badge">สนาม 1 (ป.4-6)</span></td>
+          <td><span class="match-pair">ท่าอุทัย vs ด้วงฯ-ชำฯ</span> <span class="category-badge">(นัดท้ายสาย A)</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนสวาทฯ</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">13.00</span></td>
+          <td><span class="field-badge">สนาม 2 (มัธยม)</span></td>
+          <td><span class="match-pair">ภูพระฯ พบ โนนม่วง</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนเมือง</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">14.00</span></td>
+          <td><span class="field-badge">สนาม 1 (ป.4-6)</span></td>
+          <td><span class="match-pair">โนนเมือง พบ โนนไหม</span> <span class="category-badge">(นัดท้ายสาย B)</span></td>
+          <td><div class="referee-box">👮‍♂️ โนนสวรรค์ฯ</div></td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+          <td><span class="time-badge">15.00</span></td>
+          <td><span class="field-badge">สนาม 1/2</span></td>
+          <td><span class="match-pair">⚽ รอบ 8 ทีมสุดท้าย (คู่ที่ 1 & 2)</span></td>
+          <td><div class="referee-box">👮‍♂️ ทีมตกรอบแรก</div></td>
+        </tr>
+        <tr style="background-color: #e8f5e9;">
+          <td><span class="time-badge">16.00</span></td>
+          <td><span class="field-badge">สนาม 1/2</span></td>
+          <td><span class="match-pair">⚽ รอบ 8 ทีมสุดท้าย (คู่ที่ 3 & 4)</span></td>
+          <td><div class="referee-box">👮‍♂️ ทีมตกรอบแรก</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <h3>🏐 กีฬาอื่นๆ (เก็บตก & รอบรองฯ)</h3>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="volleyball" width="10%">เวลา</th>
+          <th class="volleyball">รายการ</th>
+          <th class="volleyball">รายละเอียด</th>
+          <th class="volleyball">กรรมการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="time-badge">13.00</span></td>
+          <td>วอลเลย์/ตะกร้อ</td>
+          <td>นัดสุดท้ายรอบแบ่งกลุ่ม (เก็บตก)</td>
+          <td><div class="referee-box">👮‍♂️ ทีมที่ว่าง</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">15.00</span></td>
+          <td>ทุกกีฬา</td>
+          <td><span class="match-pair">รอบรองชนะเลิศ (Semi-Finals)</span></td>
+          <td><div class="referee-box">👮‍♂️ ทีมที่ตกรอบ</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="Day3" class="tabcontent">
+  <h3>🏆 รอบรองชนะเลิศ & ชิงที่ 3</h3>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="others" width="10%">เวลา</th>
+          <th class="others" width="25%">กีฬา</th>
+          <th class="others">รายการ</th>
+          <th class="others" width="25%">กรรมการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">ฟุตบอลชาย</span></td>
+          <td><span class="match-pair">รอบรองชนะเลิศ (คู่ที่ 1)</span></td>
+          <td><div class="referee-box">👮‍♂️ ทีมแพ้รอบ 8 ทีม</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">09.30</span></td>
+          <td><span class="field-badge">ฟุตบอลชาย</span></td>
+          <td><span class="match-pair">รอบรองชนะเลิศ (คู่ที่ 2)</span></td>
+          <td><div class="referee-box">👮‍♂️ ทีมแพ้รอบ 8 ทีม</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">09.30</span></td>
+          <td><span class="field-badge">วอลเลย์/ตะกร้อ</span></td>
+          <td><span class="match-pair">รอบรองชนะเลิศ (ประเภทชาย/หญิง)</span></td>
+          <td><div class="referee-box">👮‍♂️ ทีมที่ตกรอบ</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">10.30</span></td>
+          <td><span class="field-badge">ฟุตบอลหญิง</span></td>
+          <td><span class="match-pair">รอบรองชนะเลิศ (คู่ 1 & 2)</span></td>
+          <td><div class="referee-box">👮‍♂️ ทีมชายที่ว่าง</div></td>
+        </tr>
+        <tr style="background-color: #fff8e1;">
+          <td><span class="time-badge">13.00</span></td>
+          <td><span class="field-badge">ทุกกีฬา</span></td>
+          <td><span class="match-pair">🥉 ชิงอันดับที่ 3 (พร้อมกันทุกสนาม)</span></td>
+          <td><div class="referee-box">👮‍♂️ กรรมการกลาง</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="Day4" class="tabcontent">
+  <h3>🏅 รอบชิงชนะเลิศ (Finals)</h3>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="final" width="10%">เวลา</th>
+          <th class="final" width="25%">สนาม</th>
+          <th class="final">รายการ</th>
+          <th class="final" width="25%">กรรมการ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="background-color: #fff8e1;">
+          <td><span class="time-badge">08.30</span></td>
+          <td><span class="field-badge">ทุกสนามบอล</span></td>
+          <td><span class="match-pair">🏆 ชิงชนะเลิศ ฟุตบอลชาย (ทุกรุ่น)</span></td>
+          <td><div class="referee-box">👮‍♂️ ชุดพิเศษ (เป็นกลาง)</div></td>
+        </tr>
+        <tr style="background-color: #fff8e1;">
+          <td><span class="time-badge">09.30</span></td>
+          <td><span class="field-badge">ทุกสนามบอล</span></td>
+          <td><span class="match-pair">🏆 ชิงชนะเลิศ ฟุตบอลหญิง (ทุกรุ่น)</span></td>
+          <td><div class="referee-box">👮‍♂️ ชุดพิเศษ (เป็นกลาง)</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">09.00</span></td>
+          <td><span class="field-badge">สนามปูน</span></td>
+          <td><span class="match-pair">🏆 ชิงชนะเลิศ วอลเลย์/ตะกร้อ/เปตอง</span></td>
+          <td><div class="referee-box">👮‍♂️ ชุดพิเศษ</div></td>
+        </tr>
+        <tr>
+          <td><span class="time-badge">13.00</span></td>
+          <td><span class="field-badge">ลู่วิ่ง</span></td>
+          <td><span class="match-pair">🏃 การแข่งขันกรีฑา & พิธีปิด</span></td>
+          <td><div class="referee-box">👮‍♂️ ครูทุกคน</div></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="note">
+    <strong>หมายเหตุ:</strong> พิธีมอบรางวัลจะจัดขึ้นที่สนามกีฬากลาง หลังจบการแข่งขันแต่ละประเภท หรือในช่วงพิธีปิด
+  </div>
+</div>
+
+<script>
+function openDay(evt, dayName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(dayName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+// เปิดแท็บแรกอัตโนมัติ (16 ธ.ค.)
+document.getElementById("defaultOpen").click();
+</script>
+
+</body>
+</html>
