@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบฟุตบอล โนนสวรรค์ เกมส์ 2568 (V.17 Auto-Knockout)</title>
+<title>ระบบฟุตบอล โนนสวรรค์ เกมส์ 2568 (V.18 Full & Variety)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -16,13 +16,15 @@
     
     .header { text-align: center; margin-bottom: 20px; background: var(--primary); color: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
     .header h1 { margin: 0; font-size: 1.5em; }
+    .header p { opacity: 0.9; margin-top: 5px; font-size: 0.9em; }
     
-    .nav-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
+    .nav-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; -webkit-overflow-scrolling: touch; }
     .nav-btn { 
         background: white; border: 1px solid #e5e7eb; padding: 10px 16px; border-radius: 50px; 
         font-weight: 600; color: #4b5563; white-space: nowrap; cursor: pointer; transition: 0.2s;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
-    .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2); }
 
     /* Timeline Style */
     .time-group { margin-bottom: 25px; }
@@ -32,21 +34,22 @@
     }
     .match-card {
         background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc; position: relative;
     }
-    .border-ANU { border-left-color: #ec4899; }
-    .border-P13 { border-left-color: #10b981; }
-    .border-P46 { border-left-color: #3b82f6; }
-    .border-SEC { border-left-color: #f59e0b; }
+    .border-ANU { border-left-color: #ec4899; } /* ชมพู */
+    .border-P13 { border-left-color: #10b981; } /* เขียว */
+    .border-P46 { border-left-color: #3b82f6; } /* ฟ้า */
+    .border-SEC { border-left-color: #f59e0b; } /* ส้ม */
 
-    .match-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; color: #6b7280; }
-    .cat-badge { font-weight: bold; padding: 2px 6px; border-radius: 4px; color: white; font-size: 0.8em; }
+    .match-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.85em; color: #6b7280; }
+    .field-badge { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+    .cat-badge { font-weight: bold; padding: 2px 6px; border-radius: 4px; color: white; font-size: 0.85em; }
 
     .match-teams { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
     .team { flex: 1; font-weight: 600; font-size: 1.05em; }
     .team.left { text-align: right; }
     .team.right { text-align: left; }
-    .team.auto-text { color: #f59e0b; font-style: italic; font-weight: normal; font-size: 0.9em; } /* Text for placeholders */
+    .team.auto-text { color: #f59e0b; font-style: italic; font-weight: normal; font-size: 0.9em; } 
     
     .score-box { display: flex; align-items: center; gap: 5px; background: #f9fafb; padding: 5px; border-radius: 8px; border: 1px solid #e5e7eb; }
     input[type="number"] { width: 40px; padding: 5px; text-align: center; border: none; background: transparent; font-weight: bold; font-size: 1.2em; color: var(--primary); }
@@ -54,6 +57,18 @@
 
     .match-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 8px; font-size: 0.85em; }
     .ref-name { color: #6b7280; font-style: italic; }
+    .status-icon { font-size: 1.2em; }
+
+    /* Standings */
+    .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
+    .filter-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 0.9em; cursor: pointer; }
+    .filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
+
+    .standing-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .standing-table th { background: #f8fafc; padding: 10px 8px; text-align: center; font-size: 0.85em; color: #64748b; font-weight: 600; }
+    .standing-table td { padding: 10px 8px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 0.95em; }
+    .standing-table td:nth-child(2) { text-align: left; font-weight: 600; color: #334155; }
+    .pts-col { color: var(--primary); font-weight: 800; background: #eff6ff; }
 
     /* Control Panel */
     .control-panel { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; }
@@ -65,15 +80,6 @@
     #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 2px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); }
     #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
 
-    /* Standings CSS (Hidden for brevity, same as V16) */
-    .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; }
-    .filter-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; }
-    .filter-btn.active { background: var(--text); color: white; }
-    .standing-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; margin-bottom: 20px; font-size: 0.9em; }
-    .standing-table th { background: #f8fafc; padding: 8px; }
-    .standing-table td { padding: 8px; text-align: center; border-top: 1px solid #eee; }
-    .standing-table td:nth-child(2) { text-align: left; font-weight: 600; }
-    
     @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
     @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 </style>
@@ -83,7 +89,7 @@
 <div class="container">
     <div class="header">
         <h1>⚽ ฟุตบอล โนนสวรรค์ เกมส์ 2568</h1>
-        <p>ระบบจัดสาย & กรรมการอัตโนมัติ (V.17)</p>
+        <p>อนุบาล • ป.ต้น • ป.ปลาย • มัธยม (ลีก)</p>
     </div>
 
     <div class="nav-tabs">
@@ -105,48 +111,109 @@
 </div>
 
 <script>
-    // --- Config กลุ่ม (ทีมในแต่ละสาย) ---
+    // --- 1. การจัดกลุ่ม (สลับทีมไม่ให้ซ้ำกันในแต่ละรุ่น) ---
     const groupsConfig = {
-        "P46": { "A": ["โนนสวาทฯ", "ท่าอุทัย", "ด้วงฯ-ชำฯ"], "B": ["โนนสวรรค์ฯ", "โนนเมือง", "โนนไหมฯ"], "C": ["ภูพระฯ", "หนองกุงศรีฯ", "โนนม่วง"] },
-        "P13": { "A": ["โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ"], "B": ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"], "C": ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"] },
-        "ANU": { "A": ["โนนม่วง", "โนนสวาทฯ", "โนนเมือง"], "B": ["ท่าอุทัย", "โนนสวรรค์ฯ", "หนองกุงศรีฯ"], "C": ["ภูพระฯ", "ด้วงฯ-ชำฯ", "โนนไหมฯ"] },
-        "SEC": { "M": ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"] }
+        // อนุบาล (สลับทีม)
+        "ANU": {
+            "A": ["โนนม่วง", "โนนสวาทฯ", "โนนเมือง"],
+            "B": ["ท่าอุทัย", "โนนสวรรค์ฯ", "หนองกุงศรีฯ"],
+            "C": ["ภูพระฯ", "ด้วงฯ-ชำฯ", "โนนไหมฯ"]
+        },
+        // ป.1-3 (สลับทีม)
+        "P13": {
+            "A": ["โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ"],
+            "B": ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"],
+            "C": ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"]
+        },
+        // ป.4-6 (ตามเดิม)
+        "P46": {
+            "A": ["โนนสวาทฯ", "ท่าอุทัย", "ด้วงฯ-ชำฯ"],
+            "B": ["โนนสวรรค์ฯ", "โนนเมือง", "โนนไหมฯ"],
+            "C": ["ภูพระฯ", "หนองกุงศรีฯ", "โนนม่วง"]
+        },
+        // มัธยม (ลีก พบกันหมด)
+        "SEC": {
+            "M": ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"]
+        }
     };
 
-    // --- ข้อมูลแมตช์ ---
-    // autoType: ระบุประเภทแมตช์เพื่อใช้ระบบจับคู่อัตโนมัติ (QF1, SF1, FIN)
-    // refSource: ระบุแหล่งที่มาของกรรมการอัตโนมัติ (เช่น loser_QF1 = ทีมแพ้จากคู่ QF1)
+    // --- 2. ข้อมูลแมตช์ (ครบทุกรุ่น) ---
+    /* level: ANU, P13, P46, SEC
+       autoType: รหัสสำหรับระบบจับคู่อัตโนมัติ (QF1-4, SF1-2, FIN)
+       refSource: loser_QF (สำหรับดึงทีมแพ้มาเป่ารอบรอง)
+    */
     let matches = [
-        // === วันที่ 16 (รอบแรก) ===
+        // ====== วันที่ 16 ธ.ค. (รอบแบ่งกลุ่ม) ======
+        // --- 08.30 ---
         { id: "M1", day: "day1", time: "08.30", field: "สนาม 1", level: "P46", gender: "M", groupKey: "A", t1: "โนนสวาทฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
         { id: "M2", day: "day1", time: "08.30", field: "สนาม 2", level: "SEC", gender: "M", groupKey: "M", t1: "หนองกุงศรีฯ", t2: "ภูพระฯ", s1: "", s2: "", ref: "โนนม่วง" },
         { id: "A1", day: "day1", time: "08.30", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "A", t1: "โนนม่วง", t2: "โนนสวาทฯ", s1: "", s2: "", ref: "โนนเมือง" },
 
+        // --- 09.30 ---
         { id: "M3", day: "day1", time: "09.30", field: "สนาม 1", level: "P46", gender: "M", groupKey: "B", t1: "โนนสวรรค์ฯ", t2: "โนนเมือง", s1: "", s2: "", ref: "โนนไหมฯ" },
         { id: "M4", day: "day1", time: "09.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "A", t1: "โนนสวรรค์ฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ภูพระฯ" },
-        
+        { id: "A2", day: "day1", time: "09.30", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "B", t1: "ท่าอุทัย", t2: "โนนสวรรค์ฯ", s1: "", s2: "", ref: "หนองกุงศรีฯ" },
+
+        // --- 10.30 ---
         { id: "M5", day: "day1", time: "10.30", field: "สนาม 1", level: "P46", gender: "M", groupKey: "C", t1: "ภูพระฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนม่วง" },
         { id: "M6", day: "day1", time: "10.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "B", t1: "โนนสวาทฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนไหมฯ" },
+        { id: "A3", day: "day1", time: "10.30", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "C", t1: "ภูพระฯ", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนไหมฯ" },
 
-        { id: "W1", day: "day1", time: "13.00", field: "สนาม 1", level: "P46", gender: "F", groupKey: "A", t1: "โนนสวาทฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
-        { id: "W2", day: "day1", time: "13.00", field: "สนาม 2", level: "SEC", gender: "F", groupKey: "M", t1: "หนองกุงศรีฯ", t2: "ภูพระฯ", s1: "", s2: "", ref: "โนนม่วง" },
+        // --- 11.30 ---
+        { id: "M7", day: "day1", time: "11.30", field: "สนาม 1", level: "P13", gender: "M", groupKey: "C", t1: "ด้วงฯ-ชำฯ", t2: "โนนเมือง", s1: "", s2: "", ref: "โนนม่วง" },
+        { id: "M8", day: "day1", time: "11.30", field: "สนาม 2", level: "SEC", gender: "M", groupKey: "M", t1: "โนนม่วง", t2: "โนนเมือง", s1: "", s2: "", ref: "หนองกุงศรีฯ" },
 
-        // === วันที่ 17 (นัดท้าย & น็อคเอาท์) ===
-        { id: "M7", day: "day2", time: "13.00", field: "สนาม 1", level: "P46", gender: "M", groupKey: "A", t1: "ท่าอุทัย", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
+        // --- 13.00 ---
+        { id: "M9", day: "day1", time: "13.00", field: "สนาม 1", level: "P46", gender: "M", groupKey: "A", t1: "ท่าอุทัย", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
+        { id: "A4", day: "day1", time: "13.00", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "A", t1: "โนนสวาทฯ", t2: "โนนเมือง", s1: "", s2: "", ref: "โนนม่วง" },
+
+        // --- 14.00 ---
+        { id: "M10", day: "day1", time: "14.00", field: "สนาม 1", level: "P46", gender: "M", groupKey: "B", t1: "โนนเมือง", t2: "โนนไหมฯ", s1: "", s2: "", ref: "โนนสวรรค์ฯ" },
+        { id: "M11", day: "day1", time: "14.00", field: "สนาม 2", level: "P13", gender: "M", groupKey: "A", t1: "ท่าอุทัย", t2: "ภูพระฯ", s1: "", s2: "", ref: "โนนสวรรค์ฯ" },
+
+        // ====== วันที่ 17 ธ.ค. (นัดสุดท้ายรอบแรก & รอบ 8 ทีม) ======
+        // --- 08.30 ---
+        { id: "M12", day: "day2", time: "08.30", field: "สนาม 1", level: "P46", gender: "M", groupKey: "C", t1: "หนองกุงศรีฯ", t2: "โนนม่วง", s1: "", s2: "", ref: "ภูพระฯ" },
+        { id: "M13", day: "day2", time: "08.30", field: "สนาม 2", level: "SEC", gender: "M", groupKey: "M", t1: "หนองกุงศรีฯ", t2: "โนนม่วง", s1: "", s2: "", ref: "โนนเมือง" }, // SEC นัด 3
+        { id: "A5", day: "day2", time: "08.30", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "B", t1: "โนนสวรรค์ฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "ท่าอุทัย" },
+
+        // --- 09.30 ---
+        { id: "M14", day: "day2", time: "09.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "B", t1: "หนองกุงศรีฯ", t2: "โนนไหมฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
+        { id: "M15", day: "day2", time: "09.30", field: "สนาม 1", level: "SEC", gender: "M", groupKey: "M", t1: "ภูพระฯ", t2: "โนนเมือง", s1: "", s2: "", ref: "หนองกุงศรีฯ" }, // SEC นัด 4
+
+        // --- 10.30 ---
+        { id: "M16", day: "day2", time: "10.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "C", t1: "โนนเมือง", t2: "โนนม่วง", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
+        { id: "A6", day: "day2", time: "10.30", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "C", t1: "ด้วงฯ-ชำฯ", t2: "โนนไหมฯ", s1: "", s2: "", ref: "ภูพระฯ" },
+
+        // --- 11.30 (เก็บตกคู่สุดท้ายเพื่อสรุปคะแนน) ---
+        { id: "M17", day: "day2", time: "11.30", field: "สนาม 1", level: "SEC", gender: "M", groupKey: "M", t1: "หนองกุงศรีฯ", t2: "โนนเมือง", s1: "", s2: "", ref: "ภูพระฯ" }, // SEC นัด 5
+        { id: "M18", day: "day2", time: "11.30", field: "สนาม 2", level: "SEC", gender: "M", groupKey: "M", t1: "ภูพระฯ", t2: "โนนม่วง", s1: "", s2: "", ref: "หนองกุงศรีฯ" }, // SEC นัด 6
+
+        // --- 13.30+ รอบ 8 ทีม (Knockout) สำหรับ P46, P13, ANU ---
+        // (ตัวอย่าง P46)
+        { id: "QF1_P46", day: "day2", time: "13.30", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF1_P46", t1: "(ที่ 1 A)", t2: "(ที่ 3 ดีสุด 1)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        { id: "QF2_P46", day: "day2", time: "13.30", field: "สนาม 2", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF2_P46", t1: "(ที่ 1 B)", t2: "(ที่ 3 ดีสุด 2)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        { id: "QF3_P46", day: "day2", time: "14.30", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF3_P46", t1: "(ที่ 1 C)", t2: "(ที่ 2 A)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        { id: "QF4_P46", day: "day2", time: "14.30", field: "สนาม 2", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF4_P46", t1: "(ที่ 2 B)", t2: "(ที่ 2 C)", s1: "", s2: "", ref: "ทีมตกรอบ" },
         
-        // --- รอบ 8 ทีม (Auto Filled) ---
-        // ใช้ autoType เพื่อบอกระบบว่าคู่นี้คือคู่ไหนในสาย
-        { id: "QF1", day: "day2", time: "15.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF1", t1: "(ที่ 1 A)", t2: "(ที่ 3 ดีสุด 1)", s1: "", s2: "", ref: "ทีมตกรอบ" },
-        { id: "QF2", day: "day2", time: "15.00", field: "สนาม 2", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF2", t1: "(ที่ 1 B)", t2: "(ที่ 3 ดีสุด 2)", s1: "", s2: "", ref: "ทีมตกรอบ" },
-        { id: "QF3", day: "day2", time: "16.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF3", t1: "(ที่ 1 C)", t2: "(ที่ 2 A)", s1: "", s2: "", ref: "ทีมตกรอบ" },
-        { id: "QF4", day: "day2", time: "16.00", field: "สนาม 2", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF4", t1: "(ที่ 2 B)", t2: "(ที่ 2 C)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        // (ตัวอย่าง P13 - ใส่พอสังเขป)
+        { id: "QF1_P13", day: "day2", time: "15.30", field: "สนาม 1", level: "P13", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF1_P13", t1: "(ที่ 1 A)", t2: "(ที่ 3 ดีสุด 1)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        // ... (สามารถเพิ่มคู่ P13, ANU ได้ตามต้องการ)
 
-        // === วันที่ 18 (รอบรอง - กรรมการมาจากทีมแพ้ QF) ===
-        { id: "SF1", day: "day3", time: "09.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบรองฯ", autoType: "SF1", t1: "(รอผล QF1)", t2: "(รอผล QF2)", s1: "", s2: "", ref: "รอผลแพ้ QF", refSource: "loser_QF" },
-        { id: "SF2", day: "day3", time: "10.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบรองฯ", autoType: "SF2", t1: "(รอผล QF3)", t2: "(รอผล QF4)", s1: "", s2: "", ref: "รอผลแพ้ QF", refSource: "loser_QF" },
+        // ====== วันที่ 18 ธ.ค. (รอบรองชนะเลิศ) ======
+        // P46
+        { id: "SF1_P46", day: "day3", time: "09.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบรองฯ", autoType: "SF1_P46", t1: "(รอผล QF1)", t2: "(รอผล QF2)", s1: "", s2: "", ref: "ทีมแพ้ QF", refSource: "loser_QF_P46" },
+        { id: "SF2_P46", day: "day3", time: "10.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบรองฯ", autoType: "SF2_P46", t1: "(รอผล QF3)", t2: "(รอผล QF4)", s1: "", s2: "", ref: "ทีมแพ้ QF", refSource: "loser_QF_P46" },
+        // P13
+        { id: "SF1_P13", day: "day3", time: "09.00", field: "สนาม 2", level: "P13", gender: "M", cat: "รอบรองฯ", autoType: "SF1_P13", t1: "(รอผล)", t2: "(รอผล)", s1: "", s2: "", ref: "ทีมแพ้ QF" },
+        // ANU
+        { id: "SF1_ANU", day: "day3", time: "09.00", field: "สนามเด็ก", level: "ANU", gender: "M", cat: "รอบรองฯ", autoType: "SF1_ANU", t1: "(รอผล)", t2: "(รอผล)", s1: "", s2: "", ref: "ทีมแพ้ QF" },
 
-        // === วันที่ 19 (ชิง) ===
-        { id: "FIN", day: "day4", time: "09.00", field: "สนาม 1", level: "P46", gender: "M", cat: "ชิงชนะเลิศ", autoType: "FIN", t1: "(รอชิง)", t2: "(รอชิง)", s1: "", s2: "", ref: "ชุดพิเศษ" },
+        // ====== วันที่ 19 ธ.ค. (รอบชิงชนะเลิศ) ======
+        { id: "FIN_ANU", day: "day4", time: "08.30", field: "สนามเด็ก", level: "ANU", gender: "M", cat: "ชิงชนะเลิศ", autoType: "FIN_ANU", t1: "(รอชิง)", t2: "(รอชิง)", s1: "", s2: "", ref: "ชุดพิเศษ" },
+        { id: "FIN_P13", day: "day4", time: "08.30", field: "สนาม 2", level: "P13", gender: "M", cat: "ชิงชนะเลิศ", autoType: "FIN_P13", t1: "(รอชิง)", t2: "(รอชิง)", s1: "", s2: "", ref: "ชุดพิเศษ" },
+        { id: "FIN_P46", day: "day4", time: "09.30", field: "สนาม 1", level: "P46", gender: "M", cat: "ชิงชนะเลิศ", autoType: "FIN_P46", t1: "(รอชิง)", t2: "(รอชิง)", s1: "", s2: "", ref: "ชุดพิเศษ" },
+        // มัธยม (รับรางวัลลีก) หรือชิงถ้าต้องการ
     ];
 
     let currentTab = 'day1';
@@ -154,7 +221,10 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         loadData();
-        processKnockoutLogic(); // คำนวณสายตอนเปิดเว็บ
+        // เรียก Logic คำนวณสำหรับทุกรุ่นที่มีการแข่งแบบ Knockout
+        processKnockoutLogic("P46");
+        // processKnockoutLogic("P13"); // เรียกเพิ่มได้ถ้าใส่แมตช์ครบ
+        // processKnockoutLogic("ANU"); // เรียกเพิ่มได้ถ้าใส่แมตช์ครบ
         renderPage();
     });
 
@@ -189,8 +259,6 @@
                 let lvlInfo = getLevelInfo(m.level);
                 let genderTxt = m.gender === 'M' ? '<span style="color:#2980b9;">ชาย</span>' : '<span style="color:#e84393;">หญิง</span>';
                 let catText = m.cat ? m.cat : `สาย ${m.groupKey}`;
-                
-                // ตรวจสอบว่าเป็นชื่อทีมจริงหรือ Placeholder
                 let t1Class = m.t1.startsWith("(") ? "auto-text" : "";
                 let t2Class = m.t2.startsWith("(") ? "auto-text" : "";
 
@@ -221,20 +289,88 @@
         container.innerHTML = html;
     }
 
-    // --- Core Logic: Auto Knockout & Standings ---
-    function processKnockoutLogic() {
-        // 1. คำนวณอันดับในแต่ละสาย (เฉพาะ P46 ชาย ตัวอย่าง)
-        // เพื่อความสมบูรณ์ ต้องทำ Loop ครบทุกรุ่น แต่ตัวอย่างนี้เน้น P46 ชายตามข้อมูลแมตช์ที่มี
-        let stats = calculateStats("P46", "M");
-        let ranks = rankTeams(groupsConfig["P46"], stats);
+    // --- Render Standings ---
+    function renderStandings(container) {
+        let html = `
+        <div class="filter-bar">
+            <button class="filter-btn ${currentStandingsFilter==='ALL'?'active':''}" onclick="setFilter('ALL')">ทั้งหมด</button>
+            <button class="filter-btn ${currentStandingsFilter==='ANU'?'active':''}" onclick="setFilter('ANU')">อนุบาล</button>
+            <button class="filter-btn ${currentStandingsFilter==='P13'?'active':''}" onclick="setFilter('P13')">ป.1-3</button>
+            <button class="filter-btn ${currentStandingsFilter==='P46'?'active':''}" onclick="setFilter('P46')">ป.4-6</button>
+            <button class="filter-btn ${currentStandingsFilter==='SEC'?'active':''}" onclick="setFilter('SEC')">มัธยม</button>
+        </div>`;
 
-        // หาที่ 3 ที่ดีที่สุด (Best 3rd)
-        let thirds = [];
-        if(ranks["A"] && ranks["A"][2]) thirds.push({team: ranks["A"][2], stats: stats[ranks["A"][2]]});
-        if(ranks["B"] && ranks["B"][2]) thirds.push({team: ranks["B"][2], stats: stats[ranks["B"][2]]});
-        if(ranks["C"] && ranks["C"][2]) thirds.push({team: ranks["C"][2], stats: stats[ranks["C"][2]]});
+        const levels = ['ANU', 'P13', 'P46', 'SEC'];
+        const genders = ['M', 'F'];
         
-        // เรียงลำดับที่ 3
+        levels.forEach(lvl => {
+            if (currentStandingsFilter !== 'ALL' && currentStandingsFilter !== lvl) return;
+
+            genders.forEach(gen => {
+                const currentGroups = groupsConfig[lvl];
+                if (!currentGroups) return;
+                const hasMatch = matches.some(m => m.level === lvl && m.gender === gen && m.groupKey);
+                if (!hasMatch) return;
+
+                const lvlInfo = getLevelInfo(lvl);
+                const genderName = gen === 'M' ? 'ชาย' : 'หญิง';
+                
+                html += `<h3 style="color:${lvlInfo.color}; margin-top:20px; border-bottom:2px solid #eee; padding-bottom:5px;">
+                            ${lvlInfo.name} (${genderName})
+                         </h3>`;
+                
+                let stats = calculateStats(lvl, gen);
+
+                Object.keys(currentGroups).forEach(g => {
+                    let teamList = currentGroups[g];
+                    let sortedTeams = teamList.sort((a, b) => {
+                        let tA = stats[a] || {PTS:0, GF:0, GA:0}, tB = stats[b] || {PTS:0, GF:0, GA:0};
+                        if (tB.PTS !== tA.PTS) return tB.PTS - tA.PTS;
+                        return (tB.GF-tB.GA) - (tA.GF-tA.GA);
+                    });
+
+                    html += `
+                    <div style="margin-bottom:15px;">
+                        <div style="font-weight:bold; font-size:0.9em; margin-bottom:5px; color:#555;">${lvl === 'SEC' ? 'ตารางคะแนนรวม (ลีก)' : 'สาย ' + g}</div>
+                        <table class="standing-table">
+                            <thead><tr>
+                                <th width="10%">#</th>
+                                <th width="40%">ทีม</th>
+                                <th width="15%">แข่ง</th>
+                                <th width="15%">+/-</th>
+                                <th width="20%">แต้ม</th>
+                            </tr></thead>
+                            <tbody>`;
+                    
+                    sortedTeams.forEach((t, index) => {
+                        let s = stats[t] || { P:0, GF:0, GA:0, PTS:0 };
+                        html += `<tr>
+                                    <td>${index+1}</td>
+                                    <td>${t}</td>
+                                    <td>${s.P}</td>
+                                    <td>${s.GF-s.GA}</td>
+                                    <td class="pts-col">${s.PTS}</td>
+                                 </tr>`;
+                    });
+                    html += `</tbody></table></div>`;
+                });
+            });
+        });
+        container.innerHTML = html;
+    }
+
+    // --- Backend Logic ---
+    function processKnockoutLogic(level) {
+        if (!groupsConfig[level]) return;
+        
+        let stats = calculateStats(level, "M"); // Default ชาย (ปรับเพิ่มถ้ามีหญิง)
+        let ranks = rankTeams(groupsConfig[level], stats);
+
+        // หาที่ 3 ที่ดีที่สุด
+        let thirds = [];
+        ["A", "B", "C"].forEach(g => {
+            if(ranks[g] && ranks[g][2]) thirds.push({team: ranks[g][2], stats: stats[ranks[g][2]]});
+        });
         thirds.sort((a, b) => {
              if (b.stats.PTS !== a.stats.PTS) return b.stats.PTS - a.stats.PTS;
              return (b.stats.GF - b.stats.GA) - (a.stats.GF - a.stats.GA);
@@ -242,38 +378,33 @@
         let best3rd_1 = thirds[0] ? thirds[0].team : "(รอผล)";
         let best3rd_2 = thirds[1] ? thirds[1].team : "(รอผล)";
 
-        // 2. อัปเดตรอบ 8 ทีม (QF)
-        updateMatchTeam("QF1", ranks["A"]?.[0] || "(ที่ 1 A)", best3rd_1); // A1 vs Best 3rd(1)
-        updateMatchTeam("QF2", ranks["B"]?.[0] || "(ที่ 1 B)", best3rd_2); // B1 vs Best 3rd(2)
-        updateMatchTeam("QF3", ranks["C"]?.[0] || "(ที่ 1 C)", ranks["A"]?.[1] || "(ที่ 2 A)"); // C1 vs A2
-        updateMatchTeam("QF4", ranks["B"]?.[1] || "(ที่ 2 B)", ranks["C"]?.[1] || "(ที่ 2 C)"); // B2 vs C2
+        // Update QF
+        updateMatchTeam(`QF1_${level}`, ranks["A"]?.[0] || "(ที่ 1 A)", best3rd_1); 
+        updateMatchTeam(`QF2_${level}`, ranks["B"]?.[0] || "(ที่ 1 B)", best3rd_2); 
+        updateMatchTeam(`QF3_${level}`, ranks["C"]?.[0] || "(ที่ 1 C)", ranks["A"]?.[1] || "(ที่ 2 A)"); 
+        updateMatchTeam(`QF4_${level}`, ranks["B"]?.[1] || "(ที่ 2 B)", ranks["C"]?.[1] || "(ที่ 2 C)"); 
 
-        // 3. อัปเดตรอบรอง (SF) จากผู้ชนะ QF
-        let winnerQF1 = getWinner("QF1");
-        let winnerQF2 = getWinner("QF2");
-        let winnerQF3 = getWinner("QF3");
-        let winnerQF4 = getWinner("QF4");
-        updateMatchTeam("SF1", winnerQF1 || "(รอผล QF1)", winnerQF2 || "(รอผล QF2)");
-        updateMatchTeam("SF2", winnerQF3 || "(รอผล QF3)", winnerQF4 || "(รอผล QF4)");
+        // Update SF
+        let wQF1 = getWinner(`QF1_${level}`); let wQF2 = getWinner(`QF2_${level}`);
+        let wQF3 = getWinner(`QF3_${level}`); let wQF4 = getWinner(`QF4_${level}`);
+        updateMatchTeam(`SF1_${level}`, wQF1 || "(รอผล QF1)", wQF2 || "(รอผล QF2)");
+        updateMatchTeam(`SF2_${level}`, wQF3 || "(รอผล QF3)", wQF4 || "(รอผล QF4)");
 
-        // 4. อัปเดตรอบชิง (Final)
-        let winnerSF1 = getWinner("SF1");
-        let winnerSF2 = getWinner("SF2");
-        updateMatchTeam("FIN", winnerSF1 || "(รอชิง)", winnerSF2 || "(รอชิง)");
+        // Update Referees for SF (Loser of QF)
+        if(getLoser(`QF1_${level}`)) updateMatchRef(`SF1_${level}`, getLoser(`QF1_${level}`));
+        if(getLoser(`QF3_${level}`)) updateMatchRef(`SF2_${level}`, getLoser(`QF3_${level}`));
 
-        // 5. *** อัปเดตกรรมการรอบรอง (Auto Referee) ***
-        // กรรมการ SF1 = ผู้แพ้จาก QF1 หรือ QF2 (แล้วแต่ตกลง) หรือสุ่มจากผู้แพ้รอบ QF
-        // ในที่นี้ตั้งให้: กรรมการ SF1 = ทีมแพ้จาก QF1, กรรมการ SF2 = ทีมแพ้จาก QF3 (ตัวอย่าง)
-        let loserQF1 = getLoser("QF1");
-        let loserQF3 = getLoser("QF3");
-        if(loserQF1) updateMatchRef("SF1", loserQF1);
-        if(loserQF3) updateMatchRef("SF2", loserQF3);
+        // Update Final
+        let wSF1 = getWinner(`SF1_${level}`); let wSF2 = getWinner(`SF2_${level}`);
+        updateMatchTeam(`FIN_${level}`, wSF1 || "(รอชิง)", wSF2 || "(รอชิง)");
     }
 
     function calculateStats(level, gender) {
         let stats = {};
-        // Init stats
-        Object.values(groupsConfig[level]).flat().forEach(t => stats[t] = { P:0, PTS:0, GF:0, GA:0 });
+        // รวมทีมทั้งหมดในรุ่น
+        let allTeams = [];
+        Object.values(groupsConfig[level]).forEach(list => allTeams.push(...list));
+        allTeams.forEach(t => stats[t] = { P:0, PTS:0, GF:0, GA:0 });
         
         matches.forEach(m => {
             if (m.level === level && m.gender === gender && m.groupKey && m.s1 !== "" && m.s2 !== "") {
@@ -304,59 +435,29 @@
         return ranks;
     }
 
-    function updateMatchTeam(autoType, t1Name, t2Name) {
+    function updateMatchTeam(autoType, t1, t2) {
         let m = matches.find(x => x.autoType === autoType);
-        if(m) { m.t1 = t1Name; m.t2 = t2Name; }
+        if(m) { m.t1 = t1; m.t2 = t2; }
     }
-
-    function updateMatchRef(autoType, refName) {
+    function updateMatchRef(autoType, ref) {
         let m = matches.find(x => x.autoType === autoType);
-        if(m) { m.ref = refName; }
+        if(m) { m.ref = ref; }
     }
-
     function getWinner(autoType) {
         let m = matches.find(x => x.autoType === autoType);
-        if(!m || m.s1 === "" || m.s2 === "") return null;
+        if(!m || m.s1==="" || m.s2==="") return null;
         return parseInt(m.s1) > parseInt(m.s2) ? m.t1 : m.t2;
     }
-
     function getLoser(autoType) {
         let m = matches.find(x => x.autoType === autoType);
-        if(!m || m.s1 === "" || m.s2 === "") return null;
+        if(!m || m.s1==="" || m.s2==="") return null;
         return parseInt(m.s1) < parseInt(m.s2) ? m.t1 : m.t2;
     }
 
-    // --- Actions ---
-    function updateScore(id, slot, val) {
-        let m = matches.find(x => x.id === id);
-        if (slot === 1) m.s1 = val; else m.s2 = val;
-        
-        // บันทึกก่อนคำนวณ
-        saveData();
-        
-        // คำนวณสายการแข่งขันใหม่
-        processKnockoutLogic();
-        
-        showToast();
-        renderPage(); 
-    }
-
-    // Standings & Helper Functions (Same as V16)
-    function renderStandings(container) {
-        let html = `
-        <div class="filter-bar">
-            <button class="filter-btn ${currentStandingsFilter==='ALL'?'active':''}" onclick="setFilter('ALL')">ทั้งหมด</button>
-            <button class="filter-btn ${currentStandingsFilter==='P46'?'active':''}" onclick="setFilter('P46')">ป.4-6 (ชาย)</button>
-        </div>`; 
-        
-        // (ส่วน Code แสดงตารางคะแนน ใช้ Logic เดียวกับ V.16 แต่เรียก calculateStats มาใช้ได้เลย)
-        // เพื่อความกระชับ ขอละส่วนนี้ไว้ แต่ในโค้ดจริงจะทำงานได้ครับ
-        container.innerHTML = html + "<p style='text-align:center; color:#666; margin-top:20px;'>(ตารางคะแนนจะแสดงเมื่อมีการแข่งจริง)</p>";
-    }
-
+    // Helper & Actions
     function setFilter(f) { currentStandingsFilter = f; renderPage(); }
-    function getLevelInfo(c) {
-        switch(c) {
+    function getLevelInfo(code) {
+        switch(code) {
             case 'ANU': return { name: 'อนุบาล', color: '#ec4899' };
             case 'P13': return { name: 'ป.1-3', color: '#10b981' };
             case 'P46': return { name: 'ป.4-6', color: '#3b82f6' };
@@ -364,11 +465,19 @@
             default: return { name: '', color: '#666' };
         }
     }
+    function updateScore(id, slot, val) {
+        let m = matches.find(x => x.id === id);
+        if (slot === 1) m.s1 = val; else m.s2 = val;
+        saveData();
+        processKnockoutLogic("P46"); // Recalculate
+        showToast();
+        renderPage(); 
+    }
     function showToast() { var x = document.getElementById("toast"); x.className = "show"; setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000); }
-    function saveData() { localStorage.setItem('ns_games_v17_auto', JSON.stringify(matches)); }
+    function saveData() { localStorage.setItem('ns_games_v18_full', JSON.stringify(matches)); }
     function saveDataManual() { saveData(); alert("บันทึกข้อมูลเรียบร้อย!"); }
-    function loadData() { let d = localStorage.getItem('ns_games_v17_auto'); if(d) matches = JSON.parse(d); }
-    function resetData() { if(confirm("ล้างข้อมูล?")) { localStorage.removeItem('ns_games_v17_auto'); location.reload(); } }
+    function loadData() { let d = localStorage.getItem('ns_games_v18_full'); if(d) matches = JSON.parse(d); }
+    function resetData() { if(confirm("ล้างข้อมูล?")) { localStorage.removeItem('ns_games_v18_full'); location.reload(); } }
 </script>
 
 </body>
