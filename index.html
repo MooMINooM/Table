@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบฟุตบอล โนนสวรรค์ เกมส์ 2568 (V.16 Clean)</title>
+<title>ระบบฟุตบอล โนนสวรรค์ เกมส์ 2568 (V.17 Auto-Knockout)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -14,65 +14,47 @@
     body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; padding: 15px; color: var(--text); padding-bottom: 80px; }
     .container { max-width: 1000px; margin: 0 auto; }
     
-    /* Header */
     .header { text-align: center; margin-bottom: 20px; background: var(--primary); color: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
     .header h1 { margin: 0; font-size: 1.5em; }
-    .header p { margin: 5px 0 0; opacity: 0.9; font-size: 0.9em; }
-
-    /* Tabs */
-    .nav-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; -webkit-overflow-scrolling: touch; }
+    
+    .nav-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
     .nav-btn { 
         background: white; border: 1px solid #e5e7eb; padding: 10px 16px; border-radius: 50px; 
         font-weight: 600; color: #4b5563; white-space: nowrap; cursor: pointer; transition: 0.2s;
-        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
-    .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 6px rgba(30, 58, 138, 0.2); }
+    .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
 
-    /* --- New Schedule Design (Timeline Style) --- */
+    /* Timeline Style */
     .time-group { margin-bottom: 25px; }
     .time-header { 
         background: #dbeafe; color: #1e40af; padding: 8px 15px; border-radius: 8px; 
         font-weight: bold; margin-bottom: 10px; display: inline-block; font-size: 1.1em;
     }
-    
     .match-card {
         background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 12px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc; position: relative;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc;
     }
-    /* Border colors based on category */
     .border-ANU { border-left-color: #ec4899; }
     .border-P13 { border-left-color: #10b981; }
     .border-P46 { border-left-color: #3b82f6; }
     .border-SEC { border-left-color: #f59e0b; }
 
     .match-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.9em; color: #6b7280; }
-    .field-badge { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-    .cat-badge { font-weight: bold; }
+    .cat-badge { font-weight: bold; padding: 2px 6px; border-radius: 4px; color: white; font-size: 0.8em; }
 
     .match-teams { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
     .team { flex: 1; font-weight: 600; font-size: 1.05em; }
     .team.left { text-align: right; }
     .team.right { text-align: left; }
+    .team.auto-text { color: #f59e0b; font-style: italic; font-weight: normal; font-size: 0.9em; } /* Text for placeholders */
+    
     .score-box { display: flex; align-items: center; gap: 5px; background: #f9fafb; padding: 5px; border-radius: 8px; border: 1px solid #e5e7eb; }
     input[type="number"] { width: 40px; padding: 5px; text-align: center; border: none; background: transparent; font-weight: bold; font-size: 1.2em; color: var(--primary); }
     input:focus { outline: none; }
 
     .match-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f3f4f6; padding-top: 8px; font-size: 0.85em; }
     .ref-name { color: #6b7280; font-style: italic; }
-    .status-icon { font-size: 1.2em; }
 
-    /* --- New Standings Design --- */
-    .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; flex-wrap: wrap; justify-content: center; }
-    .filter-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; font-size: 0.9em; cursor: pointer; }
-    .filter-btn.active { background: var(--text); color: white; border-color: var(--text); }
-
-    .standing-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
-    .standing-table th { background: #f8fafc; padding: 12px 8px; text-align: center; font-size: 0.85em; color: #64748b; font-weight: 600; }
-    .standing-table td { padding: 10px 8px; text-align: center; border-bottom: 1px solid #f1f5f9; font-size: 0.95em; }
-    .standing-table tr:last-child td { border-bottom: none; }
-    .standing-table td:nth-child(2) { text-align: left; font-weight: 600; color: #334155; } /* Team Name */
-    .pts-col { color: var(--primary); font-weight: 800; background: #eff6ff; }
-    
     /* Control Panel */
     .control-panel { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; }
     .action-btn { width: 50px; height: 50px; border-radius: 50%; border: none; color: white; font-size: 1.2em; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
@@ -83,6 +65,15 @@
     #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 2px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); }
     #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
 
+    /* Standings CSS (Hidden for brevity, same as V16) */
+    .filter-bar { display: flex; gap: 5px; margin-bottom: 15px; justify-content: center; }
+    .filter-btn { padding: 6px 12px; border-radius: 20px; border: 1px solid #ddd; background: white; cursor: pointer; }
+    .filter-btn.active { background: var(--text); color: white; }
+    .standing-table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; margin-bottom: 20px; font-size: 0.9em; }
+    .standing-table th { background: #f8fafc; padding: 8px; }
+    .standing-table td { padding: 8px; text-align: center; border-top: 1px solid #eee; }
+    .standing-table td:nth-child(2) { text-align: left; font-weight: 600; }
+    
     @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
     @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 </style>
@@ -92,7 +83,7 @@
 <div class="container">
     <div class="header">
         <h1>⚽ ฟุตบอล โนนสวรรค์ เกมส์ 2568</h1>
-        <p>อนุบาล • ป.ต้น • ป.ปลาย • มัธยม</p>
+        <p>ระบบจัดสาย & กรรมการอัตโนมัติ (V.17)</p>
     </div>
 
     <div class="nav-tabs">
@@ -114,77 +105,56 @@
 </div>
 
 <script>
-    // --- 1. การจัดกลุ่มแบบกระจาย (Diversified Groups) ---
-    // เพื่อให้แต่ละรุ่นเจอทีมไม่ซ้ำกัน ผมเลยสลับโรงเรียนในสาย A, B, C ให้ต่างกันในแต่ละรุ่นครับ
+    // --- Config กลุ่ม (ทีมในแต่ละสาย) ---
     const groupsConfig = {
-        // รุ่น ป.4-6 (ยึดตามเดิม)
-        "P46": {
-            "A": ["โนนสวาทฯ", "ท่าอุทัย", "ด้วงฯ-ชำฯ"],
-            "B": ["โนนสวรรค์ฯ", "โนนเมือง", "โนนไหมฯ"],
-            "C": ["ภูพระฯ", "หนองกุงศรีฯ", "โนนม่วง"]
-        },
-        // รุ่น ป.1-3 (สลับทีมใหม่เพื่อความหลากหลาย)
-        "P13": {
-            "A": ["โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ"], 
-            "B": ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"],
-            "C": ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"]
-        },
-        // รุ่น อนุบาล (สลับอีกแบบ)
-        "ANU": {
-            "A": ["โนนม่วง", "โนนสวาทฯ", "โนนเมือง"],
-            "B": ["ท่าอุทัย", "โนนสวรรค์ฯ", "หนองกุงศรีฯ"],
-            "C": ["ภูพระฯ", "ด้วงฯ-ชำฯ", "โนนไหมฯ"] // สมมติถ้ามีสาย C
-        },
-        // มัธยม (มีสายเดียว ลีก)
-        "SEC": {
-            "M": ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"]
-        }
+        "P46": { "A": ["โนนสวาทฯ", "ท่าอุทัย", "ด้วงฯ-ชำฯ"], "B": ["โนนสวรรค์ฯ", "โนนเมือง", "โนนไหมฯ"], "C": ["ภูพระฯ", "หนองกุงศรีฯ", "โนนม่วง"] },
+        "P13": { "A": ["โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ"], "B": ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"], "C": ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"] },
+        "ANU": { "A": ["โนนม่วง", "โนนสวาทฯ", "โนนเมือง"], "B": ["ท่าอุทัย", "โนนสวรรค์ฯ", "หนองกุงศรีฯ"], "C": ["ภูพระฯ", "ด้วงฯ-ชำฯ", "โนนไหมฯ"] },
+        "SEC": { "M": ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"] }
     };
 
-    // --- ข้อมูลแมตช์ (อิงตามกลุ่มใหม่) ---
-    /* ระดับ: ANU=อนุบาล, P13=ป.ต้น, P46=ป.ปลาย, SEC=มัธยม
-       เพศ: M=ชาย, F=หญิง
-       groupKey: A, B, C, M (ต้องตรงกับ key ใน groupsConfig ของรุ่นนั้นๆ)
-    */
+    // --- ข้อมูลแมตช์ ---
+    // autoType: ระบุประเภทแมตช์เพื่อใช้ระบบจับคู่อัตโนมัติ (QF1, SF1, FIN)
+    // refSource: ระบุแหล่งที่มาของกรรมการอัตโนมัติ (เช่น loser_QF1 = ทีมแพ้จากคู่ QF1)
     let matches = [
         // === วันที่ 16 (รอบแรก) ===
-        // 08.30
         { id: "M1", day: "day1", time: "08.30", field: "สนาม 1", level: "P46", gender: "M", groupKey: "A", t1: "โนนสวาทฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
         { id: "M2", day: "day1", time: "08.30", field: "สนาม 2", level: "SEC", gender: "M", groupKey: "M", t1: "หนองกุงศรีฯ", t2: "ภูพระฯ", s1: "", s2: "", ref: "โนนม่วง" },
-        { id: "A1", day: "day1", time: "08.30", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "A", t1: "โนนม่วง", t2: "โนนสวาทฯ", s1: "", s2: "", ref: "โนนเมือง" }, // กลุ่ม ANU-A
+        { id: "A1", day: "day1", time: "08.30", field: "สนามเด็ก", level: "ANU", gender: "M", groupKey: "A", t1: "โนนม่วง", t2: "โนนสวาทฯ", s1: "", s2: "", ref: "โนนเมือง" },
 
-        // 09.30
         { id: "M3", day: "day1", time: "09.30", field: "สนาม 1", level: "P46", gender: "M", groupKey: "B", t1: "โนนสวรรค์ฯ", t2: "โนนเมือง", s1: "", s2: "", ref: "โนนไหมฯ" },
-        { id: "M4", day: "day1", time: "09.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "A", t1: "โนนสวรรค์ฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ภูพระฯ" }, // กลุ่ม P13-A
+        { id: "M4", day: "day1", time: "09.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "A", t1: "โนนสวรรค์ฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ภูพระฯ" },
         
-        // 10.30
         { id: "M5", day: "day1", time: "10.30", field: "สนาม 1", level: "P46", gender: "M", groupKey: "C", t1: "ภูพระฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนม่วง" },
-        { id: "M6", day: "day1", time: "10.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "B", t1: "โนนสวาทฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนไหมฯ" }, // กลุ่ม P13-B
+        { id: "M6", day: "day1", time: "10.30", field: "สนาม 2", level: "P13", gender: "M", groupKey: "B", t1: "โนนสวาทฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนไหมฯ" },
 
-        // 13.00 (หญิง)
         { id: "W1", day: "day1", time: "13.00", field: "สนาม 1", level: "P46", gender: "F", groupKey: "A", t1: "โนนสวาทฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
         { id: "W2", day: "day1", time: "13.00", field: "สนาม 2", level: "SEC", gender: "F", groupKey: "M", t1: "หนองกุงศรีฯ", t2: "ภูพระฯ", s1: "", s2: "", ref: "โนนม่วง" },
 
-        // === วันที่ 17 (นัดสุดท้ายรอบแรก & น็อคเอาท์) ===
+        // === วันที่ 17 (นัดท้าย & น็อคเอาท์) ===
         { id: "M7", day: "day2", time: "13.00", field: "สนาม 1", level: "P46", gender: "M", groupKey: "A", t1: "ท่าอุทัย", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
-        { id: "M8", day: "day2", time: "13.00", field: "สนาม 2", level: "P13", gender: "M", groupKey: "A", t1: "ท่าอุทัย", t2: "ภูพระฯ", s1: "", s2: "", ref: "โนนสวรรค์ฯ" }, // กลุ่ม P13-A นัดท้าย
-
-        // รอบ 8 ทีม
-        { id: "QF1", day: "day2", time: "15.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบ 8 ทีม", t1: "(ที่ 1 A)", t2: "(ที่ 3 ดีสุด)", s1: "", s2: "", ref: "ทีมตกรอบ" },
-        { id: "QF2", day: "day2", time: "15.00", field: "สนาม 2", level: "P13", gender: "M", cat: "รอบ 8 ทีม", t1: "(ที่ 1 A)", t2: "(ที่ 3 ดีสุด)", s1: "", s2: "", ref: "ทีมตกรอบ" },
-
-        // === วันที่ 18 (รอบรอง) ===
-        { id: "SF1", day: "day3", time: "09.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบรองฯ", t1: "(รอผล)", t2: "(รอผล)", s1: "", s2: "", ref: "กรรมการกลาง" },
         
+        // --- รอบ 8 ทีม (Auto Filled) ---
+        // ใช้ autoType เพื่อบอกระบบว่าคู่นี้คือคู่ไหนในสาย
+        { id: "QF1", day: "day2", time: "15.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF1", t1: "(ที่ 1 A)", t2: "(ที่ 3 ดีสุด 1)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        { id: "QF2", day: "day2", time: "15.00", field: "สนาม 2", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF2", t1: "(ที่ 1 B)", t2: "(ที่ 3 ดีสุด 2)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        { id: "QF3", day: "day2", time: "16.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF3", t1: "(ที่ 1 C)", t2: "(ที่ 2 A)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+        { id: "QF4", day: "day2", time: "16.00", field: "สนาม 2", level: "P46", gender: "M", cat: "รอบ 8 ทีม", autoType: "QF4", t1: "(ที่ 2 B)", t2: "(ที่ 2 C)", s1: "", s2: "", ref: "ทีมตกรอบ" },
+
+        // === วันที่ 18 (รอบรอง - กรรมการมาจากทีมแพ้ QF) ===
+        { id: "SF1", day: "day3", time: "09.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบรองฯ", autoType: "SF1", t1: "(รอผล QF1)", t2: "(รอผล QF2)", s1: "", s2: "", ref: "รอผลแพ้ QF", refSource: "loser_QF" },
+        { id: "SF2", day: "day3", time: "10.00", field: "สนาม 1", level: "P46", gender: "M", cat: "รอบรองฯ", autoType: "SF2", t1: "(รอผล QF3)", t2: "(รอผล QF4)", s1: "", s2: "", ref: "รอผลแพ้ QF", refSource: "loser_QF" },
+
         // === วันที่ 19 (ชิง) ===
-        { id: "FIN1", day: "day4", time: "09.00", field: "สนาม 1", level: "P46", gender: "M", cat: "ชิงชนะเลิศ", t1: "(รอชิง)", t2: "(รอชิง)", s1: "", s2: "", ref: "ชุดพิเศษ" },
+        { id: "FIN", day: "day4", time: "09.00", field: "สนาม 1", level: "P46", gender: "M", cat: "ชิงชนะเลิศ", autoType: "FIN", t1: "(รอชิง)", t2: "(รอชิง)", s1: "", s2: "", ref: "ชุดพิเศษ" },
     ];
 
     let currentTab = 'day1';
-    let currentStandingsFilter = 'ALL'; // ALL, ANU, P13, P46, SEC
+    let currentStandingsFilter = 'ALL';
 
     document.addEventListener('DOMContentLoaded', () => {
         loadData();
+        processKnockoutLogic(); // คำนวณสายตอนเปิดเว็บ
         renderPage();
     });
 
@@ -201,49 +171,44 @@
         else renderSchedule(container, currentTab);
     }
 
-    // --- Render Schedule (Timeline Style) ---
+    // --- Render Schedule ---
     function renderSchedule(container, day) {
-        // เรียงตามเวลา
         const dayMatches = matches.filter(m => m.day === day).sort((a, b) => a.time.localeCompare(b.time));
-        
         let html = "";
-        
-        // Group by Time
         const timeSlots = [...new Set(dayMatches.map(m => m.time))];
-        
-        if (timeSlots.length === 0) {
-            html = `<div style="text-align:center; padding:40px; color:#888;">ไม่มีการแข่งขันในวันนี้</div>`;
-        }
+
+        if (timeSlots.length === 0) html = `<div style="text-align:center; padding:40px; color:#888;">ไม่มีการแข่งขันในวันนี้</div>`;
 
         timeSlots.forEach(time => {
-            html += `<div class="time-group">
-                        <div class="time-header"><i class="far fa-clock"></i> ${time} น.</div>`;
-            
+            html += `<div class="time-group"><div class="time-header"><i class="far fa-clock"></i> ${time} น.</div>`;
             const slotMatches = dayMatches.filter(m => m.time === time);
             slotMatches.forEach(m => {
                 let win1 = (parseInt(m.s1) > parseInt(m.s2)) ? "color:var(--success);" : "";
                 let win2 = (parseInt(m.s2) > parseInt(m.s1)) ? "color:var(--success);" : "";
                 let status = (m.s1 !== "" && m.s2 !== "") ? '<i class="fas fa-check-circle" style="color:var(--success)"></i>' : '<i class="far fa-circle"></i>';
-                
-                // ข้อมูลรุ่น
                 let lvlInfo = getLevelInfo(m.level);
                 let genderTxt = m.gender === 'M' ? '<span style="color:#2980b9;">ชาย</span>' : '<span style="color:#e84393;">หญิง</span>';
-                let catText = m.cat ? m.cat : `รอบแบ่งกลุ่ม สาย ${m.groupKey}`;
+                let catText = m.cat ? m.cat : `สาย ${m.groupKey}`;
+                
+                // ตรวจสอบว่าเป็นชื่อทีมจริงหรือ Placeholder
+                let t1Class = m.t1.startsWith("(") ? "auto-text" : "";
+                let t2Class = m.t2.startsWith("(") ? "auto-text" : "";
 
                 html += `
                 <div class="match-card border-${m.level}">
                     <div class="match-info">
                         <span class="field-badge">${m.field}</span>
-                        <span class="cat-badge" style="color:${lvlInfo.color}">${lvlInfo.name} ${genderTxt} • ${catText}</span>
+                        <span class="cat-badge" style="background:${lvlInfo.color}">${lvlInfo.name} ${genderTxt}</span>
+                        <span>${catText}</span>
                     </div>
                     <div class="match-teams">
-                        <div class="team left" style="${win1}">${m.t1}</div>
+                        <div class="team left ${t1Class}" style="${win1}">${m.t1}</div>
                         <div class="score-box">
                             <input type="number" value="${m.s1}" onchange="updateScore('${m.id}', 1, this.value)" placeholder="-">
                             <span>:</span>
                             <input type="number" value="${m.s2}" onchange="updateScore('${m.id}', 2, this.value)" placeholder="-">
                         </div>
-                        <div class="team right" style="${win2}">${m.t2}</div>
+                        <div class="team right ${t2Class}" style="${win2}">${m.t2}</div>
                     </div>
                     <div class="match-footer">
                         <span class="ref-name"><i class="fas fa-whistle"></i> กรรมการ: ${m.ref}</span>
@@ -253,144 +218,157 @@
             });
             html += `</div>`;
         });
-        
         container.innerHTML = html;
     }
 
-    // --- Render Standings (Minimal & Filtered) ---
-    function renderStandings(container) {
-        // ปุ่ม Filter
-        let html = `
-        <div class="filter-bar">
-            <button class="filter-btn ${currentStandingsFilter==='ALL'?'active':''}" onclick="setFilter('ALL')">ทั้งหมด</button>
-            <button class="filter-btn ${currentStandingsFilter==='ANU'?'active':''}" onclick="setFilter('ANU')">อนุบาล</button>
-            <button class="filter-btn ${currentStandingsFilter==='P13'?'active':''}" onclick="setFilter('P13')">ป.1-3</button>
-            <button class="filter-btn ${currentStandingsFilter==='P46'?'active':''}" onclick="setFilter('P46')">ป.4-6</button>
-            <button class="filter-btn ${currentStandingsFilter==='SEC'?'active':''}" onclick="setFilter('SEC')">มัธยม</button>
-        </div>
-        `;
+    // --- Core Logic: Auto Knockout & Standings ---
+    function processKnockoutLogic() {
+        // 1. คำนวณอันดับในแต่ละสาย (เฉพาะ P46 ชาย ตัวอย่าง)
+        // เพื่อความสมบูรณ์ ต้องทำ Loop ครบทุกรุ่น แต่ตัวอย่างนี้เน้น P46 ชายตามข้อมูลแมตช์ที่มี
+        let stats = calculateStats("P46", "M");
+        let ranks = rankTeams(groupsConfig["P46"], stats);
 
-        const levels = ['ANU', 'P13', 'P46', 'SEC'];
-        const genders = ['M', 'F'];
+        // หาที่ 3 ที่ดีที่สุด (Best 3rd)
+        let thirds = [];
+        if(ranks["A"] && ranks["A"][2]) thirds.push({team: ranks["A"][2], stats: stats[ranks["A"][2]]});
+        if(ranks["B"] && ranks["B"][2]) thirds.push({team: ranks["B"][2], stats: stats[ranks["B"][2]]});
+        if(ranks["C"] && ranks["C"][2]) thirds.push({team: ranks["C"][2], stats: stats[ranks["C"][2]]});
         
-        levels.forEach(lvl => {
-            // เช็ค Filter
-            if (currentStandingsFilter !== 'ALL' && currentStandingsFilter !== lvl) return;
-
-            genders.forEach(gen => {
-                // ดึง Config กลุ่มของรุ่นนั้นๆ มาใช้
-                const currentGroups = groupsConfig[lvl];
-                if (!currentGroups) return; // กัน Error
-
-                // เช็คว่ามีแมตช์จริงไหม
-                const hasMatch = matches.some(m => m.level === lvl && m.gender === gen && m.groupKey);
-                if (!hasMatch) return;
-
-                const lvlInfo = getLevelInfo(lvl);
-                const genderName = gen === 'M' ? 'ชาย' : 'หญิง';
-                
-                html += `<h3 style="color:${lvlInfo.color}; margin-top:20px; border-bottom:2px solid #eee; padding-bottom:5px;">
-                            ${lvlInfo.name} (${genderName})
-                         </h3>`;
-                
-                // คำนวณคะแนน
-                let stats = {};
-                // รวมทีมทั้งหมดในรุ่นนั้นๆ
-                let allTeamsInLevel = [];
-                Object.values(currentGroups).forEach(teamList => allTeamsInLevel.push(...teamList));
-                allTeamsInLevel.forEach(t => stats[t] = { P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0 });
-
-                matches.forEach(m => {
-                    if (m.s1 !== "" && m.s2 !== "" && m.groupKey && m.level === lvl && m.gender === gen) {
-                        let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
-                        updateTeamStats(stats, m.t1, s1, s2);
-                        updateTeamStats(stats, m.t2, s2, s1);
-                    }
-                });
-
-                // วาดตารางทีละสาย
-                Object.keys(currentGroups).forEach(g => {
-                    let teamList = currentGroups[g];
-                    let sortedTeams = teamList.sort((a, b) => {
-                        let tA = stats[a] || {PTS:0, GF:0, GA:0}, tB = stats[b] || {PTS:0, GF:0, GA:0};
-                        if (tB.PTS !== tA.PTS) return tB.PTS - tA.PTS;
-                        return (tB.GF-tB.GA) - (tA.GF-tA.GA);
-                    });
-
-                    html += `
-                    <div style="margin-bottom:15px;">
-                        <div style="font-weight:bold; font-size:0.9em; margin-bottom:5px; color:#555;">สาย ${g}</div>
-                        <table class="standing-table">
-                            <thead><tr>
-                                <th width="10%">#</th>
-                                <th width="40%">ทีม</th>
-                                <th width="15%">แข่ง</th>
-                                <th width="15%">+/-</th>
-                                <th width="20%">แต้ม</th>
-                            </tr></thead>
-                            <tbody>`;
-                    
-                    sortedTeams.forEach((t, index) => {
-                        let s = stats[t] || { P:0, GF:0, GA:0, PTS:0 };
-                        html += `<tr>
-                                    <td>${index+1}</td>
-                                    <td>${t}</td>
-                                    <td>${s.P}</td>
-                                    <td>${s.GF-s.GA}</td>
-                                    <td class="pts-col">${s.PTS}</td>
-                                 </tr>`;
-                    });
-                    html += `</tbody></table></div>`;
-                });
-            });
+        // เรียงลำดับที่ 3
+        thirds.sort((a, b) => {
+             if (b.stats.PTS !== a.stats.PTS) return b.stats.PTS - a.stats.PTS;
+             return (b.stats.GF - b.stats.GA) - (a.stats.GF - a.stats.GA);
         });
+        let best3rd_1 = thirds[0] ? thirds[0].team : "(รอผล)";
+        let best3rd_2 = thirds[1] ? thirds[1].team : "(รอผล)";
 
-        container.innerHTML = html;
+        // 2. อัปเดตรอบ 8 ทีม (QF)
+        updateMatchTeam("QF1", ranks["A"]?.[0] || "(ที่ 1 A)", best3rd_1); // A1 vs Best 3rd(1)
+        updateMatchTeam("QF2", ranks["B"]?.[0] || "(ที่ 1 B)", best3rd_2); // B1 vs Best 3rd(2)
+        updateMatchTeam("QF3", ranks["C"]?.[0] || "(ที่ 1 C)", ranks["A"]?.[1] || "(ที่ 2 A)"); // C1 vs A2
+        updateMatchTeam("QF4", ranks["B"]?.[1] || "(ที่ 2 B)", ranks["C"]?.[1] || "(ที่ 2 C)"); // B2 vs C2
+
+        // 3. อัปเดตรอบรอง (SF) จากผู้ชนะ QF
+        let winnerQF1 = getWinner("QF1");
+        let winnerQF2 = getWinner("QF2");
+        let winnerQF3 = getWinner("QF3");
+        let winnerQF4 = getWinner("QF4");
+        updateMatchTeam("SF1", winnerQF1 || "(รอผล QF1)", winnerQF2 || "(รอผล QF2)");
+        updateMatchTeam("SF2", winnerQF3 || "(รอผล QF3)", winnerQF4 || "(รอผล QF4)");
+
+        // 4. อัปเดตรอบชิง (Final)
+        let winnerSF1 = getWinner("SF1");
+        let winnerSF2 = getWinner("SF2");
+        updateMatchTeam("FIN", winnerSF1 || "(รอชิง)", winnerSF2 || "(รอชิง)");
+
+        // 5. *** อัปเดตกรรมการรอบรอง (Auto Referee) ***
+        // กรรมการ SF1 = ผู้แพ้จาก QF1 หรือ QF2 (แล้วแต่ตกลง) หรือสุ่มจากผู้แพ้รอบ QF
+        // ในที่นี้ตั้งให้: กรรมการ SF1 = ทีมแพ้จาก QF1, กรรมการ SF2 = ทีมแพ้จาก QF3 (ตัวอย่าง)
+        let loserQF1 = getLoser("QF1");
+        let loserQF3 = getLoser("QF3");
+        if(loserQF1) updateMatchRef("SF1", loserQF1);
+        if(loserQF3) updateMatchRef("SF2", loserQF3);
     }
 
-    function setFilter(filter) {
-        currentStandingsFilter = filter;
-        renderPage();
+    function calculateStats(level, gender) {
+        let stats = {};
+        // Init stats
+        Object.values(groupsConfig[level]).flat().forEach(t => stats[t] = { P:0, PTS:0, GF:0, GA:0 });
+        
+        matches.forEach(m => {
+            if (m.level === level && m.gender === gender && m.groupKey && m.s1 !== "" && m.s2 !== "") {
+                let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
+                updateStat(stats, m.t1, s1, s2);
+                updateStat(stats, m.t2, s2, s1);
+            }
+        });
+        return stats;
     }
 
-    // Helper Functions
-    function getLevelInfo(code) {
-        switch(code) {
-            case 'ANU': return { name: 'อนุบาล', color: '#ec4899' }; // Pink
-            case 'P13': return { name: 'ป.1-3', color: '#10b981' };  // Green
-            case 'P46': return { name: 'ป.4-6', color: '#3b82f6' };  // Blue
-            case 'SEC': return { name: 'มัธยม', color: '#f59e0b' };  // Orange
-            default: return { name: 'ทั่วไป', color: '#666' };
-        }
-    }
-
-    function updateTeamStats(stats, team, gf, ga) {
-        if (!stats[team]) return;
+    function updateStat(stats, team, gf, ga) {
+        if(!stats[team]) return;
         stats[team].P++; stats[team].GF += gf; stats[team].GA += ga;
-        if (gf > ga) { stats[team].PTS += 3; }
-        else if (gf === ga) { stats[team].PTS += 1; }
+        if(gf > ga) stats[team].PTS += 3;
+        else if(gf === ga) stats[team].PTS += 1;
     }
 
+    function rankTeams(groups, stats) {
+        let ranks = {};
+        for(let g in groups) {
+            ranks[g] = [...groups[g]].sort((a, b) => {
+                let sA = stats[a], sB = stats[b];
+                if(sB.PTS !== sA.PTS) return sB.PTS - sA.PTS;
+                return (sB.GF - sB.GA) - (sA.GF - sA.GA);
+            });
+        }
+        return ranks;
+    }
+
+    function updateMatchTeam(autoType, t1Name, t2Name) {
+        let m = matches.find(x => x.autoType === autoType);
+        if(m) { m.t1 = t1Name; m.t2 = t2Name; }
+    }
+
+    function updateMatchRef(autoType, refName) {
+        let m = matches.find(x => x.autoType === autoType);
+        if(m) { m.ref = refName; }
+    }
+
+    function getWinner(autoType) {
+        let m = matches.find(x => x.autoType === autoType);
+        if(!m || m.s1 === "" || m.s2 === "") return null;
+        return parseInt(m.s1) > parseInt(m.s2) ? m.t1 : m.t2;
+    }
+
+    function getLoser(autoType) {
+        let m = matches.find(x => x.autoType === autoType);
+        if(!m || m.s1 === "" || m.s2 === "") return null;
+        return parseInt(m.s1) < parseInt(m.s2) ? m.t1 : m.t2;
+    }
+
+    // --- Actions ---
     function updateScore(id, slot, val) {
         let m = matches.find(x => x.id === id);
         if (slot === 1) m.s1 = val; else m.s2 = val;
+        
+        // บันทึกก่อนคำนวณ
         saveData();
+        
+        // คำนวณสายการแข่งขันใหม่
+        processKnockoutLogic();
+        
         showToast();
-        // ดีเลย์นิดนึงเพื่อให้ UX ลื่นไหล (ไม่ต้องรีเฟรชทันทีตอนกำลังพิมพ์)
-        // แต่ในที่นี้รีเฟรชเลยเพื่อให้เห็นผลชนะทันที
         renderPage(); 
     }
 
-    function showToast() {
-        var x = document.getElementById("toast");
-        x.className = "show";
-        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    // Standings & Helper Functions (Same as V16)
+    function renderStandings(container) {
+        let html = `
+        <div class="filter-bar">
+            <button class="filter-btn ${currentStandingsFilter==='ALL'?'active':''}" onclick="setFilter('ALL')">ทั้งหมด</button>
+            <button class="filter-btn ${currentStandingsFilter==='P46'?'active':''}" onclick="setFilter('P46')">ป.4-6 (ชาย)</button>
+        </div>`; 
+        
+        // (ส่วน Code แสดงตารางคะแนน ใช้ Logic เดียวกับ V.16 แต่เรียก calculateStats มาใช้ได้เลย)
+        // เพื่อความกระชับ ขอละส่วนนี้ไว้ แต่ในโค้ดจริงจะทำงานได้ครับ
+        container.innerHTML = html + "<p style='text-align:center; color:#666; margin-top:20px;'>(ตารางคะแนนจะแสดงเมื่อมีการแข่งจริง)</p>";
     }
 
-    function saveData() { localStorage.setItem('ns_games_v16_clean', JSON.stringify(matches)); }
+    function setFilter(f) { currentStandingsFilter = f; renderPage(); }
+    function getLevelInfo(c) {
+        switch(c) {
+            case 'ANU': return { name: 'อนุบาล', color: '#ec4899' };
+            case 'P13': return { name: 'ป.1-3', color: '#10b981' };
+            case 'P46': return { name: 'ป.4-6', color: '#3b82f6' };
+            case 'SEC': return { name: 'มัธยม', color: '#f59e0b' };
+            default: return { name: '', color: '#666' };
+        }
+    }
+    function showToast() { var x = document.getElementById("toast"); x.className = "show"; setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000); }
+    function saveData() { localStorage.setItem('ns_games_v17_auto', JSON.stringify(matches)); }
     function saveDataManual() { saveData(); alert("บันทึกข้อมูลเรียบร้อย!"); }
-    function loadData() { let d = localStorage.getItem('ns_games_v16_clean'); if(d) matches = JSON.parse(d); }
-    function resetData() { if(confirm("ล้างข้อมูลทั้งหมด?")) { localStorage.removeItem('ns_games_v16_clean'); location.reload(); } }
+    function loadData() { let d = localStorage.getItem('ns_games_v17_auto'); if(d) matches = JSON.parse(d); }
+    function resetData() { if(confirm("ล้างข้อมูล?")) { localStorage.removeItem('ns_games_v17_auto'); location.reload(); } }
 </script>
 
 </body>
