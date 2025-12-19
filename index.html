@@ -235,4 +235,58 @@
                 
                 sortedTeams.forEach(t => {
                     let s = stats[t] || { P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0 };
-                    html += `<tr><td>${t}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.
+                    html += `<tr><td>${t}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td>${s.GF}</td><td>${s.GA}</td><td>${s.GF-s.GA}</td><td class="pts-cell">${s.PTS}</td></tr>`;
+                });
+                html += `</tbody></table></div>`;
+            });
+        });
+        
+        container.innerHTML = html;
+    }
+
+    function updateTeamStats(stats, team, gf, ga) {
+        if (!stats[team]) return;
+        stats[team].P++; stats[team].GF += gf; stats[team].GA += ga;
+        if (gf > ga) { stats[team].W++; stats[team].PTS += 3; }
+        else if (gf === ga) { stats[team].D++; stats[team].PTS += 1; }
+        else { stats[team].L++; }
+    }
+
+    function updateScore(id, slot, val) {
+        let m = matches.find(x => x.id === id);
+        if (slot === 1) m.s1 = val; else m.s2 = val;
+        
+        if (m.s1 !== "" && m.s2 !== "" && m.next) {
+            let winner = parseInt(m.s1) > parseInt(m.s2) ? m.t1 : m.t2;
+            if (m.s1 === m.s2) winner = prompt("คะแนนเท่ากัน! ใครชนะจุดโทษ? (กรอกชื่อทีม)", m.t1); 
+
+            let nextMatch = matches.find(x => x.id === m.next);
+            if (nextMatch) {
+                if (m.slot === 1) nextMatch.t1 = winner; else nextMatch.t2 = winner;
+            }
+        }
+        saveData();
+        showToast();
+        renderPage(); 
+    }
+
+    function manualRef(id) {
+        let currentRef = matches.find(m => m.id === id).ref;
+        let newRef = prompt(`เปลี่ยนกรรมการ (ปัจจุบัน: ${currentRef}):`, currentRef);
+        if (newRef) { matches.find(m => m.id === id).ref = newRef; saveData(); renderPage(); }
+    }
+
+    function showToast() {
+        var x = document.getElementById("toast");
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    }
+
+    function saveData() { localStorage.setItem('ns_games_v13_sorted', JSON.stringify(matches)); }
+    function saveDataManual() { saveData(); alert("บันทึกข้อมูลเรียบร้อย!"); }
+    function loadData() { let d = localStorage.getItem('ns_games_v13_sorted'); if(d) matches = JSON.parse(d); }
+    function resetData() { if(confirm("ล้างข้อมูลทั้งหมด?")) { localStorage.removeItem('ns_games_v13_sorted'); location.reload(); } }
+</script>
+
+</body>
+</html>
