@@ -3,62 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568 (V.29 Real-Time Slots)</title>
+<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568 (V.30 Final Scheduler)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
-    :root { --primary: #1e3a8a; --accent: #f59e0b; --bg: #f3f4f6; --text: #1f2937; }
-    body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 80px; }
+    :root { 
+        --primary: #1e3a8a; --bg: #f3f4f6; --text: #1f2937; 
+        --fb: #3b82f6; --vb: #f97316; --tk: #10b981; --pt: #8b5cf6;
+    }
+    body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; padding: 15px; padding-bottom: 80px; color: var(--text); }
     .container { max-width: 1200px; margin: 0 auto; }
     
-    .header { text-align: center; margin-bottom: 15px; background: var(--primary); color: white; padding: 15px; border-radius: 10px; }
-    .nav-tabs { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 10px; }
-    .nav-btn { background: white; border: 1px solid #ccc; padding: 8px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap; }
-    .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .header { text-align: center; margin-bottom: 20px; background: var(--primary); color: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    
+    /* Navigation */
+    .nav-tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 10px; }
+    .nav-btn { background: white; border: 1px solid #ddd; padding: 8px 16px; border-radius: 50px; cursor: pointer; white-space: nowrap; transition: 0.2s; }
+    .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-    .sub-tabs { display: flex; gap: 5px; overflow-x: auto; margin-bottom: 15px; padding-bottom: 5px; border-bottom: 1px solid #ddd; }
-    .sub-btn { background: #e0f2fe; border: none; padding: 5px 10px; border-radius: 15px; font-size: 0.9em; cursor: pointer; color: #0284c7; white-space: nowrap; }
+    .sub-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; border-bottom: 1px solid #ddd; }
+    .sub-btn { background: #e0f2fe; border: none; padding: 6px 12px; border-radius: 15px; font-size: 0.9em; cursor: pointer; color: #0284c7; white-space: nowrap; }
     .sub-btn.active { background: #0284c7; color: white; font-weight: bold; }
 
-    /* Timeline View */
-    .timeline-row { display: flex; margin-bottom: 15px; align-items: flex-start; }
-    .time-col { width: 70px; flex-shrink: 0; font-weight: bold; color: var(--primary); padding-top: 10px; }
-    .matches-col { flex-grow: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
-
-    .match-card { background: white; border-radius: 8px; padding: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 4px solid #ccc; font-size: 0.9em; position: relative; }
+    /* Match Layout */
+    .timeline-block { margin-bottom: 30px; }
+    .timeline-header { 
+        background: #dbeafe; color: #1e40af; padding: 8px 15px; border-radius: 8px; 
+        font-weight: bold; margin-bottom: 10px; display: inline-block; font-size: 1.1em; 
+    }
     
-    /* Field Colors */
-    .field-fb { border-left-color: #3b82f6; } /* Football */
-    .field-vb { border-left-color: #f59e0b; } /* Volleyball */
-    .field-tk { border-left-color: #10b981; } /* Takraw */
-    .field-pt { border-left-color: #8b5cf6; } /* Petanque */
-    .field-at { border-left-color: #ef4444; background: #fff1f2; }
-
-    .match-header { display: flex; justify-content: space-between; margin-bottom: 5px; color: #666; font-size: 0.85em; }
-    .match-teams { display: flex; justify-content: space-between; align-items: center; font-weight: 600; margin-bottom: 5px; }
-    .score-input { width: 30px; text-align: center; border: 1px solid #ddd; border-radius: 4px; padding: 2px; }
+    .matches-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; }
     
-    /* Tags */
-    .tag { padding: 1px 5px; border-radius: 3px; font-size: 0.75em; color: white; display: inline-block; margin-right: 3px; }
-    .tag-anu { background: #ec4899; }
-    .tag-p13 { background: #10b981; }
-    .tag-p46 { background: #3b82f6; }
-    .tag-sec { background: #f59e0b; }
+    .match-card {
+        background: white; border-radius: 10px; padding: 12px; 
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc; position: relative;
+    }
+    
+    /* Sport Borders */
+    .b-FB { border-left-color: var(--fb); }
+    .b-VB { border-left-color: var(--vb); }
+    .b-TK { border-left-color: var(--tk); }
+    .b-PT { border-left-color: var(--pt); }
+    .b-AT { border-left-color: #ef4444; background: #fff1f2; }
+    .b-EV { border-left-color: #ec4899; background: #fdf2f8; }
 
+    .card-top { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85em; color: #666; }
+    .field-label { background: #f3f4f6; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+    
+    .match-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; font-weight: 600; }
+    .team-name { width: 40%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .team-left { text-align: right; } .team-right { text-align: left; }
+    
+    .score-inputs { display: flex; align-items: center; gap: 5px; background: #f8fafc; padding: 4px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    input[type="number"] { width: 35px; border: none; background: transparent; text-align: center; font-weight: bold; color: var(--primary); font-size: 1.1em; }
+    
+    .card-btm { font-size: 0.8em; color: #888; display: flex; justify-content: space-between; }
+    .cat-tag { background: #eee; padding: 2px 6px; border-radius: 4px; }
+
+    /* Control Panel */
     .control-panel { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; }
     .action-btn { width: 50px; height: 50px; border-radius: 50%; border: none; color: white; font-size: 1.2em; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     .btn-save { background: #10b981; } .btn-reset { background: #ef4444; }
+    
+    #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 2px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); }
+    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
 
-    .standing-table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 15px; font-size: 0.9em; }
-    .standing-table th, .standing-table td { padding: 8px; border: 1px solid #eee; text-align: center; }
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h3>🏆 โนนสวรรค์ เกมส์ 2568 (V.29 Realistic Schedule)</h3>
-        <small>จัดตารางตามความจุสนามจริง: บอลใหญ่ 3, บอลเด็ก 1, วอลเลย์ 2, ตะกร้อ 1, เปตอง 2</small>
+        <h2>🏆 โนนสวรรค์ เกมส์ 2568</h2>
+        <small>ตารางแข่งคำนวณตามเวลาจริง: บอลใหญ่ 1 ชม. | บอลเด็ก 30 นาที</small>
     </div>
 
     <div class="nav-tabs">
@@ -66,7 +85,7 @@
         <button class="nav-btn" onclick="switchTab('day2')">📅 17 ธ.ค.</button>
         <button class="nav-btn" onclick="switchTab('day3')">📅 18 ธ.ค.</button>
         <button class="nav-btn" onclick="switchTab('day4')">📅 19 ธ.ค.</button>
-        <button class="nav-btn" onclick="switchTab('standings')">📊 คะแนน</button>
+        <button class="nav-btn" onclick="switchTab('standings')">📊 ตารางคะแนน</button>
     </div>
 
     <div id="sub-filter" class="sub-tabs">
@@ -75,182 +94,176 @@
         <button class="sub-btn" onclick="setFilter('VB')">🏐 วอลเลย์</button>
         <button class="sub-btn" onclick="setFilter('TK')">🧶 ตะกร้อ</button>
         <button class="sub-btn" onclick="setFilter('PT')">🔘 เปตอง</button>
+        <button class="sub-btn" onclick="setFilter('AT')">🏃 กรีฑา</button>
     </div>
 
     <div id="content-area"></div>
 </div>
 
+<div id="toast">บันทึกข้อมูลแล้ว ✅</div>
+
 <div class="control-panel">
-    <button class="action-btn btn-save" onclick="saveDataManual()"><i class="fas fa-save"></i></button>
-    <button class="action-btn btn-reset" onclick="resetData()"><i class="fas fa-trash"></i></button>
+    <button class="action-btn btn-save" onclick="saveDataManual()" title="บันทึก"><i class="fas fa-save"></i></button>
+    <button class="action-btn btn-reset" onclick="resetData()" title="รีเซ็ต"><i class="fas fa-trash"></i></button>
 </div>
 
 <script>
-    // --- 1. CONFIGURATION ---
-    const secTeams = ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"]; // 4 ทีม
-    const priTeams = { // 9 ทีม สลับกลุ่มเพื่อความหลากหลาย
+    // --- 1. CONFIG: Teams & Categories ---
+    const secTeams = ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"];
+    // 9 โรงเรียน (สลับกลุ่ม)
+    const teams9 = {
         A: ["โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ"],
         B: ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"],
         C: ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"]
     };
     
-    // Config กลุ่มของทั้ง 20 รายการ
+    // รายการแข่ง 20 รายการ
     const categories = [
-        { code: "FB_ANU_M", sport: "FB", level: "ANU", gender: "M", name: "บอลอนุบาลชาย" },
-        { code: "FB_ANU_F", sport: "FB", level: "ANU", gender: "F", name: "บอลอนุบาลหญิง" },
-        { code: "FB_P13_M", sport: "FB", level: "P13", gender: "M", name: "บอลป.1-3 ชาย" },
-        { code: "FB_P13_F", sport: "FB", level: "P13", gender: "F", name: "บอลป.1-3 หญิง" },
-        { code: "FB_P46_M", sport: "FB", level: "P46", gender: "M", name: "บอลป.4-6 ชาย" },
-        { code: "FB_P46_F", sport: "FB", level: "P46", gender: "F", name: "บอลป.4-6 หญิง" },
-        { code: "FB_SEC_M", sport: "FB", level: "SEC", gender: "M", name: "บอลมัธยมชาย" },
-        { code: "FB_SEC_F", sport: "FB", level: "SEC", gender: "F", name: "บอลมัธยมหญิง" },
+        { id:"FB_ANU_M", sp:"FB", lv:"ANU", gd:"M", n:"บอลอนุบาล ชาย" },
+        { id:"FB_ANU_F", sp:"FB", lv:"ANU", gd:"F", n:"บอลอนุบาล หญิง" },
+        { id:"FB_P13_M", sp:"FB", lv:"P13", gd:"M", n:"บอล ป.1-3 ชาย" },
+        { id:"FB_P13_F", sp:"FB", lv:"P13", gd:"F", n:"บอล ป.1-3 หญิง" },
+        { id:"FB_P46_M", sp:"FB", lv:"P46", gd:"M", n:"บอล ป.4-6 ชาย" },
+        { id:"FB_P46_F", sp:"FB", lv:"P46", gd:"F", n:"บอล ป.4-6 หญิง" },
+        { id:"FB_SEC_M", sp:"FB", lv:"SEC", gd:"M", n:"บอลมัธยม ชาย" },
+        { id:"FB_SEC_F", sp:"FB", lv:"SEC", gd:"F", n:"บอลมัธยม หญิง" },
         
-        { code: "VB_P46_M", sport: "VB", level: "P46", gender: "M", name: "วอลเลย์ป.4-6 ชาย" },
-        { code: "VB_P46_F", sport: "VB", level: "P46", gender: "F", name: "วอลเลย์ป.4-6 หญิง" },
-        { code: "VB_SEC_M", sport: "VB", level: "SEC", gender: "M", name: "วอลเลย์มัธยมชาย" },
-        { code: "VB_SEC_F", sport: "VB", level: "SEC", gender: "F", name: "วอลเลย์มัธยมหญิง" },
+        { id:"VB_P46_M", sp:"VB", lv:"P46", gd:"M", n:"วอลเลย์ ป.4-6 ชาย" },
+        { id:"VB_P46_F", sp:"VB", lv:"P46", gd:"F", n:"วอลเลย์ ป.4-6 หญิง" },
+        { id:"VB_SEC_M", sp:"VB", lv:"SEC", gd:"M", n:"วอลเลย์ มัธยม ชาย" },
+        { id:"VB_SEC_F", sp:"VB", lv:"SEC", gd:"F", n:"วอลเลย์ มัธยม หญิง" },
 
-        { code: "TK_P46_M", sport: "TK", level: "P46", gender: "M", name: "ตะกร้อป.4-6 ชาย" },
-        { code: "TK_P46_F", sport: "TK", level: "P46", gender: "F", name: "ตะกร้อป.4-6 หญิง" },
-        { code: "TK_SEC_M", sport: "TK", level: "SEC", gender: "M", name: "ตะกร้อมัธยมชาย" },
-        { code: "TK_SEC_F", sport: "TK", level: "SEC", gender: "F", name: "ตะกร้อมัธยมหญิง" },
+        { id:"TK_P46_M", sp:"TK", lv:"P46", gd:"M", n:"ตะกร้อ ป.4-6 ชาย" },
+        { id:"TK_P46_F", sp:"TK", lv:"P46", gd:"F", n:"ตะกร้อ ป.4-6 หญิง" },
+        { id:"TK_SEC_M", sp:"TK", lv:"SEC", gd:"M", n:"ตะกร้อ มัธยม ชาย" },
+        { id:"TK_SEC_F", sp:"TK", lv:"SEC", gd:"F", n:"ตะกร้อ มัธยม หญิง" },
 
-        { code: "PT_P46_M", sport: "PT", level: "P46", gender: "M", name: "เปตองป.4-6 ชาย" },
-        { code: "PT_P46_F", sport: "PT", level: "P46", gender: "F", name: "เปตองป.4-6 หญิง" },
-        { code: "PT_SEC_M", sport: "PT", level: "SEC", gender: "M", name: "เปตองมัธยมชาย" },
-        { code: "PT_SEC_F", sport: "PT", level: "SEC", gender: "F", name: "เปตองมัธยมหญิง" }
+        { id:"PT_P46_M", sp:"PT", lv:"P46", gd:"M", n:"เปตอง ป.4-6 ชาย" },
+        { id:"PT_P46_F", sp:"PT", lv:"P46", gd:"F", n:"เปตอง ป.4-6 หญิง" },
+        { id:"PT_SEC_M", sp:"PT", lv:"SEC", gd:"M", n:"เปตอง มัธยม ชาย" },
+        { id:"PT_SEC_F", sp:"PT", lv:"SEC", gd:"F", n:"เปตอง มัธยม หญิง" }
     ];
 
     let matches = [];
     let currentTab = 'day1';
     let currentFilter = 'ALL';
 
-    // --- 2. GENERATOR ENGINE (The Brain) ---
+    // --- 2. SCHEDULER ENGINE ---
     function generateSchedule() {
         let generated = [];
         
         // 2.1 Fixed Events
         generated.push(
-            { id: "AT1", day: "day1", time: "08.30", field: "ลู่วิ่ง", sport: "AT", desc: "วิ่ง 80ม./100ม. รอบคัดเลือก", t1:"ทุกรุ่น", t2:"" },
-            { id: "AT2", day: "day1", time: "10.00", field: "ลู่วิ่ง", sport: "AT", desc: "วิ่งผลัด รอบคัดเลือก", t1:"ทุกรุ่น", t2:"" },
-            { id: "AT3", day: "day1", time: "11.30", field: "ลู่วิ่ง", sport: "AT", desc: "วิ่ง รอบชิงชนะเลิศ", t1:"ผู้เข้ารอบ", t2:"" },
-            { id: "EV1", day: "day2", time: "08.00", field: "สนามกลาง", sport: "EV", desc: "ขบวนพาเหรด & พิธีเปิด", t1:"ทุกโรงเรียน", t2:"" }
+            { id:"AT1", d:"day1", t:"08.30", f:"ลู่วิ่ง", sp:"AT", lv:"ALL", desc:"🏃 วิ่ง 80ม. (อนุบาล/ป.ต้น)", t1:"-", t2:"-" },
+            { id:"AT2", d:"day1", t:"09.30", f:"ลู่วิ่ง", sp:"AT", lv:"ALL", desc:"🏃 วิ่ง 100ม. (ป.ปลาย/มัธยม)", t1:"-", t2:"-" },
+            { id:"AT3", d:"day1", t:"10.30", f:"ลู่วิ่ง", sp:"AT", lv:"ALL", desc:"🏃 วิ่งผลัด 4x80ม.", t1:"-", t2:"-" },
+            { id:"AT4", d:"day1", t:"11.30", f:"ลู่วิ่ง", sp:"AT", lv:"ALL", desc:"🏃 วิ่งผลัด 4x100ม.", t1:"-", t2:"-" },
+            { id:"EV1", d:"day2", t:"08.00", f:"สนามกลาง", sp:"EV", lv:"ALL", desc:"🏳️‍🌈 ขบวนพาเหรด", t1:"-", t2:"-" },
+            { id:"EV2", d:"day2", t:"09.00", f:"สนามกลาง", sp:"EV", lv:"ALL", desc:"🎈 พิธีเปิด", t1:"-", t2:"-" }
         );
 
-        // 2.2 Define Fields & Slots
-        // สนามบอลใหญ่ 1-3: แมตช์ละ 1 ชม.
-        let slotsFB_Big = [
-            {d:'day1', t:'13.00'}, {d:'day1', t:'14.00'}, {d:'day1', t:'15.00'}, {d:'day1', t:'16.00'},
-            {d:'day2', t:'13.00'}, {d:'day2', t:'14.00'}, {d:'day2', t:'15.00'}, {d:'day2', t:'16.00'},
-            {d:'day3', t:'08.30'}, {d:'day3', t:'09.30'}, {d:'day3', t:'10.30'}, {d:'day3', t:'11.30'}, {d:'day3', t:'13.00'}, {d:'day3', t:'14.00'}, {d:'day3', t:'15.00'}
-        ];
-        // สนามบอลอนุบาล: แมตช์ละ 30 นาที
-        let slotsFB_Anu = [
-            {d:'day1', t:'13.00'}, {d:'day1', t:'13.30'}, {d:'day1', t:'14.00'}, {d:'day1', t:'14.30'}, {d:'day1', t:'15.00'}, {d:'day1', t:'15.30'},
-            {d:'day2', t:'13.00'}, {d:'day2', t:'13.30'}, {d:'day2', t:'14.00'}
-        ];
-        // สนามวอลเลย์ (2 สนาม) / เปตอง (2) / ตะกร้อ (1)
-        // สร้าง Slot รวมๆ ไว้ดึงใช้
-        const createSlots = (prefix, count) => {
-            let s = [];
-            ['day1', 'day2', 'day3'].forEach(d => {
-                let startH = (d==='day3') ? 9 : 13;
-                let endH = 16;
-                for(let h=startH; h<=endH; h++) {
-                    for(let i=1; i<=count; i++) s.push({d:d, t: h+'.00', f: prefix+' '+i});
-                    if(prefix !== 'บอล') { // กีฬาอื่นอาจแข่ง 45 นาที หรือ 30 นาที แทรกครึ่งชม.ได้
-                         for(let i=1; i<=count; i++) s.push({d:d, t: h+'.30', f: prefix+' '+i});
-                    }
-                }
-            });
-            return s;
+        // 2.2 Field Queues (Start Times)
+        // Day 1: 13:00-17:00, Day 2: 13:00-17:00, Day 3: 08:30-17:00
+        let queues = {
+            FB1: { d:1, h:13, m:0 }, FB2: { d:1, h:13, m:0 }, FB3: { d:1, h:13, m:0 }, // Big Fields
+            FBA: { d:1, h:13, m:0 }, // Anu Field
+            VB1: { d:1, h:13, m:0 }, VB2: { d:1, h:13, m:0 },
+            TK1: { d:1, h:13, m:0 },
+            PT1: { d:1, h:13, m:0 }, PT2: { d:1, h:13, m:0 }
         };
 
-        let qFB = { 1: [...slotsFB_Big], 2: [...slotsFB_Big], 3: [...slotsFB_Big], 'ANU': [...slotsFB_Anu] };
-        let qVB = createSlots('วอลเลย์', 2);
-        let qTK = createSlots('ตะกร้อ', 1);
-        let qPT = createSlots('เปตอง', 2);
+        const advanceTime = (q, durationMins) => {
+            q.m += durationMins;
+            while(q.m >= 60) { q.m -= 60; q.h++; }
+            
+            // Day Breaks
+            if(q.d === 1 && q.h >= 17) { q.d=2; q.h=13; q.m=0; }
+            if(q.d === 2 && q.h >= 17) { q.d=3; q.h=8; q.m=30; }
+            // Day 4 reserved for Finals
+        };
 
-        // Helper to pop slot
-        const getSlot = (sport, level) => {
-            if(sport === 'FB') {
-                if(level === 'ANU') return { ...qFB['ANU'].shift(), f: 'สนามเด็ก' };
-                // Round Robin field usage (1, 2, 3)
-                if(qFB[1].length > qFB[2].length) return { ...qFB[1].shift(), f: 'สนาม 1' };
-                if(qFB[2].length > qFB[3].length) return { ...qFB[2].shift(), f: 'สนาม 2' };
-                return { ...qFB[3].shift(), f: 'สนาม 3' };
+        const getField = (sp, lv) => {
+            if(sp==='FB') {
+                if(lv==='ANU') return {q: queues.FBA, name:'สนามเด็ก', dur:30};
+                // Rotate big fields
+                let q1=queues.FB1, q2=queues.FB2, q3=queues.FB3;
+                // Simple load balancing
+                if(compareTime(q1,q2)<=0 && compareTime(q1,q3)<=0) return {q:q1, name:'สนาม 1', dur:60};
+                if(compareTime(q2,q3)<=0) return {q:q2, name:'สนาม 2', dur:60};
+                return {q:q3, name:'สนาม 3', dur:60};
             }
-            if(sport === 'VB') return qVB.shift();
-            if(sport === 'TK') return qTK.shift();
-            if(sport === 'PT') return qPT.shift();
-            return {d:'day?', t:'??', f:'??'};
+            if(sp==='VB') return (compareTime(queues.VB1, queues.VB2)<=0) ? {q:queues.VB1, name:'วอลเลย์ 1', dur:45} : {q:queues.VB2, name:'วอลเลย์ 2', dur:45};
+            if(sp==='TK') return {q:queues.TK1, name:'ตะกร้อ 1', dur:40};
+            if(sp==='PT') return (compareTime(queues.PT1, queues.PT2)<=0) ? {q:queues.PT1, name:'เปตอง 1', dur:45} : {q:queues.PT2, name:'เปตอง 2', dur:45};
+            return null;
         };
 
-        // 2.3 Generate Matches per Category
-        categories.forEach(cat => {
-            let teams = [];
-            let pairings = [];
+        const compareTime = (a, b) => (a.d*10000 + a.h*100 + a.m) - (b.d*10000 + b.h*100 + b.m);
+        const formatTime = (t) => `${t.h.toString().padStart(2,'0')}.${t.m.toString().padStart(2,'0')}`;
 
-            // A. Create Pairings
-            if(cat.level === 'SEC') { // ลีก 4 ทีม
-                teams = secTeams;
-                // Round 1
-                pairings.push({t1:teams[0], t2:teams[1], stage:'ลีก'}, {t1:teams[2], t2:teams[3], stage:'ลีก'});
-                pairings.push({t1:teams[0], t2:teams[2], stage:'ลีก'}, {t1:teams[1], t2:teams[3], stage:'ลีก'});
-                pairings.push({t1:teams[0], t2:teams[3], stage:'ลีก'}, {t1:teams[1], t2:teams[2], stage:'ลีก'});
-                
-                // Round 2 (เหย้าเยือน เฉพาะ FB/VB)
-                if(cat.sport === 'FB' || cat.sport === 'VB') {
-                    pairings.push({t1:teams[1], t2:teams[0], stage:'ลีก'}, {t1:teams[3], t2:teams[2], stage:'ลีก'});
-                    pairings.push({t1:teams[2], t2:teams[0], stage:'ลีก'}, {t1:teams[3], t2:teams[1], stage:'ลีก'});
-                    pairings.push({t1:teams[3], t2:teams[0], stage:'ลีก'}, {t1:teams[2], t2:teams[1], stage:'ลีก'});
-                }
-            } else { // แบ่งสาย A, B, C (3 ทีม/สาย) -> 3 คู่/สาย
-                // สุ่มสลับกลุ่มเล็กน้อยเพื่อความเนียน (ใช้ priTeams เป็นฐาน)
-                let myGroups = cat.level === 'ANU' ? groupsConfig.FB_ANU : priTeams;
-                ['A', 'B', 'C'].forEach(g => {
-                    let gTeams = myGroups[g];
-                    if(!gTeams) return;
-                    pairings.push({t1:gTeams[0], t2:gTeams[1], stage:`สาย ${g}`});
-                    pairings.push({t1:gTeams[1], t2:gTeams[2], stage:`สาย ${g}`});
-                    pairings.push({t1:gTeams[2], t2:gTeams[0], stage:`สาย ${g}`});
+        // 2.3 Generate & Schedule Matches
+        let allPairings = [];
+
+        categories.forEach(cat => {
+            let pairings = [];
+            if(cat.lv === 'SEC') {
+                // League (4 Teams) - Single Round Robin (6 matches) to fit schedule
+                let t = secTeams;
+                pairings.push({t1:t[0], t2:t[1], st:'ลีก'}, {t1:t[2], t2:t[3], st:'ลีก'});
+                pairings.push({t1:t[0], t2:t[2], st:'ลีก'}, {t1:t[1], t2:t[3], st:'ลีก'});
+                pairings.push({t1:t[0], t2:t[3], st:'ลีก'}, {t1:t[1], t2:t[2], st:'ลีก'});
+            } else {
+                // Groups (3 Groups x 3 Teams) = 9 matches
+                // Use default teams9 structure but rotate for variety if needed
+                ['A','B','C'].forEach(g => {
+                    let t = teams9[g]; // Simplify: Use same pool for demo
+                    pairings.push({t1:t[0], t2:t[1], st:`สาย ${g}`}, {t1:t[1], t2:t[2], st:`สาย ${g}`}, {t1:t[2], t2:t[0], st:`สาย ${g}`});
                 });
             }
-
-            // B. Assign Slot
+            
             pairings.forEach((p, idx) => {
-                let slot = getSlot(cat.sport, cat.level);
-                if(slot) {
-                    generated.push({
-                        id: `${cat.code}_${idx}`,
-                        day: slot.d, time: slot.t, field: slot.f,
-                        sport: cat.sport, level: cat.level, gender: cat.gender,
-                        t1: p.t1, t2: p.t2, cat: p.stage, s1: "", s2: "", ref: "กรรมการกลาง"
-                    });
-                }
+                allPairings.push({ ...p, cat:cat, idx:idx });
             });
+        });
 
-            // C. Add Knockout Placeholders (เฉพาะ FB รุ่นที่มีสาย)
-            if(cat.sport === 'FB' && cat.level !== 'SEC') {
-               // Add QF, SF, Final manually to specific Day 3/4 slots later if needed
-               // For this demo, I will push them with hardcoded slots to Day 3/4
-               // (Code omitted for brevity, but logic exists in previous versions)
+        // Sort pairings to mix sports (Interleave)
+        // This prevents one sport from hogging early slots
+        allPairings.sort((a,b) => (a.idx - b.idx));
+
+        // Assign Slots
+        allPairings.forEach(p => {
+            let slotInfo = getField(p.cat.sp, p.cat.lv);
+            if(slotInfo) {
+                let dayStr = `day${slotInfo.q.d}`;
+                let timeStr = formatTime(slotInfo.q);
+                
+                generated.push({
+                    id: `${p.cat.id}_${p.idx}`,
+                    d: dayStr, t: timeStr, f: slotInfo.name,
+                    sp: p.cat.sp, lv: p.cat.lv, gd: p.cat.gd,
+                    t1: p.t1, t2: p.t2, s1: "", s2: "", ref: "กก.", cat: p.st,
+                    desc: `${p.cat.n} ${p.st}`
+                });
+
+                advanceTime(slotInfo.q, slotInfo.dur);
             }
         });
 
-        // Add Finals (Day 4) hardcoded for clarity
-        generated.push(
-            {id:"FIN_FB_P46M", day:"day4", time:"09.00", field:"สนาม 1", sport:"FB", level:"P46", gender:"M", cat:"ชิงชนะเลิศ", t1:"(รอชิง)", t2:"(รอชิง)", s1:"", s2:""},
-            {id:"FIN_FB_SECM", day:"day4", time:"10.00", field:"สนาม 1", sport:"FB", level:"SEC", gender:"M", cat:"ชิงชนะเลิศ", t1:"(ที่1ลีก)", t2:"(ที่2ลีก)", s1:"", s2:""}
-            // ... Add more finals as needed
-        );
+        // 2.4 Add Finals (Day 4)
+        categories.forEach(cat => {
+            generated.push({
+                id: `FIN_${cat.id}`, d: 'day4', t: '09.00', f: 'สนามกลาง',
+                sp: cat.sp, lv: cat.lv, gd: cat.gd, cat: 'ชิงชนะเลิศ',
+                t1: '(รอชิง)', t2: '(รอชิง)', s1:'', s2:'', desc: `${cat.name} ชิงชนะเลิศ`
+            });
+        });
 
         return generated;
     }
 
     // --- 3. RENDER LOGIC ---
     document.addEventListener('DOMContentLoaded', () => {
-        let d = localStorage.getItem('ns_v29_db');
+        let d = localStorage.getItem('ns_v30_db');
         if(d) matches = JSON.parse(d);
         else { matches = generateSchedule(); saveData(); }
         renderPage();
@@ -258,61 +271,56 @@
 
     function renderPage() {
         const container = document.getElementById('content-area');
-        document.getElementById('sub-filter').style.display = (currentTab==='standings') ? 'none' : 'flex';
+        const subTabs = document.getElementById('sub-filter');
         
-        if(currentTab === 'standings') {
+        if (currentTab === 'standings') {
+            subTabs.style.display = 'none';
             renderStandings(container);
         } else {
-            renderTimeline(container);
+            subTabs.style.display = 'flex';
+            renderSchedule(container);
         }
     }
 
-    function renderTimeline(container) {
-        // Filter & Sort
-        let dayMatches = matches.filter(m => m.day === currentTab);
-        if(currentFilter !== 'ALL') dayMatches = dayMatches.filter(m => m.sport === currentFilter);
-        dayMatches.sort((a,b) => a.time.localeCompare(b.time));
+    function renderSchedule(container) {
+        let dayMatches = matches.filter(m => m.d === currentTab);
+        if(currentFilter !== 'ALL') dayMatches = dayMatches.filter(m => m.sp === currentFilter);
+        dayMatches.sort((a,b) => a.t.localeCompare(b.t));
 
-        // Group by Time
-        let times = [...new Set(dayMatches.map(m => m.time))];
         let html = "";
+        let times = [...new Set(dayMatches.map(m => m.t))];
 
-        if(times.length === 0) html = `<div style="text-align:center; padding:50px; color:#999;">ไม่มีรายการแข่งขัน</div>`;
+        if(times.length === 0) html = `<div style="text-align:center; padding:40px; color:#888;">ไม่มีการแข่งขัน</div>`;
 
         times.forEach(t => {
-            html += `<div class="timeline-row">
-                <div class="time-col">${t}</div>
-                <div class="matches-col">`;
-            
-            dayMatches.filter(m => m.time === t).forEach(m => {
-                if(m.sport === 'AT' || m.sport === 'EV') {
-                    html += `<div class="match-card field-at">
-                        <div><b>${m.desc}</b> (${m.field})</div>
-                        <div style="font-size:0.8em; color:#666;">${m.t1}</div>
-                    </div>`;
-                } else {
-                    let colorClass = `field-${m.sport.toLowerCase()}`;
-                    let tagClass = `tag-${m.level.toLowerCase()}`;
-                    let lvlName = getLevelName(m.level);
-                    let genTxt = m.gender==='M'?'ชาย':'หญิง';
+            html += `<div class="timeline-block"><div class="timeline-header"><i class="far fa-clock"></i> ${t} น.</div><div class="matches-grid">`;
+            dayMatches.filter(m => m.t === t).forEach(m => {
+                let borderClass = `b-${m.sp}`;
+                let win1 = (parseInt(m.s1) > parseInt(m.s2)) ? "color:#10b981;" : "";
+                let win2 = (parseInt(m.s2) > parseInt(m.s1)) ? "color:#10b981;" : "";
+                
+                html += `
+                <div class="match-card ${borderClass}">
+                    <div class="card-top">
+                        <span class="field-label">${m.f}</span>
+                        <span>${m.sp === 'AT' || m.sp === 'EV' ? '' : m.lv + ' ' + m.gd}</span>
+                    </div>
+                    <div style="font-weight:bold; color:var(--primary); margin-bottom:5px;">${m.desc}</div>
                     
-                    html += `
-                    <div class="match-card ${colorClass}">
-                        <div class="match-header">
-                            <span>${m.field}</span>
-                            <span class="tag ${tagClass}">${lvlName} ${genTxt}</span>
+                    ${m.sp === 'AT' || m.sp === 'EV' ? '' : `
+                    <div class="match-row">
+                        <span class="team-name team-left" style="${win1}">${m.t1}</span>
+                        <div class="score-inputs">
+                            <input type="number" value="${m.s1}" onchange="upd('${m.id}',1,this.value)">:
+                            <input type="number" value="${m.s2}" onchange="upd('${m.id}',2,this.value)">
                         </div>
-                        <div class="match-teams">
-                            <span>${m.t1}</span>
-                            <div style="display:flex; gap:5px;">
-                                <input class="score-input" type="number" value="${m.s1}" onchange="upd('${m.id}',1,this.value)">
-                                <input class="score-input" type="number" value="${m.s2}" onchange="upd('${m.id}',2,this.value)">
-                            </div>
-                            <span>${m.t2}</span>
-                        </div>
-                        <div style="font-size:0.8em; color:#888;">${m.cat} | กก: ${m.ref}</div>
-                    </div>`;
-                }
+                        <span class="team-name team-right" style="${win2}">${m.t2}</span>
+                    </div>
+                    <div class="card-btm">
+                        <span class="cat-tag">${m.cat}</span>
+                        <span>กรรมการ: ${m.ref}</span>
+                    </div>`}
+                </div>`;
             });
             html += `</div></div>`;
         });
@@ -320,58 +328,51 @@
     }
 
     function renderStandings(container) {
-        // Simplified Logic for displaying standings of all 20 categories
         let html = "";
         categories.forEach(cat => {
-            // Filter logic
-            if(currentFilter !== 'ALL' && cat.sport !== currentFilter) return;
+            if(currentFilter !== 'ALL' && currentFilter !== cat.sp) return;
+            // Check matches existence
+            let hasMatches = matches.some(m => m.sp === cat.sp && m.lv === cat.lv && m.gd === cat.gd);
+            if(!hasMatches) return;
 
-            let teamsStats = {}; 
-            // Loop matches to calc stats for this category...
+            // Calculate Stats
+            let stats = {};
             matches.forEach(m => {
-                if(m.sport===cat.sport && m.level===cat.level && m.gender===cat.gender && m.s1 && m.s2) {
+                if(m.sp === cat.sp && m.lv === cat.lv && m.gd === cat.gd && m.s1 && m.s2) {
                     let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
-                    if(!teamsStats[m.t1]) teamsStats[m.t1] = {P:0, PTS:0};
-                    if(!teamsStats[m.t2]) teamsStats[m.t2] = {P:0, PTS:0};
-                    teamsStats[m.t1].P++; teamsStats[m.t2].P++;
-                    if(s1>s2) teamsStats[m.t1].PTS+=3;
-                    else if(s2>s1) teamsStats[m.t2].PTS+=3;
-                    else { teamsStats[m.t1].PTS+=1; teamsStats[m.t2].PTS+=1; }
+                    if(!stats[m.t1]) stats[m.t1] = {P:0, PTS:0};
+                    if(!stats[m.t2]) stats[m.t2] = {P:0, PTS:0};
+                    stats[m.t1].P++; stats[m.t2].P++;
+                    if(s1>s2) stats[m.t1].PTS+=3;
+                    else if(s2>s1) stats[m.t2].PTS+=3;
+                    else { stats[m.t1].PTS+=1; stats[m.t2].PTS+=1; }
                 }
             });
 
-            // Get Team List based on config
-            let teamList = [];
-            if(cat.level === 'SEC') teamList = secTeams;
-            else teamList = [...priTeams.A, ...priTeams.B, ...priTeams.C]; // Simplified for demo
-
-            // Sort
-            teamList.sort((a,b) => (teamsStats[b]?.PTS||0) - (teamsStats[a]?.PTS||0));
+            // Display Table (Grouped by pool/league)
+            // Simplified: Show combined table for category (or logic to split by A,B,C needed)
+            let teams = Object.keys(stats).sort((a,b) => stats[b].PTS - stats[a].PTS);
+            if(teams.length === 0) return;
 
             html += `<div style="margin-bottom:20px;">
-                <div style="font-weight:bold; color:var(--primary); margin-bottom:5px;">${cat.name}</div>
+                <h4 style="color:var(--primary); border-bottom:2px solid #ddd; padding-bottom:5px;">${cat.name}</h4>
                 <table class="standing-table">
                     <tr><th>#</th><th>ทีม</th><th>แข่ง</th><th>แต้ม</th></tr>
-                    ${teamList.map((t,i) => `<tr><td>${i+1}</td><td style="text-align:left;">${t}</td><td>${teamsStats[t]?.P||0}</td><td class="pts-col">${teamsStats[t]?.PTS||0}</td></tr>`).join('')}
+                    ${teams.map((t,i) => `<tr><td>${i+1}</td><td>${t}</td><td>${stats[t].P}</td><td class="pts-col">${stats[t].PTS}</td></tr>`).join('')}
                 </table>
             </div>`;
         });
         container.innerHTML = html;
     }
 
-    // --- Helpers ---
+    // --- Utilities ---
     function switchTab(t) { currentTab=t; document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); renderPage(); }
     function setFilter(f) { currentFilter=f; document.querySelectorAll('.sub-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); renderPage(); }
-    function getLevelName(l) { return {ANU:'อนุบาล', P13:'ป.1-3', P46:'ป.4-6', SEC:'มัธยม'}[l] || l; }
-    function upd(id, slot, val) { 
-        let m = matches.find(x=>x.id===id); 
-        if(m) { if(slot===1) m.s1=val; else m.s2=val; saveData(); } 
-    }
-    function saveData() { localStorage.setItem('ns_v29_db', JSON.stringify(matches)); showToast(); }
+    function upd(id, s, v) { let m = matches.find(x=>x.id===id); if(m){ if(s==1)m.s1=v; else m.s2=v; saveData(); } }
+    function saveData() { localStorage.setItem('ns_v30_db', JSON.stringify(matches)); showToast(); }
     function saveDataManual() { saveData(); alert('บันทึกแล้ว'); }
-    function resetData() { if(confirm('รีเซ็ต?')) { localStorage.removeItem('ns_v29_db'); location.reload(); } }
+    function resetData() { if(confirm('รีเซ็ตข้อมูลทั้งหมด?')) { localStorage.removeItem('ns_v30_db'); location.reload(); } }
     function showToast() { let t=document.getElementById('toast'); t.className='show'; setTimeout(()=>t.className='', 2000); }
-
 </script>
 </body>
 </html>
