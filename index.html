@@ -3,402 +3,342 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ตารางการแข่งขัน โนนสวรรค์ เกมส์ 2568</title>
+<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-    /* ตั้งค่าพื้นฐาน */
-    body { font-family: 'Sarabun', sans-serif; margin: 0; padding: 10px; background-color: #f8f9fa; color: #333; }
+    /* --- CSS เดิม (ปรับปรุงเล็กน้อย) --- */
+    body { font-family: 'Sarabun', sans-serif; margin: 0; padding: 10px; background-color: #f4f6f9; color: #333; }
     h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; font-size: 1.5em; }
     h2 { text-align: center; font-size: 1em; color: #7f8c8d; margin-top: 0; margin-bottom: 20px; }
-    h3 { margin-top: 25px; color: #444; border-left: 5px solid #2ecc71; padding-left: 10px; font-size: 1.1em; }
     
-    /* การจัดการ Tabs (ปุ่มเลือกวัน) */
-    .tab { overflow: hidden; border: 1px solid #ddd; background-color: #fff; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .tab button { background-color: #fff; border: none; outline: none; cursor: pointer; padding: 12px 10px; transition: 0.3s; font-size: 15px; flex-grow: 1; font-weight: bold; font-family: 'Sarabun', sans-serif; color: #555; border-bottom: 3px solid transparent; }
+    /* Tabs */
+    .tab { overflow: hidden; border: 1px solid #ddd; background-color: #fff; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+    .tab button { background-color: #fff; border: none; outline: none; cursor: pointer; padding: 12px 10px; transition: 0.3s; font-size: 14px; flex-grow: 1; font-weight: bold; font-family: 'Sarabun', sans-serif; color: #555; border-bottom: 3px solid transparent; }
     .tab button:hover { background-color: #f1f1f1; }
-    .tab button.active { color: #007bff; border-bottom: 3px solid #007bff; background-color: #f0f7ff; }
+    .tab button.active { color: #007bff; border-bottom: 3px solid #007bff; background-color: #ebf5ff; }
 
-    /* เนื้อหาใน Tab */
-    .tabcontent { display: none; padding: 15px; border: 1px solid #ddd; border-top: none; background-color: white; border-radius: 0 0 8px 8px; animation: fadeEffect 0.5s; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .tabcontent { display: none; padding: 15px; border: 1px solid #ddd; border-top: none; background-color: white; border-radius: 0 0 8px 8px; animation: fadeEffect 0.3s; margin-bottom: 20px; }
     @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
 
-    /* ตาราง */
-    .table-container { overflow-x: auto; margin-bottom: 15px; border-radius: 5px; border: 1px solid #eee; }
-    table { border-collapse: collapse; width: 100%; min-width: 700px; font-size: 14px; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
-    tr:last-child td { border-bottom: none; }
-    tr:nth-child(even) { background-color: #fdfdfd; }
-    tr:hover { background-color: #f1f1f1; }
+    /* Sport Header */
+    .sport-header {
+        background-color: #2c3e50; color: white; padding: 8px 15px; border-radius: 5px; margin-top: 20px; margin-bottom: 10px; font-size: 1.1em; display: flex; align-items: center;
+    }
+    .sport-header.football { background-color: #28a745; }
+    .sport-header.volleyball { background-color: #fd7e14; }
+    .sport-header.other { background-color: #17a2b8; }
     
-    /* สีหัวตารางแยกประเภทกีฬา */
-    th.football { background-color: #28a745; color: white; border-bottom: 2px solid #218838; } /* ฟุตบอล - เขียว */
-    th.volleyball { background-color: #fd7e14; color: white; border-bottom: 2px solid #e36d0a; } /* วอลเลย์ - ส้ม */
-    th.others { background-color: #17a2b8; color: white; border-bottom: 2px solid #138496; } /* อื่นๆ - ฟ้า */
-    th.final { background-color: #ffc107; color: #333; border-bottom: 2px solid #e0a800; } /* ชิงชนะเลิศ - ทอง */
+    /* Table */
+    .table-container { overflow-x: auto; margin-bottom: 15px; border-radius: 5px; border: 1px solid #eee; background: white; }
+    table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: 14px; }
+    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    th { background-color: #f8f9fa; font-weight: 600; color: #555; }
+    
+    /* Score Inputs */
+    .score-input { width: 40px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; font-weight: bold; }
+    .score-input:focus { border-color: #007bff; outline: none; background-color: #ebf5ff; }
+    .vs-sep { margin: 0 5px; color: #888; font-weight: 300; }
+    
+    /* Team Names */
+    .team-name { font-weight: 600; display: inline-block; width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+    .team-name.winner { color: #28a745; text-decoration: underline; }
+    .team-name.loser { color: #999; }
+    
+    /* League Table specific */
+    .league-table th { background-color: #343a40; color: white; text-align: center; }
+    .league-table td { text-align: center; }
+    .league-table td:nth-child(2) { text-align: left; } /* Team name left align */
+    .rank-1 { background-color: #ffd70033; }
+    .rank-2 { background-color: #c0c0c033; }
+    .rank-3 { background-color: #cd7f3233; }
 
-    /* การตกแต่งข้อความ */
-    .time-badge { background-color: #eee; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.9em; display: inline-block; min-width: 45px; text-align: center; }
-    .field-badge { font-weight: bold; color: #555; display: block; font-size: 0.9em; margin-bottom: 2px; }
-    .category-badge { font-size: 0.8em; color: #888; }
-    .match-pair { font-weight: 600; color: #0056b3; display: block; }
-    .referee-box { background-color: #f8f9fa; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: #e74c3c; border: 1px dashed #dcdcdc; display: inline-block; margin-top: 3px; }
-    .referee-icon { margin-right: 3px; }
+    /* Badges */
+    .badge { padding: 3px 6px; border-radius: 4px; font-size: 0.8em; color: white; background: #999; margin-right: 5px; }
+    .badge-cat { background-color: #6c757d; }
+    .badge-time { background-color: #e9ecef; color: #333; font-weight: bold; }
 
-    /* หมายเหตุ */
-    .note { text-align: center; color: #e74c3c; font-size: 0.9em; margin-top: 10px; padding: 10px; background-color: #fff5f5; border-radius: 5px; border: 1px solid #ffebea; }
-
-    /* Responsive มือถือ */
+    /* Responsive */
     @media screen and (max-width: 600px) {
-        .tab button { width: 50%; font-size: 13px; padding: 10px 5px; }
-        h1 { font-size: 1.2em; }
-        th, td { padding: 8px; }
-        .match-pair { font-size: 0.95em; }
+        .team-name { width: 90px; font-size: 0.9em; }
+        th, td { padding: 8px 4px; font-size: 13px; }
+        .score-input { width: 30px; }
     }
 </style>
 </head>
 <body>
 
-<h1>🏆 ตารางการแข่งขัน "โนนสวรรค์ เกมส์ 2568"</h1>
+<h1>🏆 ระบบจัดการแข่งขัน "โนนสวรรค์ เกมส์ 2568"</h1>
 <h2>16 - 19 ธันวาคม 2568</h2>
 
 <div class="tab">
-  <button class="tablinks" onclick="openDay(event, 'Day1')" id="defaultOpen">16 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(รอบแบ่งกลุ่ม)</span></button>
-  <button class="tablinks" onclick="openDay(event, 'Day2')">17 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(รอบ 8 ทีม)</span></button>
-  <button class="tablinks" onclick="openDay(event, 'Day3')">18 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(รอบรองฯ)</span></button>
-  <button class="tablinks" onclick="openDay(event, 'Day4')">19 ธ.ค.<br><span style="font-weight:normal; font-size:0.8em;">(ชิงชนะเลิศ)</span></button>
+  <button class="tablinks" onclick="openTab(event, 'Day1')" id="defaultOpen">16 ธ.ค.<br><small>(รอบแรก)</small></button>
+  <button class="tablinks" onclick="openTab(event, 'Day2')">17 ธ.ค.<br><small>(รอบ 8 ทีม)</small></button>
+  <button class="tablinks" onclick="openTab(event, 'Day3')">18 ธ.ค.<br><small>(รอบรองฯ)</small></button>
+  <button class="tablinks" onclick="openTab(event, 'Day4')">19 ธ.ค.<br><small>(ชิงชนะเลิศ)</small></button>
+  <button class="tablinks" onclick="openTab(event, 'Standings')" style="color: #c0392b;">📊 ตารางคะแนน</button>
 </div>
 
-<div id="Day1" class="tabcontent">
-  
-  <h3>☀️ ช่วงเช้า (08.30 - 12.00) : ชายแข่งบอล / หญิงแข่งกีฬารอง</h3>
-  
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th class="football" width="10%">เวลา</th>
-          <th class="football" width="25%">สนาม</th>
-          <th class="football">คู่แข่งขัน (ชาย)</th>
-          <th class="football" width="25%">กรรมการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">สนาม 1</span> <span class="category-badge">ป.4-6</span></td>
-          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
-          <td><div class="referee-box">👮‍♂️ ด้วงฯ-ชำฯ</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">สนาม 2</span> <span class="category-badge">มัธยม</span></td>
-          <td><span class="match-pair">หนองกุงศรีฯ vs ภูพระฯ</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนม่วง</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">สนาม 3</span> <span class="category-badge">ป.1-3</span></td>
-          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
-          <td><div class="referee-box">👮‍♂️ ด้วงฯ-ชำฯ</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">อนุบาล</span> <span class="category-badge">อนุบาล</span></td>
-          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนม่วง</div></td>
-        </tr>
-        <tr style="border-top: 2px solid #eee;">
-          <td><span class="time-badge">09.30</span></td>
-          <td><span class="field-badge">สนาม 1</span> <span class="category-badge">ป.4-6</span></td>
-          <td><span class="match-pair">โนนสวรรค์ฯ vs โนนเมือง</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนไหม</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">09.30</span></td>
-          <td><span class="field-badge">สนาม 2</span> <span class="category-badge">มัธยม</span></td>
-          <td><span class="match-pair">โนนม่วง vs โนนเมือง</span></td>
-          <td><div class="referee-box">👮‍♂️ หนองกุงศรีฯ</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">09.30</span></td>
-          <td><span class="field-badge">สนาม 3 / อนุบาล</span></td>
-          <td><span class="match-pair">โนนสวรรค์ฯ vs โนนเมือง</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนไหม / ภูพระฯ</div></td>
-        </tr>
-        <tr style="border-top: 2px solid #eee;">
-          <td><span class="time-badge">10.30</span></td>
-          <td><span class="field-badge">สนาม 1</span> <span class="category-badge">ป.4-6</span></td>
-          <td><span class="match-pair">ภูพระฯ vs หนองกุงศรีฯ</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนม่วง</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">10.30</span></td>
-          <td><span class="field-badge">สนาม 2</span> <span class="category-badge">มัธยม</span></td>
-          <td><span class="match-pair">หนองกุงศรีฯ vs โนนเมือง</span></td>
-          <td><div class="referee-box">👮‍♂️ ภูพระฯ</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<div id="Day1" class="tabcontent"></div>
+<div id="Day2" class="tabcontent"></div>
+<div id="Day3" class="tabcontent"></div>
+<div id="Day4" class="tabcontent"></div>
 
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th class="volleyball" width="10%">เวลา</th>
-          <th class="volleyball" width="25%">รายการ</th>
-          <th class="volleyball">คู่แข่งขัน (หญิง)</th>
-          <th class="volleyball" width="25%">กรรมการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">วอลเลย์บอล</span></td>
-          <td><span class="match-pair">ท่าอุทัย vs ด้วงฯ / โนนไหม vs โนนสวรรค์</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนสวาท / โนนเมือง</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">ตะกร้อ/เปตอง</span></td>
-          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย</span></td>
-          <td><div class="referee-box">👮‍♂️ ด้วงฯ-ชำฯ</div></td>
-        </tr>
-         <tr>
-          <td><span class="time-badge">09.30</span></td>
-          <td><span class="field-badge">วอลเลย์บอล</span></td>
-          <td><span class="match-pair">โนนม่วง vs ภูพระ / ด้วงฯ vs โนนสวาท</span></td>
-          <td><div class="referee-box">👮‍♂️ หนองกุงศรี / ท่าอุทัย</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <h3>🌤️ ช่วงบ่าย (13.00 - 16.30) : สลับฝั่ง (หญิงแข่งบอล)</h3>
-  
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th class="others" width="10%">เวลา</th>
-          <th class="others" width="25%">รายการ</th>
-          <th class="others">คู่แข่งขัน</th>
-          <th class="others" width="25%">กรรมการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="time-badge">13.00</span></td>
-          <td><span class="field-badge">ฟุตบอลหญิง</span> <span class="category-badge">ทุกสนาม</span></td>
-          <td><span class="match-pair">โนนสวาทฯ vs ท่าอุทัย / หนองกุงศรีฯ vs ภูพระฯ</span></td>
-          <td><div class="referee-box">👮‍♂️ ด้วงฯ / โนนม่วง</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">13.00</span></td>
-          <td><span class="field-badge">วอลเลย์ชาย</span></td>
-          <td><span class="match-pair">ท่าอุทัย vs ด้วงฯ / โนนไหม vs โนนสวรรค์</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนสวาท / โนนเมือง</div></td>
-        </tr>
-         <tr>
-          <td><span class="time-badge">14.00</span></td>
-          <td><span class="field-badge">ฟุตบอลหญิง</span></td>
-          <td><span class="match-pair">โนนสวรรค์ฯ vs โนนเมือง / โนนม่วง vs โนนเมือง</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนไหม / หนองกุงศรี</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div id="Day2" class="tabcontent">
-  <div class="note">⚠️ วันนี้เริ่มแข่งขันเวลา 13.00 น. เป็นต้นไป</div>
-  
-  <h3>⚽ ฟุตบอล (นัดสุดท้าย & รอบ 8 ทีม)</h3>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th class="football" width="10%">เวลา</th>
-          <th class="football" width="25%">สนาม/รุ่น</th>
-          <th class="football">คู่แข่งขัน</th>
-          <th class="football" width="25%">กรรมการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="time-badge">13.00</span></td>
-          <td><span class="field-badge">สนาม 1 (ป.4-6)</span></td>
-          <td><span class="match-pair">ท่าอุทัย vs ด้วงฯ-ชำฯ</span> <span class="category-badge">(นัดท้ายสาย A)</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนสวาทฯ</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">13.00</span></td>
-          <td><span class="field-badge">สนาม 2 (มัธยม)</span></td>
-          <td><span class="match-pair">ภูพระฯ พบ โนนม่วง</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนเมือง</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">14.00</span></td>
-          <td><span class="field-badge">สนาม 1 (ป.4-6)</span></td>
-          <td><span class="match-pair">โนนเมือง พบ โนนไหม</span> <span class="category-badge">(นัดท้ายสาย B)</span></td>
-          <td><div class="referee-box">👮‍♂️ โนนสวรรค์ฯ</div></td>
-        </tr>
-        <tr style="background-color: #e8f5e9;">
-          <td><span class="time-badge">15.00</span></td>
-          <td><span class="field-badge">สนาม 1/2</span></td>
-          <td><span class="match-pair">⚽ รอบ 8 ทีมสุดท้าย (คู่ที่ 1 & 2)</span></td>
-          <td><div class="referee-box">👮‍♂️ ทีมตกรอบแรก</div></td>
-        </tr>
-        <tr style="background-color: #e8f5e9;">
-          <td><span class="time-badge">16.00</span></td>
-          <td><span class="field-badge">สนาม 1/2</span></td>
-          <td><span class="match-pair">⚽ รอบ 8 ทีมสุดท้าย (คู่ที่ 3 & 4)</span></td>
-          <td><div class="referee-box">👮‍♂️ ทีมตกรอบแรก</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <h3>🏐 กีฬาอื่นๆ (เก็บตก & รอบรองฯ)</h3>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th class="volleyball" width="10%">เวลา</th>
-          <th class="volleyball">รายการ</th>
-          <th class="volleyball">รายละเอียด</th>
-          <th class="volleyball">กรรมการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="time-badge">13.00</span></td>
-          <td>วอลเลย์/ตะกร้อ</td>
-          <td>นัดสุดท้ายรอบแบ่งกลุ่ม (เก็บตก)</td>
-          <td><div class="referee-box">👮‍♂️ ทีมที่ว่าง</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">15.00</span></td>
-          <td>ทุกกีฬา</td>
-          <td><span class="match-pair">รอบรองชนะเลิศ (Semi-Finals)</span></td>
-          <td><div class="referee-box">👮‍♂️ ทีมที่ตกรอบ</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div id="Day3" class="tabcontent">
-  <h3>🏆 รอบรองชนะเลิศ & ชิงที่ 3</h3>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th class="others" width="10%">เวลา</th>
-          <th class="others" width="25%">กีฬา</th>
-          <th class="others">รายการ</th>
-          <th class="others" width="25%">กรรมการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">ฟุตบอลชาย</span></td>
-          <td><span class="match-pair">รอบรองชนะเลิศ (คู่ที่ 1)</span></td>
-          <td><div class="referee-box">👮‍♂️ ทีมแพ้รอบ 8 ทีม</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">09.30</span></td>
-          <td><span class="field-badge">ฟุตบอลชาย</span></td>
-          <td><span class="match-pair">รอบรองชนะเลิศ (คู่ที่ 2)</span></td>
-          <td><div class="referee-box">👮‍♂️ ทีมแพ้รอบ 8 ทีม</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">09.30</span></td>
-          <td><span class="field-badge">วอลเลย์/ตะกร้อ</span></td>
-          <td><span class="match-pair">รอบรองชนะเลิศ (ประเภทชาย/หญิง)</span></td>
-          <td><div class="referee-box">👮‍♂️ ทีมที่ตกรอบ</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">10.30</span></td>
-          <td><span class="field-badge">ฟุตบอลหญิง</span></td>
-          <td><span class="match-pair">รอบรองชนะเลิศ (คู่ 1 & 2)</span></td>
-          <td><div class="referee-box">👮‍♂️ ทีมชายที่ว่าง</div></td>
-        </tr>
-        <tr style="background-color: #fff8e1;">
-          <td><span class="time-badge">13.00</span></td>
-          <td><span class="field-badge">ทุกกีฬา</span></td>
-          <td><span class="match-pair">🥉 ชิงอันดับที่ 3 (พร้อมกันทุกสนาม)</span></td>
-          <td><div class="referee-box">👮‍♂️ กรรมการกลาง</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<div id="Day4" class="tabcontent">
-  <h3>🏅 รอบชิงชนะเลิศ (Finals)</h3>
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th class="final" width="10%">เวลา</th>
-          <th class="final" width="25%">สนาม</th>
-          <th class="final">รายการ</th>
-          <th class="final" width="25%">กรรมการ</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style="background-color: #fff8e1;">
-          <td><span class="time-badge">08.30</span></td>
-          <td><span class="field-badge">ทุกสนามบอล</span></td>
-          <td><span class="match-pair">🏆 ชิงชนะเลิศ ฟุตบอลชาย (ทุกรุ่น)</span></td>
-          <td><div class="referee-box">👮‍♂️ ชุดพิเศษ (เป็นกลาง)</div></td>
-        </tr>
-        <tr style="background-color: #fff8e1;">
-          <td><span class="time-badge">09.30</span></td>
-          <td><span class="field-badge">ทุกสนามบอล</span></td>
-          <td><span class="match-pair">🏆 ชิงชนะเลิศ ฟุตบอลหญิง (ทุกรุ่น)</span></td>
-          <td><div class="referee-box">👮‍♂️ ชุดพิเศษ (เป็นกลาง)</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">09.00</span></td>
-          <td><span class="field-badge">สนามปูน</span></td>
-          <td><span class="match-pair">🏆 ชิงชนะเลิศ วอลเลย์/ตะกร้อ/เปตอง</span></td>
-          <td><div class="referee-box">👮‍♂️ ชุดพิเศษ</div></td>
-        </tr>
-        <tr>
-          <td><span class="time-badge">13.00</span></td>
-          <td><span class="field-badge">ลู่วิ่ง</span></td>
-          <td><span class="match-pair">🏃 การแข่งขันกรีฑา & พิธีปิด</span></td>
-          <td><div class="referee-box">👮‍♂️ ครูทุกคน</div></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-  <div class="note">
-    <strong>หมายเหตุ:</strong> พิธีมอบรางวัลจะจัดขึ้นที่สนามกีฬากลาง หลังจบการแข่งขันแต่ละประเภท หรือในช่วงพิธีปิด
-  </div>
+<div id="Standings" class="tabcontent">
+    <h3>⚽ ตารางคะแนนฟุตบอล (รอบแบ่งกลุ่ม)</h3>
+    <div id="standings-container"></div>
 </div>
 
 <script>
-function openDay(evt, dayName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(dayName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
+    // --- 1. ฐานข้อมูลการแข่งขัน (Data Structure) ---
+    // id: รหัสแมตช์, nextMatchId: รหัสแมตช์ที่ผู้ชนะจะไปต่อ (สำหรับรอบ Knockout)
+    // sportType: football, volleyball, other
+    const matches = [
+        // --- วันที่ 16 (Day 1) รอบแบ่งกลุ่ม ---
+        { id: 'd1_m1', day: 'Day1', time: '08.30', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'โนนสวาทฯ', teamB: 'ท่าอุทัย', scoreA: '', scoreB: '', group: 'A' },
+        { id: 'd1_m2', day: 'Day1', time: '08.30', sport: 'football', category: 'มัธยม', field: 'สนาม 2', teamA: 'หนองกุงศรีฯ', teamB: 'ภูพระฯ', scoreA: '', scoreB: '', group: 'M' },
+        { id: 'd1_m3', day: 'Day1', time: '09.30', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'โนนสวรรค์ฯ', teamB: 'โนนเมือง', scoreA: '', scoreB: '', group: 'B' },
+        { id: 'd1_v1', day: 'Day1', time: '08.30', sport: 'volleyball', category: 'ทั่วไป', field: 'วอลเลย์', teamA: 'ท่าอุทัย', teamB: 'ด้วงฯ', scoreA: '', scoreB: '' },
+        
+        // --- วันที่ 17 (Day 2) รอบ 8 ทีม / นัดสุดท้าย ---
+        // nextMatchId: 'd3_sf1_home' หมายถึง ผู้ชนะคู่นี้ จะไปเป็นทีมเหย้า (Home) ของแมตช์ id d3_sf1
+        { id: 'd2_m1', day: 'Day2', time: '13.00', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'ท่าอุทัย', teamB: 'ด้วงฯ-ชำฯ', scoreA: '', scoreB: '', nextMatchId: 'd3_sf1_home' }, 
+        { id: 'd2_m2', day: 'Day2', time: '14.00', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'โนนเมือง', teamB: 'โนนไหม', scoreA: '', scoreB: '', nextMatchId: 'd3_sf1_away' },
+        { id: 'd2_qf1', day: 'Day2', time: '15.00', sport: 'football', category: 'ทั่วไป', field: 'สนามกลาง', teamA: 'ที่ 1 สาย A', teamB: 'ที่ 2 สาย B', scoreA: '', scoreB: '', nextMatchId: 'd3_sf2_home' }, // สมมติคู่
+        { id: 'd2_qf2', day: 'Day2', time: '16.00', sport: 'football', category: 'ทั่วไป', field: 'สนามกลาง', teamA: 'ที่ 1 สาย B', teamB: 'ที่ 2 สาย A', scoreA: '', scoreB: '', nextMatchId: 'd3_sf2_away' }, // สมมติคู่
 
-// เปิดแท็บแรกอัตโนมัติ (16 ธ.ค.)
-document.getElementById("defaultOpen").click();
+        // --- วันที่ 18 (Day 3) รอบรองชนะเลิศ (Semi-Finals) ---
+        // ทีมจะถูกเติมอัตโนมัติจากผลของ Day 2
+        { id: 'd3_sf1', day: 'Day3', time: '08.30', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'รอผล...', teamB: 'รอผล...', scoreA: '', scoreB: '', nextMatchId: 'd4_f1_home' },
+        { id: 'd3_sf2', day: 'Day3', time: '09.30', sport: 'football', category: 'ทั่วไป', field: 'สนาม 2', teamA: 'รอผล...', teamB: 'รอผล...', scoreA: '', scoreB: '', nextMatchId: 'd4_f1_away' },
+
+        // --- วันที่ 19 (Day 4) รอบชิงชนะเลิศ ---
+        { id: 'd4_f1', day: 'Day4', time: '09.30', sport: 'football', category: 'ชิงชนะเลิศ', field: 'สนามกลาง', teamA: 'รอผล...', teamB: 'รอผล...', scoreA: '', scoreB: '' }
+    ];
+
+    // --- 2. ฟังก์ชันเรนเดอร์ตาราง (Render Tables) ---
+    function renderSchedules() {
+        const days = ['Day1', 'Day2', 'Day3', 'Day4'];
+        const sportTitles = { 'football': '⚽ ฟุตบอล', 'volleyball': '🏐 วอลเลย์บอล', 'other': '🏅 กีฬาอื่นๆ' };
+
+        days.forEach(day => {
+            const container = document.getElementById(day);
+            container.innerHTML = ""; // Clear old content
+            
+            // กรองและแยกประเภทกีฬา
+            const dayMatches = matches.filter(m => m.day === day);
+            const sports = [...new Set(dayMatches.map(m => m.sport))];
+
+            if(dayMatches.length === 0) {
+                container.innerHTML = "<p style='text-align:center; color:#888;'>ยังไม่มีข้อมูลการแข่งขัน</p>";
+                return;
+            }
+
+            sports.forEach(sport => {
+                // สร้าง Header แยกกีฬา
+                const header = document.createElement('div');
+                header.className = `sport-header ${sport}`;
+                header.innerHTML = sportTitles[sport] || 'กีฬาอื่นๆ';
+                container.appendChild(header);
+
+                // สร้างตาราง
+                const tableContainer = document.createElement('div');
+                tableContainer.className = 'table-container';
+                
+                let tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th width="10%">เวลา</th>
+                                <th width="20%">สนาม/รุ่น</th>
+                                <th width="45%">คู่แข่งขัน (ผลการแข่งขัน)</th>
+                                <th width="15%">กรอกผล</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                dayMatches.filter(m => m.sport === sport).forEach(match => {
+                    // ตรวจสอบผู้ชนะเพื่อทำตัวหนา
+                    const scoreA = parseInt(match.scoreA);
+                    const scoreB = parseInt(match.scoreB);
+                    let classA = "", classB = "";
+                    if (!isNaN(scoreA) && !isNaN(scoreB)) {
+                        if (scoreA > scoreB) { classA = "winner"; classB = "loser"; }
+                        else if (scoreB > scoreA) { classB = "winner"; classA = "loser"; }
+                    }
+
+                    tableHTML += `
+                        <tr>
+                            <td><span class="badge badge-time">${match.time}</span></td>
+                            <td>
+                                <div style="font-weight:bold; color:#555;">${match.field}</div>
+                                <span class="badge badge-cat">${match.category}</span>
+                            </td>
+                            <td>
+                                <div style="display:flex; align-items:center;">
+                                    <span class="team-name ${classA}" style="text-align:right;">${match.teamA}</span>
+                                    <span class="vs-sep">VS</span>
+                                    <span class="team-name ${classB}" style="text-align:left;">${match.teamB}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display:flex; justify-content:center; gap:5px;">
+                                    <input type="number" class="score-input" value="${match.scoreA}" onchange="updateScore('${match.id}', 'A', this.value)">
+                                    <span style="align-self:center;">-</span>
+                                    <input type="number" class="score-input" value="${match.scoreB}" onchange="updateScore('${match.id}', 'B', this.value)">
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `</tbody></table>`;
+                tableContainer.innerHTML = tableHTML;
+                container.appendChild(tableContainer);
+            });
+        });
+    }
+
+    // --- 3. ฟังก์ชันอัปเดตผล & จัดสายอัตโนมัติ (Update & Auto-Schedule) ---
+    function updateScore(matchId, teamSide, value) {
+        const match = matches.find(m => m.id === matchId);
+        if (match) {
+            if (teamSide === 'A') match.scoreA = value;
+            else match.scoreB = value;
+
+            // 3.1 บันทึกลง LocalStorage (ถ้าต้องการให้จำค่าได้หลัง Refresh ให้เปิด comment บรรทัดล่าง)
+            // localStorage.setItem('matchesData', JSON.stringify(matches));
+
+            // 3.2 Logic ส่งผู้ชนะเข้ารอบถัดไป (Auto-Advance)
+            if (match.nextMatchId && match.scoreA !== '' && match.scoreB !== '') {
+                const sA = parseInt(match.scoreA);
+                const sB = parseInt(match.scoreB);
+                let winnerName = "เสมอ";
+                
+                if (sA > sB) winnerName = match.teamA;
+                else if (sB > sA) winnerName = match.teamB;
+
+                // อัปเดตแมตช์ถัดไป
+                // nextMatchId format: 'targetID_home' or 'targetID_away'
+                const targetIdBase = match.nextMatchId.split('_')[0]; // e.g., 'd3_sf1'
+                const targetSide = match.nextMatchId.split('_')[1];   // e.g., 'home' or 'away'
+                
+                const targetMatch = matches.find(m => m.id === targetIdBase);
+                if (targetMatch) {
+                    if (targetSide === 'home') targetMatch.teamA = winnerName;
+                    else if (targetSide === 'away') targetMatch.teamB = winnerName;
+                }
+            }
+
+            // Re-render เพื่อแสดงสีผู้ชนะและชื่อทีมในรอบถัดไป
+            renderSchedules();
+            renderStandings(); // อัปเดตตารางคะแนน
+        }
+    }
+
+    // --- 4. ฟังก์ชันคำนวณตารางคะแนน (League Table Logic) ---
+    function renderStandings() {
+        // ดึงเฉพาะแมตช์ที่มี Group ระบุไว้
+        const groupMatches = matches.filter(m => m.group);
+        const teamsStats = {};
+
+        groupMatches.forEach(m => {
+            // Init team stats if not exists
+            [m.teamA, m.teamB].forEach(t => {
+                if (!teamsStats[t]) teamsStats[t] = { name: t, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 };
+            });
+
+            // Calculate if score is present
+            if (m.scoreA !== '' && m.scoreB !== '') {
+                const sA = parseInt(m.scoreA);
+                const sB = parseInt(m.scoreB);
+
+                // Team A Stats
+                teamsStats[m.teamA].P++;
+                teamsStats[m.teamA].GF += sA;
+                teamsStats[m.teamA].GA += sB;
+
+                // Team B Stats
+                teamsStats[m.teamB].P++;
+                teamsStats[m.teamB].GF += sB;
+                teamsStats[m.teamB].GA += sA;
+
+                if (sA > sB) {
+                    teamsStats[m.teamA].W++; teamsStats[m.teamA].Pts += 3;
+                    teamsStats[m.teamB].L++;
+                } else if (sB > sA) {
+                    teamsStats[m.teamB].W++; teamsStats[m.teamB].Pts += 3;
+                    teamsStats[m.teamA].L++;
+                } else {
+                    teamsStats[m.teamA].D++; teamsStats[m.teamA].Pts += 1;
+                    teamsStats[m.teamB].D++; teamsStats[m.teamB].Pts += 1;
+                }
+            }
+        });
+
+        // Convert to Array & Sort
+        const sortedTeams = Object.values(teamsStats).sort((a, b) => {
+            if (b.Pts !== a.Pts) return b.Pts - a.Pts; // แต้มมากสุดขึ้นก่อน
+            const gdA = a.GF - a.GA;
+            const gdB = b.GF - b.GA;
+            return gdB - gdA; // ถ้าแต้มเท่า ดูลูกได้เสีย
+        });
+
+        // Render HTML
+        let html = `
+            <div class="table-container">
+            <table class="league-table">
+                <thead>
+                    <tr>
+                        <th width="10%">อันดับ</th>
+                        <th width="30%">ทีม</th>
+                        <th width="10%">แข่ง</th>
+                        <th width="10%">ชนะ</th>
+                        <th width="10%">เสมอ</th>
+                        <th width="10%">แพ้</th>
+                        <th width="10%">+/-</th>
+                        <th width="10%">แต้ม</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        sortedTeams.forEach((t, index) => {
+            const gd = t.GF - t.GA;
+            const rankClass = index < 3 ? `rank-${index+1}` : '';
+            html += `
+                <tr class="${rankClass}">
+                    <td>${index + 1}</td>
+                    <td><strong>${t.name}</strong></td>
+                    <td>${t.P}</td>
+                    <td>${t.W}</td>
+                    <td>${t.D}</td>
+                    <td>${t.L}</td>
+                    <td>${gd > 0 ? '+'+gd : gd}</td>
+                    <td style="font-weight:bold; color:#0056b3;">${t.Pts}</td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table></div>`;
+        document.getElementById('standings-container').innerHTML = html;
+    }
+
+    // --- Tab Logic ---
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+        document.getElementById(tabName).style.display = "block";
+        if(evt) evt.currentTarget.className += " active";
+    }
+
+    // Init
+    document.getElementById("defaultOpen").click();
+    renderSchedules();
+    renderStandings();
+
 </script>
 
 </body>
