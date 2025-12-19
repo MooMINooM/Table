@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568 (V.7 Complete)</title>
+<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568 (V.8 Updated)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -81,14 +81,14 @@
 </div>
 
 <script>
-    // --- ข้อมูลโรงเรียนและสายการแข่งขัน ---
+    // --- ข้อมูลโรงเรียน (Updated: ตัดหนองด้วง/ซำขอนแก่น ออกแล้ว) ---
     const schoolsList = [
         "โนนสวรรค์ฯ", "โนนสวาทฯ", "ท่าอุทัย", "หนองกุงศรีฯ", "ภูพระฯ",
-        "โนนเมือง", "โนนไหมฯ", "โนนม่วง", "หนองด้วงฯ", "ซำขอนแก่นฯ", "ด้วงฯ-ชำฯ"
+        "โนนเมือง", "โนนไหมฯ", "โนนม่วง", "ด้วงฯ-ชำฯ" 
     ];
 
     const groups = {
-        "A": ["โนนสวาทฯ", "ท่าอุทัย", "ด้วงฯ-ชำฯ", "หนองด้วงฯ", "ซำขอนแก่นฯ"], // รวมทีมในสาย A
+        "A": ["โนนสวาทฯ", "ท่าอุทัย", "ด้วงฯ-ชำฯ"], 
         "B": ["โนนสวรรค์ฯ", "โนนเมือง", "โนนไหมฯ"],
         "C": ["ภูพระฯ", "หนองกุงศรีฯ", "โนนม่วง"],
         "M": ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"] // สายมัธยม
@@ -106,8 +106,8 @@
         { id: "M5", day: "day1", time: "10.30", field: "สนาม 1", type: "fb", cat: "ชาย C", t1: "ภูพระฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนม่วง" },
         { id: "M6", day: "day1", time: "13.00", field: "สนาม 1", type: "fb", cat: "หญิง A", t1: "โนนสวาทฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
         
-        // วอลเลย์บอล
-        { id: "V1", day: "day1", time: "08.30", field: "สนามวอลเลย์", type: "vb", cat: "หญิง A", t1: "ท่าอุทัย", t2: "หนองด้วงฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
+        // วอลเลย์บอล (แก้ไขทีมหนองด้วง เป็น ด้วงฯ-ชำฯ)
+        { id: "V1", day: "day1", time: "08.30", field: "สนามวอลเลย์", type: "vb", cat: "หญิง A", t1: "ท่าอุทัย", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
         { id: "V2", day: "day1", time: "09.30", field: "สนามวอลเลย์", type: "vb", cat: "หญิง B", t1: "โนนไหมฯ", t2: "โนนสวรรค์ฯ", s1: "", s2: "", ref: "โนนเมือง" },
         
         // ตะกร้อ
@@ -160,7 +160,6 @@
     function renderSchedule(container, day) {
         const dayMatches = matches.filter(m => m.day === day);
         
-        // Helper สร้างป้ายกำกับกีฬา
         const getCatLabel = (type, cat) => {
             let colorClass = "";
             let name = "";
@@ -189,7 +188,6 @@
                 let win1 = (s1 > s2) ? "color:#2ecc71; font-weight:bold; text-decoration:underline;" : "";
                 let win2 = (s2 > s1) ? "color:#2ecc71; font-weight:bold; text-decoration:underline;" : "";
                 
-                // Conflict Check
                 let conflictStyle = (m.t1.includes(m.ref) || m.t2.includes(m.ref)) ? "border:2px solid red; background:#ffebee; color:red;" : "";
 
                 html += `<tr>
@@ -216,14 +214,10 @@
     // --- แสดงตารางคะแนน (Standings) ---
     function renderStandings(container) {
         let stats = {}; 
-        // Init stats for all known teams
         const allTeams = [...new Set([...groups["A"], ...groups["B"], ...groups["C"], ...groups["M"]])];
         allTeams.forEach(t => stats[t] = { P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0 });
 
-        // Calculate stats
         matches.forEach(m => {
-            // คำนวณเฉพาะรอบแบ่งกลุ่ม (ที่มีระบุ cat เป็น A, B, C, M)
-            // หรือจะคำนวณทั้งหมดแล้วไปกรองตอนแสดงผลก็ได้
             if (m.s1 !== "" && m.s2 !== "") {
                 let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
                 updateTeamStats(stats, m.t1, s1, s2);
@@ -298,10 +292,10 @@
         setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
     }
 
-    function saveData() { localStorage.setItem('ns_games_v7', JSON.stringify(matches)); }
+    function saveData() { localStorage.setItem('ns_games_v8', JSON.stringify(matches)); }
     function saveDataManual() { saveData(); alert("บันทึกข้อมูลเรียบร้อย!"); }
-    function loadData() { let d = localStorage.getItem('ns_games_v7'); if(d) matches = JSON.parse(d); }
-    function resetData() { if(confirm("ล้างข้อมูลทั้งหมด?")) { localStorage.removeItem('ns_games_v7'); location.reload(); } }
+    function loadData() { let d = localStorage.getItem('ns_games_v8'); if(d) matches = JSON.parse(d); }
+    function resetData() { if(confirm("ล้างข้อมูลทั้งหมด?")) { localStorage.removeItem('ns_games_v8'); location.reload(); } }
 </script>
 
 </body>
