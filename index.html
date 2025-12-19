@@ -3,342 +3,305 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568</title>
-<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568 (V.7 Complete)</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
-    /* --- CSS เดิม (ปรับปรุงเล็กน้อย) --- */
-    body { font-family: 'Sarabun', sans-serif; margin: 0; padding: 10px; background-color: #f4f6f9; color: #333; }
-    h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; font-size: 1.5em; }
-    h2 { text-align: center; font-size: 1em; color: #7f8c8d; margin-top: 0; margin-bottom: 20px; }
+    :root { --primary: #1a5f7a; --secondary: #ffc107; --success: #2ecc71; --danger: #e74c3c; --dark: #2c3e50; --light: #f8f9fa; }
+    body { font-family: 'Sarabun', sans-serif; background: #eef2f5; margin: 0; padding: 20px; color: var(--dark); padding-bottom: 80px; }
+    .container { max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     
-    /* Tabs */
-    .tab { overflow: hidden; border: 1px solid #ddd; background-color: #fff; border-radius: 8px 8px 0 0; display: flex; flex-wrap: wrap; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
-    .tab button { background-color: #fff; border: none; outline: none; cursor: pointer; padding: 12px 10px; transition: 0.3s; font-size: 14px; flex-grow: 1; font-weight: bold; font-family: 'Sarabun', sans-serif; color: #555; border-bottom: 3px solid transparent; }
-    .tab button:hover { background-color: #f1f1f1; }
-    .tab button.active { color: #007bff; border-bottom: 3px solid #007bff; background-color: #ebf5ff; }
+    .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+    .tab-btn { padding: 10px 20px; border: none; background: #e0e0e0; border-radius: 20px; cursor: pointer; font-weight: bold; color: #555; transition: 0.3s; white-space: nowrap; }
+    .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 6px rgba(26, 95, 122, 0.3); }
+    
+    .table-responsive { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 15px; min-width: 800px; font-size: 14px; }
+    th { background: var(--dark); color: white; padding: 10px; text-align: left; }
+    td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
+    tr:nth-child(even) { background: #f9f9f9; }
+    
+    input[type="number"] { width: 50px; padding: 5px; text-align: center; border: 2px solid #ddd; border-radius: 5px; font-weight: bold; font-size: 1.2em; color: #333; }
+    input[type="number"]:focus { border-color: var(--primary); outline: none; background: #e3f2fd; }
+    
+    .ref-badge { background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; display: inline-block; font-weight: 600; border: 1px solid #bbdefb; cursor: pointer; min-width: 120px; text-align: center; }
+    .ref-manual { background: #fff3e0; color: #e65100; border-color: #ffe0b2; }
 
-    .tabcontent { display: none; padding: 15px; border: 1px solid #ddd; border-top: none; background-color: white; border-radius: 0 0 8px 8px; animation: fadeEffect 0.3s; margin-bottom: 20px; }
-    @keyframes fadeEffect { from {opacity: 0;} to {opacity: 1;} }
+    #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 2px; padding: 16px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 17px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
 
-    /* Sport Header */
-    .sport-header {
-        background-color: #2c3e50; color: white; padding: 8px 15px; border-radius: 5px; margin-top: 20px; margin-bottom: 10px; font-size: 1.1em; display: flex; align-items: center;
-    }
-    .sport-header.football { background-color: #28a745; }
-    .sport-header.volleyball { background-color: #fd7e14; }
-    .sport-header.other { background-color: #17a2b8; }
-    
-    /* Table */
-    .table-container { overflow-x: auto; margin-bottom: 15px; border-radius: 5px; border: 1px solid #eee; background: white; }
-    table { border-collapse: collapse; width: 100%; min-width: 600px; font-size: 14px; }
-    th, td { text-align: left; padding: 10px; border-bottom: 1px solid #eee; vertical-align: middle; }
-    th { background-color: #f8f9fa; font-weight: 600; color: #555; }
-    
-    /* Score Inputs */
-    .score-input { width: 40px; text-align: center; padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; font-weight: bold; }
-    .score-input:focus { border-color: #007bff; outline: none; background-color: #ebf5ff; }
-    .vs-sep { margin: 0 5px; color: #888; font-weight: 300; }
-    
-    /* Team Names */
-    .team-name { font-weight: 600; display: inline-block; width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
-    .team-name.winner { color: #28a745; text-decoration: underline; }
-    .team-name.loser { color: #999; }
-    
-    /* League Table specific */
-    .league-table th { background-color: #343a40; color: white; text-align: center; }
-    .league-table td { text-align: center; }
-    .league-table td:nth-child(2) { text-align: left; } /* Team name left align */
-    .rank-1 { background-color: #ffd70033; }
-    .rank-2 { background-color: #c0c0c033; }
-    .rank-3 { background-color: #cd7f3233; }
+    .control-panel { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; z-index: 1000; }
+    .action-btn { width: 50px; height: 50px; border-radius: 50%; border: none; color: white; font-size: 1.2em; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
+    .action-btn:hover { transform: scale(1.1); }
+    .btn-save { background: var(--success); }
+    .btn-reset { background: var(--danger); }
 
-    /* Badges */
-    .badge { padding: 3px 6px; border-radius: 4px; font-size: 0.8em; color: white; background: #999; margin-right: 5px; }
-    .badge-cat { background-color: #6c757d; }
-    .badge-time { background-color: #e9ecef; color: #333; font-weight: bold; }
+    .standing-box { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+    .standing-header { background: var(--primary); color: white; padding: 10px; font-weight: bold; display: flex; justify-content: space-between; }
+    .st-table th { background: #f1f1f1; color: #333; font-size: 0.85em; text-align: center; }
+    .st-table td { text-align: center; font-size: 0.9em; }
+    .pts-cell { font-weight: bold; color: var(--primary); background: #e3f2fd; }
 
-    /* Responsive */
-    @media screen and (max-width: 600px) {
-        .team-name { width: 90px; font-size: 0.9em; }
-        th, td { padding: 8px 4px; font-size: 13px; }
-        .score-input { width: 30px; }
-    }
+    /* Category Labels */
+    .cat-label { font-size: 0.8em; padding: 2px 6px; border-radius: 3px; color: white; margin-left: 5px; }
+    .cat-football { background-color: #27ae60; }
+    .cat-volleyball { background-color: #e67e22; }
+    .cat-takraw { background-color: #8e44ad; }
+    .cat-petanque { background-color: #2980b9; }
+
+    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
 </style>
 </head>
 <body>
 
-<h1>🏆 ระบบจัดการแข่งขัน "โนนสวรรค์ เกมส์ 2568"</h1>
-<h2>16 - 19 ธันวาคม 2568</h2>
+<div class="container">
+    <div class="header">
+        <h1>🏆 โนนสวรรค์ เกมส์ 2568</h1>
+        <p>ระบบบันทึกผลการแข่งขันแบบ Real-time</p>
+    </div>
 
-<div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'Day1')" id="defaultOpen">16 ธ.ค.<br><small>(รอบแรก)</small></button>
-  <button class="tablinks" onclick="openTab(event, 'Day2')">17 ธ.ค.<br><small>(รอบ 8 ทีม)</small></button>
-  <button class="tablinks" onclick="openTab(event, 'Day3')">18 ธ.ค.<br><small>(รอบรองฯ)</small></button>
-  <button class="tablinks" onclick="openTab(event, 'Day4')">19 ธ.ค.<br><small>(ชิงชนะเลิศ)</small></button>
-  <button class="tablinks" onclick="openTab(event, 'Standings')" style="color: #c0392b;">📊 ตารางคะแนน</button>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('day1')">📅 16 ธ.ค. (รอบแรก)</button>
+        <button class="tab-btn" onclick="switchTab('day2')">📅 17 ธ.ค. (รอบ 8 ทีม)</button>
+        <button class="tab-btn" onclick="switchTab('day3')">📅 18 ธ.ค. (รอบรองฯ)</button>
+        <button class="tab-btn" onclick="switchTab('day4')">📅 19 ธ.ค. (ชิงฯ)</button>
+        <button class="tab-btn" style="background:#2c3e50; color:white;" onclick="switchTab('standings')">📊 ตารางคะแนนรวม</button>
+    </div>
+
+    <div id="content-area"></div>
 </div>
 
-<div id="Day1" class="tabcontent"></div>
-<div id="Day2" class="tabcontent"></div>
-<div id="Day3" class="tabcontent"></div>
-<div id="Day4" class="tabcontent"></div>
+<div id="toast">บันทึกข้อมูลแล้ว ✅</div>
 
-<div id="Standings" class="tabcontent">
-    <h3>⚽ ตารางคะแนนฟุตบอล (รอบแบ่งกลุ่ม)</h3>
-    <div id="standings-container"></div>
+<div class="control-panel">
+    <button class="action-btn btn-save" onclick="saveDataManual()" title="บันทึกข้อมูล"><i class="fas fa-save"></i></button>
+    <button class="action-btn btn-reset" onclick="resetData()" title="ล้างข้อมูลเริ่มใหม่"><i class="fas fa-trash"></i></button>
 </div>
 
 <script>
-    // --- 1. ฐานข้อมูลการแข่งขัน (Data Structure) ---
-    // id: รหัสแมตช์, nextMatchId: รหัสแมตช์ที่ผู้ชนะจะไปต่อ (สำหรับรอบ Knockout)
-    // sportType: football, volleyball, other
-    const matches = [
-        // --- วันที่ 16 (Day 1) รอบแบ่งกลุ่ม ---
-        { id: 'd1_m1', day: 'Day1', time: '08.30', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'โนนสวาทฯ', teamB: 'ท่าอุทัย', scoreA: '', scoreB: '', group: 'A' },
-        { id: 'd1_m2', day: 'Day1', time: '08.30', sport: 'football', category: 'มัธยม', field: 'สนาม 2', teamA: 'หนองกุงศรีฯ', teamB: 'ภูพระฯ', scoreA: '', scoreB: '', group: 'M' },
-        { id: 'd1_m3', day: 'Day1', time: '09.30', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'โนนสวรรค์ฯ', teamB: 'โนนเมือง', scoreA: '', scoreB: '', group: 'B' },
-        { id: 'd1_v1', day: 'Day1', time: '08.30', sport: 'volleyball', category: 'ทั่วไป', field: 'วอลเลย์', teamA: 'ท่าอุทัย', teamB: 'ด้วงฯ', scoreA: '', scoreB: '' },
-        
-        // --- วันที่ 17 (Day 2) รอบ 8 ทีม / นัดสุดท้าย ---
-        // nextMatchId: 'd3_sf1_home' หมายถึง ผู้ชนะคู่นี้ จะไปเป็นทีมเหย้า (Home) ของแมตช์ id d3_sf1
-        { id: 'd2_m1', day: 'Day2', time: '13.00', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'ท่าอุทัย', teamB: 'ด้วงฯ-ชำฯ', scoreA: '', scoreB: '', nextMatchId: 'd3_sf1_home' }, 
-        { id: 'd2_m2', day: 'Day2', time: '14.00', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'โนนเมือง', teamB: 'โนนไหม', scoreA: '', scoreB: '', nextMatchId: 'd3_sf1_away' },
-        { id: 'd2_qf1', day: 'Day2', time: '15.00', sport: 'football', category: 'ทั่วไป', field: 'สนามกลาง', teamA: 'ที่ 1 สาย A', teamB: 'ที่ 2 สาย B', scoreA: '', scoreB: '', nextMatchId: 'd3_sf2_home' }, // สมมติคู่
-        { id: 'd2_qf2', day: 'Day2', time: '16.00', sport: 'football', category: 'ทั่วไป', field: 'สนามกลาง', teamA: 'ที่ 1 สาย B', teamB: 'ที่ 2 สาย A', scoreA: '', scoreB: '', nextMatchId: 'd3_sf2_away' }, // สมมติคู่
-
-        // --- วันที่ 18 (Day 3) รอบรองชนะเลิศ (Semi-Finals) ---
-        // ทีมจะถูกเติมอัตโนมัติจากผลของ Day 2
-        { id: 'd3_sf1', day: 'Day3', time: '08.30', sport: 'football', category: 'ป.4-6', field: 'สนาม 1', teamA: 'รอผล...', teamB: 'รอผล...', scoreA: '', scoreB: '', nextMatchId: 'd4_f1_home' },
-        { id: 'd3_sf2', day: 'Day3', time: '09.30', sport: 'football', category: 'ทั่วไป', field: 'สนาม 2', teamA: 'รอผล...', teamB: 'รอผล...', scoreA: '', scoreB: '', nextMatchId: 'd4_f1_away' },
-
-        // --- วันที่ 19 (Day 4) รอบชิงชนะเลิศ ---
-        { id: 'd4_f1', day: 'Day4', time: '09.30', sport: 'football', category: 'ชิงชนะเลิศ', field: 'สนามกลาง', teamA: 'รอผล...', teamB: 'รอผล...', scoreA: '', scoreB: '' }
+    // --- ข้อมูลโรงเรียนและสายการแข่งขัน ---
+    const schoolsList = [
+        "โนนสวรรค์ฯ", "โนนสวาทฯ", "ท่าอุทัย", "หนองกุงศรีฯ", "ภูพระฯ",
+        "โนนเมือง", "โนนไหมฯ", "โนนม่วง", "หนองด้วงฯ", "ซำขอนแก่นฯ", "ด้วงฯ-ชำฯ"
     ];
 
-    // --- 2. ฟังก์ชันเรนเดอร์ตาราง (Render Tables) ---
-    function renderSchedules() {
-        const days = ['Day1', 'Day2', 'Day3', 'Day4'];
-        const sportTitles = { 'football': '⚽ ฟุตบอล', 'volleyball': '🏐 วอลเลย์บอล', 'other': '🏅 กีฬาอื่นๆ' };
+    const groups = {
+        "A": ["โนนสวาทฯ", "ท่าอุทัย", "ด้วงฯ-ชำฯ", "หนองด้วงฯ", "ซำขอนแก่นฯ"], // รวมทีมในสาย A
+        "B": ["โนนสวรรค์ฯ", "โนนเมือง", "โนนไหมฯ"],
+        "C": ["ภูพระฯ", "หนองกุงศรีฯ", "โนนม่วง"],
+        "M": ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"] // สายมัธยม
+    };
 
-        days.forEach(day => {
-            const container = document.getElementById(day);
-            container.innerHTML = ""; // Clear old content
-            
-            // กรองและแยกประเภทกีฬา
-            const dayMatches = matches.filter(m => m.day === day);
-            const sports = [...new Set(dayMatches.map(m => m.sport))];
-
-            if(dayMatches.length === 0) {
-                container.innerHTML = "<p style='text-align:center; color:#888;'>ยังไม่มีข้อมูลการแข่งขัน</p>";
-                return;
-            }
-
-            sports.forEach(sport => {
-                // สร้าง Header แยกกีฬา
-                const header = document.createElement('div');
-                header.className = `sport-header ${sport}`;
-                header.innerHTML = sportTitles[sport] || 'กีฬาอื่นๆ';
-                container.appendChild(header);
-
-                // สร้างตาราง
-                const tableContainer = document.createElement('div');
-                tableContainer.className = 'table-container';
-                
-                let tableHTML = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th width="10%">เวลา</th>
-                                <th width="20%">สนาม/รุ่น</th>
-                                <th width="45%">คู่แข่งขัน (ผลการแข่งขัน)</th>
-                                <th width="15%">กรอกผล</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                dayMatches.filter(m => m.sport === sport).forEach(match => {
-                    // ตรวจสอบผู้ชนะเพื่อทำตัวหนา
-                    const scoreA = parseInt(match.scoreA);
-                    const scoreB = parseInt(match.scoreB);
-                    let classA = "", classB = "";
-                    if (!isNaN(scoreA) && !isNaN(scoreB)) {
-                        if (scoreA > scoreB) { classA = "winner"; classB = "loser"; }
-                        else if (scoreB > scoreA) { classB = "winner"; classA = "loser"; }
-                    }
-
-                    tableHTML += `
-                        <tr>
-                            <td><span class="badge badge-time">${match.time}</span></td>
-                            <td>
-                                <div style="font-weight:bold; color:#555;">${match.field}</div>
-                                <span class="badge badge-cat">${match.category}</span>
-                            </td>
-                            <td>
-                                <div style="display:flex; align-items:center;">
-                                    <span class="team-name ${classA}" style="text-align:right;">${match.teamA}</span>
-                                    <span class="vs-sep">VS</span>
-                                    <span class="team-name ${classB}" style="text-align:left;">${match.teamB}</span>
-                                </div>
-                            </td>
-                            <td>
-                                <div style="display:flex; justify-content:center; gap:5px;">
-                                    <input type="number" class="score-input" value="${match.scoreA}" onchange="updateScore('${match.id}', 'A', this.value)">
-                                    <span style="align-self:center;">-</span>
-                                    <input type="number" class="score-input" value="${match.scoreB}" onchange="updateScore('${match.id}', 'B', this.value)">
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                tableHTML += `</tbody></table>`;
-                tableContainer.innerHTML = tableHTML;
-                container.appendChild(tableContainer);
-            });
-        });
-    }
-
-    // --- 3. ฟังก์ชันอัปเดตผล & จัดสายอัตโนมัติ (Update & Auto-Schedule) ---
-    function updateScore(matchId, teamSide, value) {
-        const match = matches.find(m => m.id === matchId);
-        if (match) {
-            if (teamSide === 'A') match.scoreA = value;
-            else match.scoreB = value;
-
-            // 3.1 บันทึกลง LocalStorage (ถ้าต้องการให้จำค่าได้หลัง Refresh ให้เปิด comment บรรทัดล่าง)
-            // localStorage.setItem('matchesData', JSON.stringify(matches));
-
-            // 3.2 Logic ส่งผู้ชนะเข้ารอบถัดไป (Auto-Advance)
-            if (match.nextMatchId && match.scoreA !== '' && match.scoreB !== '') {
-                const sA = parseInt(match.scoreA);
-                const sB = parseInt(match.scoreB);
-                let winnerName = "เสมอ";
-                
-                if (sA > sB) winnerName = match.teamA;
-                else if (sB > sA) winnerName = match.teamB;
-
-                // อัปเดตแมตช์ถัดไป
-                // nextMatchId format: 'targetID_home' or 'targetID_away'
-                const targetIdBase = match.nextMatchId.split('_')[0]; // e.g., 'd3_sf1'
-                const targetSide = match.nextMatchId.split('_')[1];   // e.g., 'home' or 'away'
-                
-                const targetMatch = matches.find(m => m.id === targetIdBase);
-                if (targetMatch) {
-                    if (targetSide === 'home') targetMatch.teamA = winnerName;
-                    else if (targetSide === 'away') targetMatch.teamB = winnerName;
-                }
-            }
-
-            // Re-render เพื่อแสดงสีผู้ชนะและชื่อทีมในรอบถัดไป
-            renderSchedules();
-            renderStandings(); // อัปเดตตารางคะแนน
-        }
-    }
-
-    // --- 4. ฟังก์ชันคำนวณตารางคะแนน (League Table Logic) ---
-    function renderStandings() {
-        // ดึงเฉพาะแมตช์ที่มี Group ระบุไว้
-        const groupMatches = matches.filter(m => m.group);
-        const teamsStats = {};
-
-        groupMatches.forEach(m => {
-            // Init team stats if not exists
-            [m.teamA, m.teamB].forEach(t => {
-                if (!teamsStats[t]) teamsStats[t] = { name: t, P: 0, W: 0, D: 0, L: 0, GF: 0, GA: 0, Pts: 0 };
-            });
-
-            // Calculate if score is present
-            if (m.scoreA !== '' && m.scoreB !== '') {
-                const sA = parseInt(m.scoreA);
-                const sB = parseInt(m.scoreB);
-
-                // Team A Stats
-                teamsStats[m.teamA].P++;
-                teamsStats[m.teamA].GF += sA;
-                teamsStats[m.teamA].GA += sB;
-
-                // Team B Stats
-                teamsStats[m.teamB].P++;
-                teamsStats[m.teamB].GF += sB;
-                teamsStats[m.teamB].GA += sA;
-
-                if (sA > sB) {
-                    teamsStats[m.teamA].W++; teamsStats[m.teamA].Pts += 3;
-                    teamsStats[m.teamB].L++;
-                } else if (sB > sA) {
-                    teamsStats[m.teamB].W++; teamsStats[m.teamB].Pts += 3;
-                    teamsStats[m.teamA].L++;
-                } else {
-                    teamsStats[m.teamA].D++; teamsStats[m.teamA].Pts += 1;
-                    teamsStats[m.teamB].D++; teamsStats[m.teamB].Pts += 1;
-                }
-            }
-        });
-
-        // Convert to Array & Sort
-        const sortedTeams = Object.values(teamsStats).sort((a, b) => {
-            if (b.Pts !== a.Pts) return b.Pts - a.Pts; // แต้มมากสุดขึ้นก่อน
-            const gdA = a.GF - a.GA;
-            const gdB = b.GF - b.GA;
-            return gdB - gdA; // ถ้าแต้มเท่า ดูลูกได้เสีย
-        });
-
-        // Render HTML
-        let html = `
-            <div class="table-container">
-            <table class="league-table">
-                <thead>
-                    <tr>
-                        <th width="10%">อันดับ</th>
-                        <th width="30%">ทีม</th>
-                        <th width="10%">แข่ง</th>
-                        <th width="10%">ชนะ</th>
-                        <th width="10%">เสมอ</th>
-                        <th width="10%">แพ้</th>
-                        <th width="10%">+/-</th>
-                        <th width="10%">แต้ม</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
+    // --- ข้อมูลแมตช์การแข่งขัน (รวมทุกกีฬา) ---
+    // type: fb=ฟุตบอล, vb=วอลเลย์, tk=ตะกร้อ, pt=เปตอง
+    let matches = [
+        // === วันที่ 16 ธ.ค. (รอบแบ่งกลุ่ม) ===
+        // ฟุตบอล
+        { id: "M1", day: "day1", time: "08.30", field: "สนาม 1", type: "fb", cat: "ชาย A", t1: "โนนสวาทฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
+        { id: "M2", day: "day1", time: "08.30", field: "สนาม 2", type: "fb", cat: "ชาย M", t1: "หนองกุงศรีฯ", t2: "ภูพระฯ", s1: "", s2: "", ref: "โนนม่วง" },
+        { id: "M3", day: "day1", time: "09.30", field: "สนาม 1", type: "fb", cat: "ชาย B", t1: "โนนสวรรค์ฯ", t2: "โนนเมือง", s1: "", s2: "", ref: "โนนไหมฯ" },
+        { id: "M4", day: "day1", time: "09.30", field: "สนาม 2", type: "fb", cat: "ชาย M", t1: "โนนม่วง", t2: "โนนเมือง", s1: "", s2: "", ref: "หนองกุงศรีฯ" },
+        { id: "M5", day: "day1", time: "10.30", field: "สนาม 1", type: "fb", cat: "ชาย C", t1: "ภูพระฯ", t2: "หนองกุงศรีฯ", s1: "", s2: "", ref: "โนนม่วง" },
+        { id: "M6", day: "day1", time: "13.00", field: "สนาม 1", type: "fb", cat: "หญิง A", t1: "โนนสวาทฯ", t2: "ท่าอุทัย", s1: "", s2: "", ref: "ด้วงฯ-ชำฯ" },
         
-        sortedTeams.forEach((t, index) => {
-            const gd = t.GF - t.GA;
-            const rankClass = index < 3 ? `rank-${index+1}` : '';
-            html += `
-                <tr class="${rankClass}">
-                    <td>${index + 1}</td>
-                    <td><strong>${t.name}</strong></td>
-                    <td>${t.P}</td>
-                    <td>${t.W}</td>
-                    <td>${t.D}</td>
-                    <td>${t.L}</td>
-                    <td>${gd > 0 ? '+'+gd : gd}</td>
-                    <td style="font-weight:bold; color:#0056b3;">${t.Pts}</td>
-                </tr>
-            `;
-        });
+        // วอลเลย์บอล
+        { id: "V1", day: "day1", time: "08.30", field: "สนามวอลเลย์", type: "vb", cat: "หญิง A", t1: "ท่าอุทัย", t2: "หนองด้วงฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
+        { id: "V2", day: "day1", time: "09.30", field: "สนามวอลเลย์", type: "vb", cat: "หญิง B", t1: "โนนไหมฯ", t2: "โนนสวรรค์ฯ", s1: "", s2: "", ref: "โนนเมือง" },
+        
+        // ตะกร้อ
+        { id: "T1", day: "day1", time: "08.30", field: "สนามตะกร้อ", type: "tk", cat: "ชาย A", t1: "โนนเมือง", t2: "โนนไหมฯ", s1: "", s2: "", ref: "โนนสวรรค์ฯ" },
+        
+        // เปตอง
+        { id: "P1", day: "day1", time: "08.30", field: "สนามเปตอง", type: "pt", cat: "ชาย A", t1: "โนนม่วง", t2: "โนนไหมฯ", s1: "", s2: "", ref: "ภูพระฯ" },
+
+        // === วันที่ 17 ธ.ค. (รอบ 8 ทีม / นัดสุดท้าย) ===
+        { id: "M8", day: "day2", time: "13.00", field: "สนาม 1", type: "fb", cat: "ชาย A", t1: "ท่าอุทัย", t2: "ด้วงฯ-ชำฯ", s1: "", s2: "", ref: "โนนสวาทฯ" },
+        { id: "M9", day: "day2", time: "13.00", field: "สนาม 2", type: "fb", cat: "ชาย M", t1: "ภูพระฯ", t2: "โนนม่วง", s1: "", s2: "", ref: "โนนเมือง" },
+        { id: "M10", day: "day2", time: "14.00", field: "สนาม 1", type: "fb", cat: "ชาย B", t1: "โนนเมือง", t2: "โนนไหมฯ", s1: "", s2: "", ref: "โนนสวรรค์ฯ" },
+        
+        // รอบ 8 ทีม ฟุตบอล
+        { id: "QF1", day: "day2", time: "15.00", field: "สนาม 1", type: "fb", cat: "รอบ 8 ทีม (1)", t1: "(ที่ 1 สาย A)", t2: "(ที่ 3 ดีสุด)", s1: "", s2: "", ref: "ทีมตกรอบ", next: "SF1", slot: 1 },
+        { id: "QF2", day: "day2", time: "15.00", field: "สนาม 2", type: "fb", cat: "รอบ 8 ทีม (2)", t1: "(ที่ 1 สาย B)", t2: "(ที่ 3 รอง)", s1: "", s2: "", ref: "ทีมตกรอบ", next: "SF1", slot: 2 },
+        { id: "QF3", day: "day2", time: "16.00", field: "สนาม 1", type: "fb", cat: "รอบ 8 ทีม (3)", t1: "(ที่ 1 สาย C)", t2: "(ที่ 2 สาย A)", s1: "", s2: "", ref: "ทีมตกรอบ", next: "SF2", slot: 1 },
+        { id: "QF4", day: "day2", time: "16.00", field: "สนาม 2", type: "fb", cat: "รอบ 8 ทีม (4)", t1: "(ที่ 2 สาย B)", t2: "(ที่ 2 สาย C)", s1: "", s2: "", ref: "ทีมตกรอบ", next: "SF2", slot: 2 },
+
+        // === วันที่ 18 ธ.ค. (รอบรองชนะเลิศ) ===
+        { id: "SF1", day: "day3", time: "09.00", field: "สนาม 1", type: "fb", cat: "รอบรองฯ (1)", t1: "(รอ QF1)", t2: "(รอ QF2)", s1: "", s2: "", ref: "ทีมแพ้ QF", next: "FINAL", slot: 1 },
+        { id: "SF2", day: "day3", time: "10.00", field: "สนาม 1", type: "fb", cat: "รอบรองฯ (2)", t1: "(รอ QF3)", t2: "(รอ QF4)", s1: "", s2: "", ref: "ทีมแพ้ QF", next: "FINAL", slot: 2 },
+        
+        // === วันที่ 19 ธ.ค. (ชิงชนะเลิศ) ===
+        { id: "FINAL", day: "day4", time: "09.00", field: "สนามกลาง", type: "fb", cat: "ชิงชนะเลิศ", t1: "(รอชิง)", t2: "(รอชิง)", s1: "", s2: "", ref: "ชุดพิเศษ" }
+    ];
+
+    let currentTab = 'day1';
+
+    // --- เริ่มต้นระบบ ---
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+        renderPage();
+    });
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
+        renderPage();
+    }
+
+    function renderPage() {
+        const container = document.getElementById('content-area');
+        if (currentTab === 'standings') renderStandings(container);
+        else renderSchedule(container, currentTab);
+    }
+
+    // --- แสดงตารางแข่ง ---
+    function renderSchedule(container, day) {
+        const dayMatches = matches.filter(m => m.day === day);
+        
+        // Helper สร้างป้ายกำกับกีฬา
+        const getCatLabel = (type, cat) => {
+            let colorClass = "";
+            let name = "";
+            switch(type) {
+                case 'fb': colorClass = 'cat-football'; name = 'ฟุตบอล'; break;
+                case 'vb': colorClass = 'cat-volleyball'; name = 'วอลเลย์'; break;
+                case 'tk': colorClass = 'cat-takraw'; name = 'ตะกร้อ'; break;
+                case 'pt': colorClass = 'cat-petanque'; name = 'เปตอง'; break;
+                default: colorClass = 'cat-football'; name = 'กีฬา';
+            }
+            return `<span class="cat-label ${colorClass}">${name} ${cat}</span>`;
+        };
+
+        let html = `<div class="table-responsive"><table><thead><tr>
+            <th width="10%">เวลา</th><th width="20%">สนาม/รายการ</th>
+            <th width="35%">คู่แข่งขัน (ผลคะแนน)</th>
+            <th width="25%">กรรมการ</th>
+            <th width="10%">สถานะ</th>
+        </tr></thead><tbody>`;
+
+        if (dayMatches.length === 0) {
+            html += `<tr><td colspan="5" style="text-align:center; padding:20px;">ไม่มีรายการแข่งขันในวันนี้ (หรือรอข้อมูลเพิ่มเติม)</td></tr>`;
+        } else {
+            dayMatches.forEach(m => {
+                let s1 = parseInt(m.s1 || -1), s2 = parseInt(m.s2 || -1);
+                let win1 = (s1 > s2) ? "color:#2ecc71; font-weight:bold; text-decoration:underline;" : "";
+                let win2 = (s2 > s1) ? "color:#2ecc71; font-weight:bold; text-decoration:underline;" : "";
+                
+                // Conflict Check
+                let conflictStyle = (m.t1.includes(m.ref) || m.t2.includes(m.ref)) ? "border:2px solid red; background:#ffebee; color:red;" : "";
+
+                html += `<tr>
+                    <td><b>${m.time}</b></td>
+                    <td>${m.field}<br>${getCatLabel(m.type, m.cat)}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:5px;">
+                            <span style="flex:1; text-align:right; ${win1}">${m.t1}</span>
+                            <input type="number" value="${m.s1}" onchange="updateScore('${m.id}', 1, this.value)" onkeyup="if(event.key==='Enter')this.blur()">
+                            :
+                            <input type="number" value="${m.s2}" onchange="updateScore('${m.id}', 2, this.value)" onkeyup="if(event.key==='Enter')this.blur()">
+                            <span style="flex:1; text-align:left; ${win2}">${m.t2}</span>
+                        </div>
+                    </td>
+                    <td><span class="ref-badge" style="${conflictStyle}" onclick="manualRef('${m.id}')" title="คลิกเพื่อเปลี่ยนกรรมการ">${m.ref}</span></td>
+                    <td style="text-align:center;">${(m.s1!=="" && m.s2!=="")?"✅":"⏳"}</td>
+                </tr>`;
+            });
+        }
         html += `</tbody></table></div>`;
-        document.getElementById('standings-container').innerHTML = html;
+        container.innerHTML = html;
     }
 
-    // --- Tab Logic ---
-    function openTab(evt, tabName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; }
-        tablinks = document.getElementsByClassName("tablinks");
-        for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
-        document.getElementById(tabName).style.display = "block";
-        if(evt) evt.currentTarget.className += " active";
+    // --- แสดงตารางคะแนน (Standings) ---
+    function renderStandings(container) {
+        let stats = {}; 
+        // Init stats for all known teams
+        const allTeams = [...new Set([...groups["A"], ...groups["B"], ...groups["C"], ...groups["M"]])];
+        allTeams.forEach(t => stats[t] = { P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0 });
+
+        // Calculate stats
+        matches.forEach(m => {
+            // คำนวณเฉพาะรอบแบ่งกลุ่ม (ที่มีระบุ cat เป็น A, B, C, M)
+            // หรือจะคำนวณทั้งหมดแล้วไปกรองตอนแสดงผลก็ได้
+            if (m.s1 !== "" && m.s2 !== "") {
+                let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
+                updateTeamStats(stats, m.t1, s1, s2);
+                updateTeamStats(stats, m.t2, s2, s1);
+            }
+        });
+
+        let html = "";
+        const groupNames = { "A":"สาย A", "B":"สาย B", "C":"สาย C", "M":"มัธยม (ลีกพบกันหมด)" };
+        
+        Object.keys(groups).forEach(g => {
+            let sortedTeams = groups[g].sort((a, b) => {
+                let tA = stats[a] || {PTS:0, GF:0, GA:0}, tB = stats[b] || {PTS:0, GF:0, GA:0};
+                if (tB.PTS !== tA.PTS) return tB.PTS - tA.PTS;
+                if ((tB.GF-tB.GA) !== (tA.GF-tA.GA)) return (tB.GF-tB.GA) - (tA.GF-tA.GA);
+                return tB.GF - tA.GF;
+            });
+
+            html += `<div class="standing-box">
+                <div class="standing-header"><span>${groupNames[g]}</span></div>
+                <table class="st-table"><thead><tr>
+                    <th>ทีม</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>+/-</th><th class="pts-cell">PTS</th>
+                </tr></thead><tbody>`;
+            
+            sortedTeams.forEach(t => {
+                let s = stats[t] || { P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0 };
+                html += `<tr><td>${t}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td>${s.GF}</td><td>${s.GA}</td><td>${s.GF-s.GA}</td><td class="pts-cell">${s.PTS}</td></tr>`;
+            });
+            html += `</tbody></table></div>`;
+        });
+        container.innerHTML = html;
     }
 
-    // Init
-    document.getElementById("defaultOpen").click();
-    renderSchedules();
-    renderStandings();
+    function updateTeamStats(stats, team, gf, ga) {
+        if (!stats[team]) return;
+        stats[team].P++; stats[team].GF += gf; stats[team].GA += ga;
+        if (gf > ga) { stats[team].W++; stats[team].PTS += 3; }
+        else if (gf === ga) { stats[team].D++; stats[team].PTS += 1; }
+        else { stats[team].L++; }
+    }
 
+    // --- Logic อัปเดตคะแนน & Auto Flow ---
+    function updateScore(id, slot, val) {
+        let m = matches.find(x => x.id === id);
+        if (slot === 1) m.s1 = val; else m.s2 = val;
+        
+        // Auto Flow
+        if (m.s1 !== "" && m.s2 !== "" && m.next) {
+            let winner = parseInt(m.s1) > parseInt(m.s2) ? m.t1 : m.t2;
+            if (m.s1 === m.s2) winner = prompt("คะแนนเท่ากัน! ใครชนะจุดโทษ? (กรอกชื่อทีม)", m.t1); 
+
+            let nextMatch = matches.find(x => x.id === m.next);
+            if (nextMatch) {
+                if (m.slot === 1) nextMatch.t1 = winner; else nextMatch.t2 = winner;
+            }
+        }
+        
+        saveData();
+        showToast();
+        renderPage(); 
+    }
+
+    function manualRef(id) {
+        let currentRef = matches.find(m => m.id === id).ref;
+        let newRef = prompt(`เปลี่ยนกรรมการ (ปัจจุบัน: ${currentRef}):`, currentRef);
+        if (newRef) { matches.find(m => m.id === id).ref = newRef; saveData(); renderPage(); }
+    }
+
+    function showToast() {
+        var x = document.getElementById("toast");
+        x.className = "show";
+        setTimeout(function(){ x.className = x.className.replace("show", ""); }, 2000);
+    }
+
+    function saveData() { localStorage.setItem('ns_games_v7', JSON.stringify(matches)); }
+    function saveDataManual() { saveData(); alert("บันทึกข้อมูลเรียบร้อย!"); }
+    function loadData() { let d = localStorage.getItem('ns_games_v7'); if(d) matches = JSON.parse(d); }
+    function resetData() { if(confirm("ล้างข้อมูลทั้งหมด?")) { localStorage.removeItem('ns_games_v7'); location.reload(); } }
 </script>
 
 </body>
