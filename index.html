@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard โนนสวรรค์ เกมส์ 2568 (V.34 Full Stats)</title>
+<title>Dashboard โนนสวรรค์ เกมส์ 2568 (V.35 Smart UI)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
     :root { 
         --header-h: 60px;
-        --sidebar-w: 220px;
+        --sidebar-w: 240px;
         --primary: #2563eb; --bg: #f8fafc; --text: #0f172a; --white: #ffffff;
-        --border: #e2e8f0; --accent: #f59e0b;
+        --border: #e2e8f0; 
         /* Sport Colors */
         --c-fb: #3b82f6; --c-vb: #f97316; --c-tk: #10b981; --c-pt: #8b5cf6; --c-at: #ef4444;
     }
@@ -37,7 +37,6 @@
     .actions { display: flex; gap: 10px; }
     .btn-icon { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
     .btn-icon:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
-    .btn-save { color: #10b981; border-color: #bbf7d0; background: #f0fdf4; }
     .btn-reset { color: #ef4444; border-color: #fecaca; background: #fef2f2; }
 
     /* --- MAIN LAYOUT --- */
@@ -47,47 +46,60 @@
     .sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 15px; overflow-y: auto; }
     .menu-title { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.5px; }
     .nav-item {
-        display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 4px;
+        display: flex; align-items: center; gap: 12px; padding: 12px; margin-bottom: 4px;
         border-radius: 8px; cursor: pointer; font-weight: 500; color: #475569; transition: 0.2s;
     }
     .nav-item:hover { background: #f1f5f9; color: var(--primary); }
-    .nav-item.active { background: #eff6ff; color: var(--primary); font-weight: 600; }
+    .nav-item.active { background: #eff6ff; color: var(--primary); font-weight: 600; border-left: 4px solid var(--primary); }
     .nav-icon { width: 24px; text-align: center; font-size: 1.1em; }
 
     /* CENTER (Schedule) */
-    .content-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
+    .content-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; background: #f8fafc; }
     
     .match-table-container { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .match-header { background:#f8fafc; padding:10px 20px; border-bottom:1px solid var(--border); font-weight:700; color:#475569; font-size:0.95rem; display: flex; align-items: center; gap: 8px; }
+    .match-header { background:#f1f5f9; padding:10px 20px; border-bottom:1px solid var(--border); font-weight:700; color:#334155; font-size:1rem; display: flex; align-items: center; gap: 8px; }
     
+    /* New Match Row Design */
     .match-row {
-        display: grid; grid-template-columns: 60px 160px 1fr 100px 120px;
-        align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--border);
-        font-size: 0.95rem; transition: background 0.1s;
+        display: flex; align-items: center; padding: 15px 20px; border-bottom: 1px solid var(--border);
+        transition: background 0.1s; gap: 15px; position: relative;
     }
     .match-row:last-child { border-bottom: none; }
     .match-row:hover { background: #f8fafc; }
+    .match-row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #cbd5e1; }
     
-    .m-time { font-weight: 700; color: var(--primary); font-family: 'Courier New', monospace; letter-spacing: -0.5px; }
-    .m-cat { display: flex; flex-direction: column; line-height: 1.3; }
-    .cat-name { font-weight: 600; font-size: 0.9rem; }
-    .cat-sub { color: #94a3b8; font-size: 0.8rem; }
-    
-    .m-vs { display: flex; align-items: center; gap: 15px; justify-content: center; }
-    .t-name { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1rem; color: #334155; }
+    /* Sport Colors Strip */
+    .b-FB::before { background: var(--c-fb); }
+    .b-VB::before { background: var(--c-vb); }
+    .b-TK::before { background: var(--c-tk); }
+    .b-PT::before { background: var(--c-pt); }
+    .b-AT::before { background: var(--c-at); }
+
+    .m-time-box { display: flex; flex-direction: column; align-items: center; width: 60px; flex-shrink: 0; }
+    .m-time { font-size: 1.1rem; font-weight: 700; color: #1e293b; }
+    .m-sport-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; color: white; background: #94a3b8; margin-top: 4px; }
+
+    .m-details { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+    .m-cat-info { font-size: 0.85rem; color: #64748b; display: flex; gap: 10px; align-items: center; }
+    .m-cat-tag { background: #e2e8f0; padding: 1px 6px; border-radius: 4px; font-weight: 600; color: #475569; font-size: 0.75rem; }
+
+    .m-vs-box { display: flex; align-items: center; gap: 20px; }
+    .t-name { flex: 1; font-weight: 600; font-size: 1.05rem; color: #334155; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .t-right { text-align: right; } .t-left { text-align: left; }
     
-    .score-inputs { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
-    .score-inp { width: 30px; border: none; background: transparent; text-align: center; font-weight: 700; font-size: 1.1rem; color: var(--primary); padding: 0; }
-    .score-inp:focus { outline: none; background: #e2e8f0; border-radius: 4px; }
+    .score-inputs { display: flex; align-items: center; gap: 8px; background: #fff; padding: 4px 10px; border-radius: 8px; border: 1px solid #cbd5e1; box-shadow: inset 0 1px 2px rgba(0,0,0,0.05); }
+    .score-inp { width: 35px; border: none; background: transparent; text-align: center; font-weight: 700; font-size: 1.2rem; color: var(--primary); padding: 0; }
+    .score-inp:focus { outline: none; }
+    .score-div { color: #cbd5e1; font-weight: 300; font-size: 1.2rem; }
 
-    .m-field { font-size: 0.8rem; color: #64748b; text-align: center; background: #f1f5f9; padding: 4px 10px; border-radius: 20px; display: inline-block; white-space: nowrap; font-weight: 500; }
-    .m-status { text-align: right; color: #cbd5e1; font-size: 1.2rem; }
-    .m-status.done { color: #10b981; }
+    .m-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; min-width: 100px; }
+    .m-field-badge { font-size: 0.75rem; color: #475569; background: #f1f5f9; padding: 3px 8px; border-radius: 12px; font-weight: 600; border: 1px solid #e2e8f0; }
+    .m-status-badge { font-size: 0.75rem; padding: 3px 8px; border-radius: 12px; font-weight: 600; }
+    .st-wait { background: #fef3c7; color: #d97706; }
+    .st-done { background: #dcfce7; color: #166534; }
 
     /* RIGHT (Standings) */
-    /* Increased width for more columns */
-    .right-panel { width: 450px; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .right-panel { width: 420px; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
     .panel-header { padding: 15px 20px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--text); background: #f8fafc; font-size: 1rem; }
     .standings-list { padding: 20px; display: flex; flex-direction: column; gap: 25px; }
     
@@ -96,29 +108,20 @@
     .st-box { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
     .st-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
     .st-table td, .st-table th { padding: 6px 4px; text-align: center; border-bottom: 1px solid #f1f5f9; }
-    .st-table th { color: #94a3b8; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; background: #f8fafc; }
+    .st-table th { color: #64748b; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; background: #f8fafc; }
     .st-table td:nth-child(2) { text-align: left; font-weight: 600; color: #334155; width: 40%; padding-left: 8px; }
     .st-pts { background: #eff6ff; color: var(--primary); font-weight: 700; }
-    .st-num { color: #64748b; font-size: 0.75rem; }
+    
+    /* Toast */
+    #toast { visibility: hidden; min-width: 200px; background-color: #334155; color: #fff; text-align: center; border-radius: 8px; padding: 12px 20px; position: fixed; z-index: 9999; bottom: 30px; left: 50%; transform: translateX(-50%); font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); opacity: 0; transition: opacity 0.3s; }
+    #toast.show { visibility: visible; opacity: 1; }
 
-    /* Empty State */
     .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
     .empty-icon { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
-    
-    #toast { visibility: hidden; min-width: 200px; background-color: #1e293b; color: #fff; text-align: center; border-radius: 6px; padding: 12px 20px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 0.9rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-    #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.0s; }
-
-    @keyframes fadein { from {bottom: 10px; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 10px; opacity: 0;} }
 
     @media (max-width: 1200px) {
-        .match-row { grid-template-columns: 60px 140px 1fr 90px 90px; }
-    }
-    @media (max-width: 1024px) {
-        .right-panel { display: none; } /* Hide standings on tablet */
-        .match-row { grid-template-columns: 60px 1fr 80px; gap: 10px; }
-        .m-cat, .m-field { display: none; } /* Compact view */
-        .match-header { font-size: 0.85rem; }
+        .right-panel { display: none; }
+        .m-cat-info { display: none; }
     }
 </style>
 </head>
@@ -133,8 +136,7 @@
         <button class="day-btn" onclick="switchDay('day4')">19 ธ.ค.</button>
     </div>
     <div class="actions">
-        <button class="btn-icon btn-save" title="บันทึกผล" onclick="saveDataManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-icon btn-reset" title="สร้างตารางใหม่" onclick="resetData()"><i class="fas fa-redo-alt"></i></button>
+        <button class="btn-icon btn-reset" title="รีเซ็ตข้อมูลใหม่" onclick="resetData()"><i class="fas fa-redo-alt"></i></button>
     </div>
 </header>
 
@@ -152,7 +154,7 @@
     <main class="content-area" id="schedule-area"></main>
 
     <aside class="right-panel">
-        <div class="panel-header"><i class="fas fa-chart-bar"></i> ตารางคะแนน</div>
+        <div class="panel-header"><i class="fas fa-chart-bar"></i> ตารางคะแนน (สด)</div>
         <div class="standings-list" id="standings-area">
             <div class="empty-state">
                 <div class="empty-icon"><i class="fas fa-chart-pie"></i></div>
@@ -162,7 +164,7 @@
     </aside>
 </div>
 
-<div id="toast">บันทึกข้อมูลเรียบร้อย ✅</div>
+<div id="toast">บันทึกผลเรียบร้อย ✅</div>
 
 <script>
     // --- 1. CONFIGURATION ---
@@ -178,7 +180,7 @@
         C: ["ภูพระฯ", "ด้วงฯ-ชำฯ", "โนนไหมฯ"]
     };
     
-    // Config กลุ่มของทั้ง 20 รายการ เพื่อใช้สร้างตารางและคำนวณคะแนน
+    // Groups Config for Standings
     const groupsConfig = {
         "FB_ANU": anuTeams, "FB_P13": priTeams, "FB_P46": priTeams, "FB_SEC": { "ลีก": secTeams },
         "VB_P46": priTeams, "VB_SEC": { "ลีก": secTeams },
@@ -186,7 +188,7 @@
         "PT_P46": priTeams, "PT_SEC": { "ลีก": secTeams }
     };
 
-    // รายการแข่ง 20 รายการ
+    // 20 Categories
     const categories = [
         { code: "FB_ANU_M", sp: "FB", lv: "ANU", gd: "M", name: "บอลอนุบาล ชาย" },
         { code: "FB_ANU_F", sp: "FB", lv: "ANU", gd: "F", name: "บอลอนุบาล หญิง" },
@@ -214,11 +216,11 @@
     let currentDay = 'day1';
     let currentSport = 'ALL';
 
-    // --- 2. GENERATOR (Corrected Logic V.33) ---
+    // --- 2. GENERATOR (V.33 Logic Corrected) ---
     function generateSchedule() {
         let generated = [];
         
-        // 2.1 Fixed Events
+        // Fixed Events
         generated.push(
             { id:"AT1", d:"day1", t:"08.30", f:"ลู่วิ่ง", sp:"AT", lv:"ALL", desc:"🏃 วิ่ง 80ม. (อนุบาล/ป.ต้น)", t1:"-", t2:"-" },
             { id:"AT2", d:"day1", t:"09.30", f:"ลู่วิ่ง", sp:"AT", lv:"ALL", desc:"🏃 วิ่ง 100ม. (ป.ปลาย/มัธยม)", t1:"-", t2:"-" },
@@ -228,13 +230,13 @@
             { id:"EV2", d:"day2", t:"09.00", f:"สนามกลาง", sp:"EV", lv:"ALL", desc:"🎈 พิธีเปิด", t1:"-", t2:"-" }
         );
 
-        // 2.2 Field Queues
+        // Field Queues
         let queues = {
-            FB1: { d:1, h:13, m:0 }, FB2: { d:1, h:13, m:0 }, FB3: { d:1, h:13, m:0 }, // บอล 1 ชม.
-            FBA: { d:1, h:13, m:0 }, // บอลเด็ก 30 นาที
-            VB1: { d:1, h:13, m:0 }, VB2: { d:1, h:13, m:0 }, // วอลเลย์ 45 นาที
-            TK1: { d:1, h:13, m:0 }, // ตะกร้อ 40 นาที
-            PT1: { d:1, h:13, m:0 }, PT2: { d:1, h:13, m:0 } // เปตอง 45 นาที
+            FB1: { d:1, h:13, m:0 }, FB2: { d:1, h:13, m:0 }, FB3: { d:1, h:13, m:0 },
+            FBA: { d:1, h:13, m:0 },
+            VB1: { d:1, h:13, m:0 }, VB2: { d:1, h:13, m:0 },
+            TK1: { d:1, h:13, m:0 },
+            PT1: { d:1, h:13, m:0 }, PT2: { d:1, h:13, m:0 }
         };
 
         const advanceTime = (q, dur) => {
@@ -259,41 +261,37 @@
             return null;
         };
 
-        // 2.3 Generate Matches
+        // Generate Matches
         let allPairings = [];
         categories.forEach(cat => {
             let pairings = [];
+            // SEC: FB, VB = Double Round Robin (12 Matches)
+            // SEC: TK, PT = Single Round Robin (6 Matches)
+            // Others: Groups (3 Matches)
             
-            // --- LOGIC 1: มัธยม (SEC) ---
             if(cat.lv === 'SEC') { 
                 let t = secTeams;
-                // Round 1 (ทุกกีฬา)
+                // Round 1 (All SEC sports)
                 pairings.push({t1:t[0], t2:t[1], st:'ลีก 1'}, {t1:t[2], t2:t[3], st:'ลีก 1'});
                 pairings.push({t1:t[0], t2:t[2], st:'ลีก 1'}, {t1:t[1], t2:t[3], st:'ลีก 1'});
                 pairings.push({t1:t[0], t2:t[3], st:'ลีก 1'}, {t1:t[1], t2:t[2], st:'ลีก 1'});
                 
-                // Round 2 (เฉพาะ ฟุตบอล & วอลเลย์ -> เหย้าเยือน 12 นัด)
+                // Round 2 (Only FB & VB)
                 if(cat.sp === 'FB' || cat.sp === 'VB') {
                     pairings.push({t1:t[1], t2:t[0], st:'ลีก 2'}, {t1:t[3], t2:t[2], st:'ลีก 2'});
                     pairings.push({t1:t[2], t2:t[0], st:'ลีก 2'}, {t1:t[3], t2:t[1], st:'ลีก 2'});
                     pairings.push({t1:t[3], t2:t[0], st:'ลีก 2'}, {t1:t[2], t2:t[1], st:'ลีก 2'});
                 }
-            } 
-            // --- LOGIC 2: ประถม/อนุบาล (Groups) ---
-            else { 
-                let groupSet = groupsConfig[`${cat.sp}_${cat.lv}`]; // Get specific group config
-                if(groupSet) {
-                    ['A','B','C'].forEach(g => {
-                        let t = groupSet[g];
-                        pairings.push({t1:t[0], t2:t[1], st:`สาย ${g}`}, {t1:t[1], t2:t[2], st:`สาย ${g}`}, {t1:t[2], t2:t[0], st:`สาย ${g}`});
-                    });
-                }
+            } else { 
+                ['A','B','C'].forEach(g => {
+                    let t = (cat.lv==='ANU')? anuTeams[g] : priTeams[g]; 
+                    pairings.push({t1:t[0], t2:t[1], st:`สาย ${g}`}, {t1:t[1], t2:t[2], st:`สาย ${g}`}, {t1:t[2], t2:t[0], st:`สาย ${g}`});
+                });
             }
             pairings.forEach((p,i) => allPairings.push({...p, cat:cat, idx:i}));
         });
 
-        // Interleave to mix sports
-        allPairings.sort((a,b) => a.idx - b.idx);
+        allPairings.sort((a,b) => a.idx - b.idx); // Mix
 
         allPairings.forEach(p => {
             let slot = getField(p.cat.sp, p.cat.lv);
@@ -318,15 +316,14 @@
         return generated;
     }
 
-    // --- 3. INIT ---
+    // --- 3. INIT & AUTO-SAVE ---
     document.addEventListener('DOMContentLoaded', () => {
-        let d = localStorage.getItem('ns_v34_db');
+        let d = localStorage.getItem('ns_v35_db');
         if(d) matches = JSON.parse(d);
-        else { matches = generateSchedule(); saveData(); }
+        else { matches = generateSchedule(); saveData(false); }
         render();
     });
 
-    // --- 4. RENDER UI ---
     function render() {
         renderSchedule();
         renderStandings();
@@ -355,39 +352,51 @@
             let html = `<div class="match-header"><i class="far fa-clock"></i> ${t} น.</div>`;
             
             list.filter(m => m.t === t).forEach(m => {
-                let spName = m.sp === 'AT' || m.sp === 'EV' ? 'กิจกรรม' : getSportName(m.sp);
-                let spColor = `var(--c-${m.sp.toLowerCase()})`;
-                if(m.sp==='AT' || m.sp==='EV') spColor = 'var(--c-at)';
+                let borderClass = `b-${m.sp}`;
+                let spName = m.sp==='AT'||m.sp==='EV'?'กิจกรรม':getSportName(m.sp);
+                let spColor = m.sp==='AT'||m.sp==='EV'?'#ef4444':`var(--c-${m.sp.toLowerCase()})`;
+                
+                // Status Check
+                let hasScore = (m.s1!=="" && m.s2!=="");
+                let statusBadge = hasScore ? 
+                    `<span class="m-status-badge st-done">จบแล้ว</span>` : 
+                    `<span class="m-status-badge st-wait">รอแข่ง</span>`;
                 
                 let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
-                let w1 = (s1>s2) ? 'color:#10b981' : '';
-                let w2 = (s2>s1) ? 'color:#10b981' : '';
-                let status = (m.s1 && m.s2) ? '<i class="fas fa-check-circle done"></i>' : '<i class="far fa-circle"></i>';
+                let w1 = (hasScore && s1>s2) ? 'color:#10b981' : '';
+                let w2 = (hasScore && s2>s1) ? 'color:#10b981' : '';
 
                 if(m.sp === 'AT' || m.sp === 'EV') {
-                    html += `<div class="match-row" style="grid-template-columns: 1fr;">
-                        <div style="display:flex; justify-content:space-between;">
-                            <div><span class="m-field">${m.f}</span> <b>${m.desc}</b></div>
+                    html += `<div class="match-row ${borderClass}">
+                        <div class="m-time-box"><div class="m-time">${m.t}</div></div>
+                        <div class="m-details">
+                            <div style="font-weight:700;">${m.desc}</div>
+                            <div class="m-cat-info"><span class="m-field-badge">${m.f}</span></div>
                         </div>
                     </div>`;
                 } else {
                     html += `
-                    <div class="match-row">
-                        <div class="m-time" style="color:${spColor}">${m.sp}</div>
-                        <div class="m-cat">
-                            <span class="cat-name" style="color:${spColor}">${m.desc}</span>
-                            <span class="cat-sub">${m.cat}</span>
+                    <div class="match-row ${borderClass}">
+                        <div class="m-time-box">
+                            <div class="m-time">${m.t}</div>
+                            <div class="m-sport-badge" style="background:${spColor}">${m.sp}</div>
                         </div>
-                        <div class="m-vs">
-                            <span class="t-name t-right" style="${w1}">${m.t1}</span>
-                            <div class="score-inputs">
-                                <input class="score-inp" type="number" value="${m.s1}" onchange="upd('${m.id}',1,this.value)">:
-                                <input class="score-inp" type="number" value="${m.s2}" onchange="upd('${m.id}',2,this.value)">
+                        <div class="m-details">
+                            <div class="m-cat-info">
+                                <span>${m.desc}</span>
+                                <span class="m-field-badge">${m.f}</span>
                             </div>
-                            <span class="t-name t-left" style="${w2}">${m.t2}</span>
+                            <div class="m-vs-box">
+                                <span class="t-name t-right" style="${w1}">${m.t1}</span>
+                                <div class="score-inputs">
+                                    <input class="score-inp" type="number" value="${m.s1}" onchange="upd('${m.id}',1,this.value)">
+                                    <span class="score-div">:</span>
+                                    <input class="score-inp" type="number" value="${m.s2}" onchange="upd('${m.id}',2,this.value)">
+                                </div>
+                                <span class="t-name t-left" style="${w2}">${m.t2}</span>
+                            </div>
                         </div>
-                        <div class="m-field">${m.f}</div>
-                        <div class="m-status">${status}</div>
+                        <div class="m-meta">${statusBadge}</div>
                     </div>`;
                 }
             });
@@ -403,109 +412,81 @@
             container.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-chart-pie"></i></div><div>เลือกประเภทกีฬาทางซ้าย<br>เพื่อดูตารางคะแนน</div></div>`; return;
         }
 
-        // Calculate Stats including P, W, D, L
         categories.filter(c => c.sp === currentSport).forEach(cat => {
             let stats = {};
-            
-            // 1. Initialize Teams (Fix empty table)
+            // 1. Init Teams (Fix empty table)
             let groupSet = groupsConfig[`${cat.sp}_${cat.lv}`];
             if(groupSet) {
-                // Determine teams based on structure (SEC vs Groups)
                 if(groupSet.ลีก) { // SEC
                     groupSet.ลีก.forEach(t => stats[t] = {P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0});
-                } else { // ANU, P13, P46
+                } else { // Groups
                     ['A','B','C'].forEach(g => {
                         if(groupSet[g]) groupSet[g].forEach(t => stats[t] = {P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0});
                     });
                 }
             }
 
-            // 2. Process Matches
+            // 2. Calc Stats
             matches.forEach(m => {
                 if(m.sp===cat.sp && m.lv===cat.lv && m.gd===cat.gd && m.s1!=="" && m.s2!=="") {
                     let s1=parseInt(m.s1), s2=parseInt(m.s2);
-                    // Ensure team exists (safety check)
-                    if(!stats[m.t1]) stats[m.t1]={P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0}; 
-                    if(!stats[m.t2]) stats[m.t2]={P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0};
-                    
-                    stats[m.t1].P++; stats[m.t2].P++;
-                    stats[m.t1].GF+=s1; stats[m.t1].GA+=s2;
-                    stats[m.t2].GF+=s2; stats[m.t2].GA+=s1;
-                    
-                    if(s1>s2) {
-                        stats[m.t1].W++; stats[m.t1].PTS+=3;
-                        stats[m.t2].L++;
-                    } else if(s2>s1) {
-                        stats[m.t2].W++; stats[m.t2].PTS+=3;
-                        stats[m.t1].L++;
-                    } else { 
-                        stats[m.t1].D++; stats[m.t1].PTS+=1; 
-                        stats[m.t2].D++; stats[m.t2].PTS+=1; 
+                    if(stats[m.t1] && stats[m.t2]) { // Safe check
+                        stats[m.t1].P++; stats[m.t2].P++;
+                        stats[m.t1].GF+=s1; stats[m.t1].GA+=s2;
+                        stats[m.t2].GF+=s2; stats[m.t2].GA+=s1;
+                        if(s1>s2) { stats[m.t1].W++; stats[m.t1].PTS+=3; stats[m.t2].L++; }
+                        else if(s2>s1) { stats[m.t2].W++; stats[m.t2].PTS+=3; stats[m.t1].L++; }
+                        else { stats[m.t1].D++; stats[m.t1].PTS+=1; stats[m.t2].D++; stats[m.t2].PTS+=1; }
                     }
                 }
             });
 
-            // 3. Render Groups
+            // 3. Render
             if(groupSet) {
                 Object.keys(groupSet).forEach(gKey => {
                     let teamList = groupSet[gKey];
                     if(!teamList) return;
-                    
                     let sorted = teamList.sort((a,b) => {
                         let sA = stats[a], sB = stats[b];
                         if(sB.PTS !== sA.PTS) return sB.PTS - sA.PTS;
                         return (sB.GF - sB.GA) - (sA.GF - sA.GA);
                     });
 
-                    let formatText = (cat.lv === 'SEC') ? 'ลีก' : `สาย ${gKey}`;
-                    
                     let box = document.createElement('div');
                     box.className = 'st-group';
-                    box.innerHTML = `<div class="st-title"><span>${cat.name}</span> <span style="font-size:0.7em; background:#e2e8f0; padding:2px 6px; border-radius:4px; color:#64748b;">${formatText}</span></div>
-                    <div class="st-box">
-                        <table class="st-table">
-                            <tr><th>#</th><th>ทีม</th><th>แข่ง</th><th>ชนะ</th><th>เสมอ</th><th>แพ้</th><th>ได้</th><th>เสีย</th><th>+/-</th><th>แต้ม</th></tr>
-                            ${sorted.map((t,i) => {
-                                let s = stats[t];
-                                return `<tr>
-                                    <td>${i+1}</td><td>${t}</td>
-                                    <td>${s.P}</td><td class="st-num">${s.W}</td><td class="st-num">${s.D}</td><td class="st-num">${s.L}</td>
-                                    <td class="st-num">${s.GF}</td><td class="st-num">${s.GA}</td><td class="st-num">${s.GF-s.GA}</td>
-                                    <td class="st-pts">${s.PTS}</td>
-                                </tr>`;
-                            }).join('')}
-                        </table>
-                    </div>`;
+                    let title = (cat.lv === 'SEC') ? `${cat.name} (ลีก)` : `${cat.name} สาย ${gKey}`;
+                    
+                    let rows = sorted.map((t,i) => {
+                        let s = stats[t];
+                        return `<tr><td>${i+1}</td><td>${t}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td>${s.GF}-${s.GA}</td><td class="st-pts">${s.PTS}</td></tr>`;
+                    }).join('');
+
+                    box.innerHTML = `<div class="st-title"><span>${title}</span></div><div class="st-box">
+                        <table class="st-table"><thead><tr><th>#</th><th>ทีม</th><th>P</th><th>W</th><th>D</th><th>L</th><th>+/-</th><th>Pts</th></tr></thead>
+                        <tbody>${rows}</tbody></table></div>`;
                     container.appendChild(box);
                 });
             }
         });
     }
 
-    // --- ACTIONS ---
-    function switchDay(d) {
-        currentDay = d;
-        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
-        event.target.classList.add('active');
-        renderSchedule();
-    }
-    function filterSport(sp) {
-        currentSport = sp;
-        document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-        render();
-    }
     function upd(id, slot, val) {
         let m = matches.find(x => x.id === id);
-        if(m) { if(slot==1) m.s1=val; else m.s2=val; saveData(); }
+        if(m) { 
+            if(slot==1) m.s1=val; else m.s2=val; 
+            saveData(true); // Auto-save & Toast
+            renderStandings(); // Real-time standings update
+            renderSchedule(); // Update Colors
+        }
     }
-    
-    // Helpers
-    function getSportName(c) { const m={FB:'ฟุตบอล',VB:'วอลเลย์',TK:'ตะกร้อ',PT:'เปตอง',AT:'กรีฑา',EV:'กิจกรรม'}; return m[c]||c; }
-    function showToast() { let t=document.getElementById('toast'); t.className='show'; setTimeout(()=>t.className='', 2000); }
-    function saveData() { localStorage.setItem('ns_v34_db', JSON.stringify(matches)); }
-    function saveDataManual() { saveData(); showToast(); }
-    function resetData() { if(confirm('รีเซ็ตข้อมูลทั้งหมดและสร้างใหม่?')) { localStorage.removeItem('ns_v34_db'); location.reload(); } }
+
+    function switchDay(d) { currentDay = d; document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); renderSchedule(); }
+    function filterSport(sp) { currentSport = sp; document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active')); event.currentTarget.classList.add('active'); render(); }
+    function getSportName(c) { const m={FB:'ฟุตบอล',VB:'วอลเลย์',TK:'ตะกร้อ',PT:'เปตอง'}; return m[c]||c; }
+    function saveData(toast) { localStorage.setItem('ns_v35_db', JSON.stringify(matches)); if(toast) showToast(); }
+    function saveDataManual() { saveData(true); }
+    function showToast() { let t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
+    function resetData() { if(confirm('⚠️ คำเตือน: ข้อมูลคะแนนทั้งหมดจะหายไป\nต้องการสร้างตารางใหม่หรือไม่?')) { localStorage.removeItem('ns_v35_db'); location.reload(); } }
 </script>
 </body>
 </html>
