@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568 (V.33 Corrected Logic)</title>
+<title>Dashboard โนนสวรรค์ เกมส์ 2568 (V.34 Full Stats)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
@@ -86,19 +86,20 @@
     .m-status.done { color: #10b981; }
 
     /* RIGHT (Standings) */
-    .right-panel { width: 360px; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    /* Increased width for more columns */
+    .right-panel { width: 450px; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
     .panel-header { padding: 15px 20px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--text); background: #f8fafc; font-size: 1rem; }
     .standings-list { padding: 20px; display: flex; flex-direction: column; gap: 25px; }
     
     .st-group { margin-bottom: 5px; }
     .st-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
     .st-box { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
-    .st-head { background: #f8fafc; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: #64748b; border-bottom: 1px solid var(--border); }
-    .st-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .st-table td, .st-table th { padding: 8px 10px; text-align: center; border-bottom: 1px solid #f1f5f9; }
-    .st-table th { color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-    .st-table td:nth-child(2) { text-align: left; font-weight: 600; color: #334155; width: 55%; }
+    .st-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    .st-table td, .st-table th { padding: 6px 4px; text-align: center; border-bottom: 1px solid #f1f5f9; }
+    .st-table th { color: #94a3b8; font-weight: 600; font-size: 0.7rem; text-transform: uppercase; background: #f8fafc; }
+    .st-table td:nth-child(2) { text-align: left; font-weight: 600; color: #334155; width: 40%; padding-left: 8px; }
     .st-pts { background: #eff6ff; color: var(--primary); font-weight: 700; }
+    .st-num { color: #64748b; font-size: 0.75rem; }
 
     /* Empty State */
     .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
@@ -171,7 +172,20 @@
         B: ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"],
         C: ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"]
     };
+    const anuTeams = {
+        A: ["โนนม่วง", "โนนสวาทฯ", "โนนเมือง"], 
+        B: ["ท่าอุทัย", "โนนสวรรค์ฯ", "หนองกุงศรีฯ"], 
+        C: ["ภูพระฯ", "ด้วงฯ-ชำฯ", "โนนไหมฯ"]
+    };
     
+    // Config กลุ่มของทั้ง 20 รายการ เพื่อใช้สร้างตารางและคำนวณคะแนน
+    const groupsConfig = {
+        "FB_ANU": anuTeams, "FB_P13": priTeams, "FB_P46": priTeams, "FB_SEC": { "ลีก": secTeams },
+        "VB_P46": priTeams, "VB_SEC": { "ลีก": secTeams },
+        "TK_P46": priTeams, "TK_SEC": { "ลีก": secTeams },
+        "PT_P46": priTeams, "PT_SEC": { "ลีก": secTeams }
+    };
+
     // รายการแข่ง 20 รายการ
     const categories = [
         { code: "FB_ANU_M", sp: "FB", lv: "ANU", gd: "M", name: "บอลอนุบาล ชาย" },
@@ -267,11 +281,13 @@
             } 
             // --- LOGIC 2: ประถม/อนุบาล (Groups) ---
             else { 
-                ['A','B','C'].forEach(g => {
-                    let t = (cat.lv==='ANU')? ["โนนม่วง","ท่าอุทัย","ภูพระฯ"] : priTeams[g]; 
-                    if(cat.lv!=='ANU') t = priTeams[g];
-                    pairings.push({t1:t[0], t2:t[1], st:`สาย ${g}`}, {t1:t[1], t2:t[2], st:`สาย ${g}`}, {t1:t[2], t2:t[0], st:`สาย ${g}`});
-                });
+                let groupSet = groupsConfig[`${cat.sp}_${cat.lv}`]; // Get specific group config
+                if(groupSet) {
+                    ['A','B','C'].forEach(g => {
+                        let t = groupSet[g];
+                        pairings.push({t1:t[0], t2:t[1], st:`สาย ${g}`}, {t1:t[1], t2:t[2], st:`สาย ${g}`}, {t1:t[2], t2:t[0], st:`สาย ${g}`});
+                    });
+                }
             }
             pairings.forEach((p,i) => allPairings.push({...p, cat:cat, idx:i}));
         });
@@ -285,7 +301,7 @@
                 generated.push({
                     id: `${p.cat.code}_${p.idx}`, d: `day${slot.q.d}`, t: formatTime(slot.q), f: slot.name,
                     sp: p.cat.sp, lv: p.cat.lv, gd: p.cat.gd, t1: p.t1, t2: p.t2, s1:"", s2:"", cat: p.st,
-                    desc: `${p.cat.n} ${p.st}`
+                    desc: `${p.cat.name} ${p.st}`
                 });
                 advanceTime(slot.q, slot.dur);
             }
@@ -304,7 +320,7 @@
 
     // --- 3. INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-        let d = localStorage.getItem('ns_v33_db');
+        let d = localStorage.getItem('ns_v34_db');
         if(d) matches = JSON.parse(d);
         else { matches = generateSchedule(); saveData(); }
         render();
@@ -339,7 +355,7 @@
             let html = `<div class="match-header"><i class="far fa-clock"></i> ${t} น.</div>`;
             
             list.filter(m => m.t === t).forEach(m => {
-                let spName = getSportName(m.sp);
+                let spName = m.sp === 'AT' || m.sp === 'EV' ? 'กิจกรรม' : getSportName(m.sp);
                 let spColor = `var(--c-${m.sp.toLowerCase()})`;
                 if(m.sp==='AT' || m.sp==='EV') spColor = 'var(--c-at)';
                 
@@ -359,7 +375,7 @@
                     <div class="match-row">
                         <div class="m-time" style="color:${spColor}">${m.sp}</div>
                         <div class="m-cat">
-                            <span class="cat-name" style="color:${spColor}">${spName} ${m.lv} ${m.gd}</span>
+                            <span class="cat-name" style="color:${spColor}">${m.desc}</span>
                             <span class="cat-sub">${m.cat}</span>
                         </div>
                         <div class="m-vs">
@@ -387,35 +403,82 @@
             container.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-chart-pie"></i></div><div>เลือกประเภทกีฬาทางซ้าย<br>เพื่อดูตารางคะแนน</div></div>`; return;
         }
 
+        // Calculate Stats including P, W, D, L
         categories.filter(c => c.sp === currentSport).forEach(cat => {
             let stats = {};
+            
+            // 1. Initialize Teams (Fix empty table)
+            let groupSet = groupsConfig[`${cat.sp}_${cat.lv}`];
+            if(groupSet) {
+                // Determine teams based on structure (SEC vs Groups)
+                if(groupSet.ลีก) { // SEC
+                    groupSet.ลีก.forEach(t => stats[t] = {P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0});
+                } else { // ANU, P13, P46
+                    ['A','B','C'].forEach(g => {
+                        if(groupSet[g]) groupSet[g].forEach(t => stats[t] = {P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0});
+                    });
+                }
+            }
+
+            // 2. Process Matches
             matches.forEach(m => {
-                if(m.sp===cat.sp && m.lv===cat.lv && m.gd===cat.gd && m.s1 && m.s2) {
+                if(m.sp===cat.sp && m.lv===cat.lv && m.gd===cat.gd && m.s1!=="" && m.s2!=="") {
                     let s1=parseInt(m.s1), s2=parseInt(m.s2);
-                    if(!stats[m.t1]) stats[m.t1]={P:0,PTS:0}; if(!stats[m.t2]) stats[m.t2]={P:0,PTS:0};
+                    // Ensure team exists (safety check)
+                    if(!stats[m.t1]) stats[m.t1]={P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0}; 
+                    if(!stats[m.t2]) stats[m.t2]={P:0, W:0, D:0, L:0, GF:0, GA:0, PTS:0};
+                    
                     stats[m.t1].P++; stats[m.t2].P++;
-                    if(s1>s2) stats[m.t1].PTS+=3; else if(s2>s1) stats[m.t2].PTS+=3; else { stats[m.t1].PTS+=1; stats[m.t2].PTS+=1; }
+                    stats[m.t1].GF+=s1; stats[m.t1].GA+=s2;
+                    stats[m.t2].GF+=s2; stats[m.t2].GA+=s1;
+                    
+                    if(s1>s2) {
+                        stats[m.t1].W++; stats[m.t1].PTS+=3;
+                        stats[m.t2].L++;
+                    } else if(s2>s1) {
+                        stats[m.t2].W++; stats[m.t2].PTS+=3;
+                        stats[m.t1].L++;
+                    } else { 
+                        stats[m.t1].D++; stats[m.t1].PTS+=1; 
+                        stats[m.t2].D++; stats[m.t2].PTS+=1; 
+                    }
                 }
             });
 
-            // Set Title based on Format
-            let formatText = (cat.lv === 'SEC' && (cat.sp==='FB'||cat.sp==='VB')) ? 'ลีก (เหย้า-เยือน)' 
-                           : (cat.lv === 'SEC') ? 'ลีก (พบกันหมด)' 
-                           : 'รอบแบ่งสาย';
+            // 3. Render Groups
+            if(groupSet) {
+                Object.keys(groupSet).forEach(gKey => {
+                    let teamList = groupSet[gKey];
+                    if(!teamList) return;
+                    
+                    let sorted = teamList.sort((a,b) => {
+                        let sA = stats[a], sB = stats[b];
+                        if(sB.PTS !== sA.PTS) return sB.PTS - sA.PTS;
+                        return (sB.GF - sB.GA) - (sA.GF - sA.GA);
+                    });
 
-            let teams = Object.keys(stats).sort((a,b) => stats[b].PTS - stats[a].PTS);
-            if(teams.length === 0) return; // Hide empty
-
-            let box = document.createElement('div');
-            box.className = 'st-group';
-            box.innerHTML = `<div class="st-title"><span>${cat.name}</span> <span style="font-size:0.7em; background:#e2e8f0; padding:2px 6px; border-radius:4px; color:#64748b;">${formatText}</span></div>
-            <div class="st-box">
-                <table class="st-table">
-                    <tr><th>#</th><th>ทีม</th><th>แข่ง</th><th>แต้ม</th></tr>
-                    ${teams.map((t,i) => `<tr><td>${i+1}</td><td>${t}</td><td>${stats[t].P}</td><td class="st-pts">${stats[t].PTS}</td></tr>`).join('')}
-                </table>
-            </div>`;
-            container.appendChild(box);
+                    let formatText = (cat.lv === 'SEC') ? 'ลีก' : `สาย ${gKey}`;
+                    
+                    let box = document.createElement('div');
+                    box.className = 'st-group';
+                    box.innerHTML = `<div class="st-title"><span>${cat.name}</span> <span style="font-size:0.7em; background:#e2e8f0; padding:2px 6px; border-radius:4px; color:#64748b;">${formatText}</span></div>
+                    <div class="st-box">
+                        <table class="st-table">
+                            <tr><th>#</th><th>ทีม</th><th>แข่ง</th><th>ชนะ</th><th>เสมอ</th><th>แพ้</th><th>ได้</th><th>เสีย</th><th>+/-</th><th>แต้ม</th></tr>
+                            ${sorted.map((t,i) => {
+                                let s = stats[t];
+                                return `<tr>
+                                    <td>${i+1}</td><td>${t}</td>
+                                    <td>${s.P}</td><td class="st-num">${s.W}</td><td class="st-num">${s.D}</td><td class="st-num">${s.L}</td>
+                                    <td class="st-num">${s.GF}</td><td class="st-num">${s.GA}</td><td class="st-num">${s.GF-s.GA}</td>
+                                    <td class="st-pts">${s.PTS}</td>
+                                </tr>`;
+                            }).join('')}
+                        </table>
+                    </div>`;
+                    container.appendChild(box);
+                });
+            }
         });
     }
 
@@ -440,9 +503,9 @@
     // Helpers
     function getSportName(c) { const m={FB:'ฟุตบอล',VB:'วอลเลย์',TK:'ตะกร้อ',PT:'เปตอง',AT:'กรีฑา',EV:'กิจกรรม'}; return m[c]||c; }
     function showToast() { let t=document.getElementById('toast'); t.className='show'; setTimeout(()=>t.className='', 2000); }
-    function saveData() { localStorage.setItem('ns_v33_db', JSON.stringify(matches)); }
+    function saveData() { localStorage.setItem('ns_v34_db', JSON.stringify(matches)); }
     function saveDataManual() { saveData(); showToast(); }
-    function resetData() { if(confirm('รีเซ็ตข้อมูลทั้งหมดและสร้างใหม่?')) { localStorage.removeItem('ns_v33_db'); location.reload(); } }
+    function resetData() { if(confirm('รีเซ็ตข้อมูลทั้งหมดและสร้างใหม่?')) { localStorage.removeItem('ns_v34_db'); location.reload(); } }
 </script>
 </body>
 </html>
