@@ -3,547 +3,541 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard โนนสวรรค์ เกมส์ 2568 (Final Logic Support)</title>
+<title>Nonsawan Games 2025 (V.40 Full Scale)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
     :root { 
-        --header-h: 60px;
-        --sidebar-w: 240px;
+        --header-h: 60px; --sidebar-w: 240px;
         --primary: #1e40af; --bg: #f8fafc; --text: #0f172a; --white: #ffffff;
-        --border: #e2e8f0; 
-        --c-fb: #2563eb; --c-vb: #f97316; --c-tk: #059669; --c-pt: #7c3aed; --c-at: #db2777;
+        --border: #e2e8f0;
+        --c-fb: #3b82f6; --c-vb: #f97316; --c-tk: #10b981; --c-pt: #8b5cf6;
     }
     * { box-sizing: border-box; }
-    body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+    body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
     
-    /* HEADER */
-    .app-header {
-        height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--border);
-        display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05); z-index: 10;
-    }
-    .app-title { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; cursor: pointer; }
-    
+    /* Header */
+    .app-header { height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .brand { font-size: 1.25rem; font-weight: 800; color: var(--primary); display: flex; gap: 10px; align-items: center; cursor: pointer; }
     .day-tabs { display: flex; gap: 5px; background: #f1f5f9; padding: 4px; border-radius: 8px; }
-    .day-btn {
-        border: none; background: transparent; padding: 6px 14px; border-radius: 6px;
-        font-size: 0.85rem; cursor: pointer; color: #64748b; font-weight: 600; transition: 0.2s;
-    }
+    .day-btn { border: none; background: transparent; padding: 6px 14px; border-radius: 6px; font-size: 0.9rem; cursor: pointer; color: #64748b; font-weight: 600; transition: 0.2s; }
     .day-btn:hover { background: #e2e8f0; color: #334155; }
     .day-btn.active { background: var(--white); color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+    .actions button { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); cursor: pointer; color: #64748b; margin-left: 5px; transition: 0.2s; }
+    .actions button:hover { background: #eff6ff; color: var(--primary); border-color: var(--primary); }
 
-    .actions { display: flex; gap: 8px; }
-    .btn-icon { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-    .btn-icon:hover { background: #eff6ff; color: var(--primary); border-color: var(--primary); }
-
-    /* LAYOUT */
-    .main-container { flex: 1; display: flex; overflow: hidden; }
-
-    /* SIDEBAR */
-    .sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 10px; overflow-y: auto; }
-    .menu-title { font-size: 0.7rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin: 15px 10px 8px; letter-spacing: 0.5px; }
-    .nav-item {
-        display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 2px;
-        border-radius: 8px; cursor: pointer; font-weight: 500; color: #475569; transition: 0.2s; font-size: 0.9rem;
-    }
+    /* Layout */
+    .main-layout { flex: 1; display: flex; overflow: hidden; }
+    
+    /* Sidebar */
+    .sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .sb-group { padding: 15px; border-bottom: 1px solid var(--border); }
+    .sb-title { font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; cursor: pointer; color: #475569; font-weight: 500; margin-bottom: 2px; transition: 0.2s; }
     .nav-item:hover { background: #f1f5f9; color: var(--primary); }
-    .nav-item.active { background: #eff6ff; color: var(--primary); font-weight: 600; }
+    .nav-item.active { background: #eff6ff; color: var(--primary); font-weight: 700; }
     .nav-icon { width: 24px; text-align: center; }
 
-    /* CONTENT */
-    .content-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
-    
-    /* Welcome */
-    .welcome-box { 
-        display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: #475569; 
-    }
-    .welcome-icon { font-size: 4rem; color: var(--primary); margin-bottom: 20px; opacity: 0.8; }
-    .welcome-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; color: #1e293b; }
-    .welcome-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; width: 100%; max-width: 800px; margin-top: 30px; }
-    .w-btn { 
-        padding: 15px; background: white; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: 0.2s; 
-        display: flex; flex-direction: column; align-items: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    .w-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); border-color: var(--primary); color: var(--primary); }
+    /* Content */
+    .content { flex: 1; padding: 20px; overflow-y: auto; background: #f8fafc; }
+    .schedule-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 1200px) { .schedule-grid { grid-template-columns: 1fr 1fr; } }
 
-    /* Schedule Cards */
-    .schedule-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(500px, 1fr)); gap: 20px; align-items: start; }
-    .time-block { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); break-inside: avoid; }
-    .time-header { background: #f8fafc; padding: 10px 15px; border-bottom: 1px solid var(--border); font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+    .time-card { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.02); break-inside: avoid; margin-bottom: 20px; }
+    .time-head { background: #f1f5f9; padding: 8px 15px; border-bottom: 1px solid var(--border); font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; }
     
-    .match-row { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--border); position: relative; gap: 12px; font-size: 0.9rem; }
+    .match-row { display: flex; padding: 12px 15px; border-bottom: 1px solid var(--border); position: relative; gap: 12px; align-items: center; }
     .match-row:last-child { border-bottom: none; }
     .match-row::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
     .b-FB::before { background: var(--c-fb); } .b-VB::before { background: var(--c-vb); }
     .b-TK::before { background: var(--c-tk); } .b-PT::before { background: var(--c-pt); }
-    .b-AT::before { background: var(--c-at); } .b-EV::before { background: #ec4899; }
 
-    .m-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-    .m-cat { font-size: 0.75rem; color: #64748b; font-weight: 600; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-    .tag { padding: 2px 6px; border-radius: 4px; color: white; font-size: 0.7rem; }
-    .m-vs { font-size: 1rem; font-weight: 600; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
-    .m-sub { font-size: 0.8rem; color: #94a3b8; display: flex; gap: 10px; align-items: center; }
+    .m-left { display: flex; flex-direction: column; gap: 4px; min-width: 100px; }
+    .badge { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; color: white; width: fit-content; }
+    .bg-FB { background: var(--c-fb); } .bg-VB { background: var(--c-vb); } .bg-TK { background: var(--c-tk); } .bg-PT { background: var(--c-pt); }
     
-    .score-box { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 2px 8px; border-radius: 6px; border: 1px solid #e2e8f0; }
-    input[type="number"] { width: 35px; border: none; background: transparent; text-align: center; font-weight: 700; font-size: 1rem; color: var(--primary); padding: 0; }
-    input:focus { outline: none; }
+    .m-center { flex: 1; }
+    .versus { display: flex; align-items: center; justify-content: space-between; font-weight: 600; font-size: 0.95rem; margin-bottom: 4px; }
+    .score-inp { width: 32px; text-align: center; border: 1px solid #cbd5e1; border-radius: 4px; font-weight: 700; color: var(--primary); background: #f8fafc; }
+    .field-ref { font-size: 0.75rem; color: #64748b; display: flex; gap: 10px; align-items: center; }
+    .ref-badge { background: #e2e8f0; color: #475569; padding: 1px 6px; border-radius: 10px; font-size: 0.7rem; }
 
-    /* RIGHT PANEL */
-    .right-panel { width: 350px; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
-    .panel-header { padding: 15px; border-bottom: 1px solid var(--border); font-weight: 700; background: #f8fafc; color: #334155; }
-    .standings-list { padding: 15px; display: flex; flex-direction: column; gap: 20px; }
-    
-    .st-box { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .st-head { background: #f1f5f9; padding: 8px 10px; font-size: 0.8rem; font-weight: 700; color: #475569; border-bottom: 1px solid var(--border); }
+    /* Right Panel (Standings) */
+    .right-panel { width: 380px; background: var(--white); border-left: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; }
+    .rp-head { padding: 15px; font-weight: 700; border-bottom: 1px solid var(--border); background: #f8fafc; }
+    .st-container { padding: 15px; display: flex; flex-direction: column; gap: 20px; }
+    .st-card { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .st-title { background: #f1f5f9; padding: 8px 12px; font-size: 0.85rem; font-weight: 700; color: #475569; border-bottom: 1px solid var(--border); }
     .st-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-    .st-table td, .st-table th { padding: 8px; text-align: center; border-bottom: 1px solid #f1f5f9; }
-    .st-table td:nth-child(2) { text-align: left; width: 45%; padding-left: 8px; }
-    .st-pts { background: #eff6ff; color: var(--primary); font-weight: 700; }
+    .st-table th, .st-table td { padding: 6px 8px; text-align: center; border-bottom: 1px solid #f1f5f9; }
+    .st-table td:nth-child(2) { text-align: left; }
+    .hl-pts { background: #eff6ff; color: var(--primary); font-weight: 700; }
 
-    #toast { visibility: hidden; min-width: 200px; background-color: #1e293b; color: #fff; text-align: center; border-radius: 6px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; }
-    #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.0s; }
+    .winner-bracket { padding: 10px; font-size: 0.85rem; }
+    .bracket-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #e2e8f0; }
 
-    @media (max-width: 1024px) { .right-panel { display: none; } .schedule-grid { grid-template-columns: 1fr; } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadein { from {bottom: 10px; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 10px; opacity: 0;} }
+    #toast { visibility: hidden; min-width: 200px; background-color: #0f172a; color: #fff; text-align: center; border-radius: 8px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 100; opacity: 0; transition: opacity 0.3s; }
+    #toast.show { visibility: visible; opacity: 1; }
+    
+    @media (max-width: 1024px) { .right-panel { display: none; } }
 </style>
 </head>
 <body>
 
 <header class="app-header">
-    <div class="app-title" onclick="goHome()"><i class="fas fa-trophy"></i> โนนสวรรค์ เกมส์ 2568</div>
+    <div class="brand" onclick="location.reload()"><i class="fas fa-medal"></i> Nonsawan Games 2025</div>
     <div class="day-tabs">
-        <button class="day-btn active" onclick="switchDay('day1')">จ.16 (บ่าย)</button>
-        <button class="day-btn" onclick="switchDay('day2')">อ.17 (บ่าย)</button>
-        <button class="day-btn" onclick="switchDay('day3')">พ.18 (เต็มวัน)</button>
-        <button class="day-btn" onclick="switchDay('day4')">พฤ.19 (เต็มวัน)</button>
+        <button class="day-btn active" onclick="setDay(1)">16 ธ.ค. (บ่าย)</button>
+        <button class="day-btn" onclick="setDay(2)">17 ธ.ค. (บ่าย)</button>
+        <button class="day-btn" onclick="setDay(3)">18 ธ.ค. (เต็ม)</button>
+        <button class="day-btn" onclick="setDay(4)">19 ธ.ค. (เต็ม)</button>
     </div>
     <div class="actions">
-        <button class="btn-icon" title="บันทึกผล" onclick="saveDataManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-icon" title="ล้างค่า/สุ่มใหม่" onclick="resetData()"><i class="fas fa-sync-alt"></i></button>
+        <button title="บันทึกผล" onclick="saveToLocal()"><i class="fas fa-save"></i></button>
+        <button title="รีเซ็ตตาราง" onclick="resetSystem()"><i class="fas fa-sync-alt"></i></button>
     </div>
 </header>
 
-<div class="main-container">
+<div class="main-layout">
     <aside class="sidebar">
-        <div class="menu-title">ฟุตบอล</div>
-        <div class="nav-item" onclick="filterSport('FB')"><span class="nav-icon" style="color:var(--c-fb)"><i class="fas fa-futbol"></i></span> ทั้งหมด</div>
-        <div class="nav-item" onclick="filterCat('FB','อนุบาล')"><span class="nav-icon"></span> อนุบาล (ช/ญ)</div>
-        <div class="nav-item" onclick="filterCat('FB','ป.ต้น')"><span class="nav-icon"></span> ป.ต้น (ช/ญ)</div>
-        <div class="nav-item" onclick="filterCat('FB','ป.ปลาย')"><span class="nav-icon"></span> ป.ปลาย (ช/ญ)</div>
-        <div class="nav-item" onclick="filterCat('FB','มัธยม')"><span class="nav-icon"></span> มัธยม (ช/ญ)</div>
-
-        <div class="menu-title">วอลเลย์บอล</div>
-        <div class="nav-item" onclick="filterSport('VB')"><span class="nav-icon" style="color:var(--c-vb)"><i class="fas fa-volleyball-ball"></i></span> ทั้งหมด</div>
-
-        <div class="menu-title">เซปักตะกร้อ</div>
-        <div class="nav-item" onclick="filterSport('TK')"><span class="nav-icon" style="color:var(--c-tk)"><i class="fas fa-baseball-ball"></i></span> ทั้งหมด</div>
-
-        <div class="menu-title">เปตอง</div>
-        <div class="nav-item" onclick="filterSport('PT')"><span class="nav-icon" style="color:var(--c-pt)"><i class="fas fa-bowling-ball"></i></span> ทั้งหมด</div>
-        
-        <div class="menu-title">อื่นๆ</div>
-        <div class="nav-item" onclick="filterSport('AT')"><span class="nav-icon" style="color:var(--c-at)"><i class="fas fa-flag"></i></span> กิจกรรม/กรีฑา</div>
+        <div class="sb-group">
+            <div class="sb-title">เลือกกีฬา (20 รายการ)</div>
+            <div class="nav-item active" onclick="filterSport('ALL')"><div class="nav-icon"><i class="fas fa-th-large"></i></div> ทั้งหมด</div>
+            <div class="nav-item" onclick="filterSport('FB')"><div class="nav-icon" style="color:var(--c-fb)"><i class="fas fa-futbol"></i></div> ฟุตบอล</div>
+            <div class="nav-item" onclick="filterSport('VB')"><div class="nav-icon" style="color:var(--c-vb)"><i class="fas fa-volleyball-ball"></i></div> วอลเลย์บอล</div>
+            <div class="nav-item" onclick="filterSport('TK')"><div class="nav-icon" style="color:var(--c-tk)"><i class="fas fa-baseball-ball"></i></div> เซปักตะกร้อ</div>
+            <div class="nav-item" onclick="filterSport('PT')"><div class="nav-icon" style="color:var(--c-pt)"><i class="fas fa-bowling-ball"></i></div> เปตอง</div>
+        </div>
     </aside>
 
-    <main class="content-area" id="content-area">
+    <main class="content" id="mainContent">
         </main>
 
     <aside class="right-panel">
-        <div class="panel-header"><i class="fas fa-chart-line"></i> สรุปผลคะแนน</div>
-        <div class="standings-list" id="standings-area"></div>
+        <div class="rp-head"><i class="fas fa-chart-line"></i> ผลการแข่งขัน & ตารางคะแนน</div>
+        <div class="st-container" id="standingsContent">
+            </div>
     </aside>
 </div>
 
-<div id="toast">บันทึกข้อมูลเรียบร้อย ✅</div>
+<div id="toast">บันทึกข้อมูลเรียบร้อย</div>
 
 <script>
-    // --- 1. DATA CONFIGURATION (20 รายการ) ---
-    const schoolsPrimary = [
-        "โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ", "โนนม่วง", "โนนสวาทฯ", 
-        "หนองกุงศรีฯ", "โนนไหมฯ", "ด้วงฯ-ชำฯ", "โนนเมือง"
-    ];
-    // เลือก 4 โรงเรียนมัธยม (สมมติ)
-    const schoolsSecondary = ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"];
+/** * SYSTEM CONFIGURATION (V.40)
+ */
 
-    // รายการแข่งขัน 20 รายการ พร้อมสนามและเวลา
-    const sportsConfig = [
-        // 1-2 อนุบาล
-        { code: 'FB_K_M', sp: 'FB', lv: 'อนุบาล', gd: 'ชาย', field: 'สนามอนุบาล', dur: 30, type: 'group' },
-        { code: 'FB_K_F', sp: 'FB', lv: 'อนุบาล', gd: 'หญิง', field: 'สนามอนุบาล', dur: 30, type: 'group' },
-        // 3-4 ป.ต้น
-        { code: 'FB_PL_M', sp: 'FB', lv: 'ป.ต้น', gd: 'ชาย', field: 'สนาม ป.ต้น', dur: 45, type: 'group' },
-        { code: 'FB_PL_F', sp: 'FB', lv: 'ป.ต้น', gd: 'หญิง', field: 'สนาม ป.ต้น', dur: 45, type: 'group' },
-        // 5-6 ป.ปลาย
-        { code: 'FB_PH_M', sp: 'FB', lv: 'ป.ปลาย', gd: 'ชาย', field: 'สนาม ป.ปลาย', dur: 60, type: 'group' },
-        { code: 'FB_PH_F', sp: 'FB', lv: 'ป.ปลาย', gd: 'หญิง', field: 'สนาม ป.ปลาย', dur: 60, type: 'group' },
-        // 7-8 มัธยม
-        { code: 'FB_S_M', sp: 'FB', lv: 'มัธยม', gd: 'ชาย', field: 'สนามมัธยม', dur: 60, type: 'round' },
-        { code: 'FB_S_F', sp: 'FB', lv: 'มัธยม', gd: 'หญิง', field: 'สนามมัธยม', dur: 60, type: 'round' },
-        // 9-10 วอลเลย์ ป.ปลาย
-        { code: 'VB_PH_M', sp: 'VB', lv: 'ป.ปลาย', gd: 'ชาย', field: 'วอลเลย์ 1 (ป.ปลาย)', dur: 60, type: 'group' },
-        { code: 'VB_PH_F', sp: 'VB', lv: 'ป.ปลาย', gd: 'หญิง', field: 'วอลเลย์ 1 (ป.ปลาย)', dur: 60, type: 'group' },
-        // 11-12 วอลเลย์ มัธยม
-        { code: 'VB_S_M', sp: 'VB', lv: 'มัธยม', gd: 'ชาย', field: 'วอลเลย์ 2 (มัธยม)', dur: 60, type: 'round' },
-        { code: 'VB_S_F', sp: 'VB', lv: 'มัธยม', gd: 'หญิง', field: 'วอลเลย์ 2 (มัธยม)', dur: 60, type: 'round' },
-        // 13-14 ตะกร้อ ป.ปลาย (สนามรวม)
-        { code: 'TK_PH_M', sp: 'TK', lv: 'ป.ปลาย', gd: 'ชาย', field: 'ตะกร้อ (รวม)', dur: 45, type: 'group' },
-        { code: 'TK_PH_F', sp: 'TK', lv: 'ป.ปลาย', gd: 'หญิง', field: 'ตะกร้อ (รวม)', dur: 45, type: 'group' },
-        // 15-16 ตะกร้อ มัธยม (สนามรวม)
-        { code: 'TK_S_M', sp: 'TK', lv: 'มัธยม', gd: 'ชาย', field: 'ตะกร้อ (รวม)', dur: 45, type: 'round' },
-        { code: 'TK_S_F', sp: 'TK', lv: 'มัธยม', gd: 'หญิง', field: 'ตะกร้อ (รวม)', dur: 45, type: 'round' },
-        // 17-18 เปตอง ป.ปลาย
-        { code: 'PT_PH_M', sp: 'PT', lv: 'ป.ปลาย', gd: 'ชาย', field: 'เปตอง 1 (ป.ปลาย)', dur: 60, type: 'group' },
-        { code: 'PT_PH_F', sp: 'PT', lv: 'ป.ปลาย', gd: 'หญิง', field: 'เปตอง 1 (ป.ปลาย)', dur: 60, type: 'group' },
-        // 19-20 เปตอง มัธยม
-        { code: 'PT_S_M', sp: 'PT', lv: 'มัธยม', gd: 'ชาย', field: 'เปตอง 2 (มัธยม)', dur: 60, type: 'round' },
-        { code: 'PT_S_F', sp: 'PT', lv: 'มัธยม', gd: 'หญิง', field: 'เปตอง 2 (มัธยม)', dur: 60, type: 'round' },
-    ];
+// 1. Schools Data
+const schools = [
+    { id: 'S1', name: "โนนสวรรค์ฯ", type: 'PRI' }, { id: 'S2', name: "ท่าอุทัย", type: 'PRI' },
+    { id: 'S3', name: "ภูพระฯ", type: 'PRI' }, { id: 'S4', name: "โนนม่วง", type: 'PRI' },
+    { id: 'S5', name: "โนนสวาทฯ", type: 'PRI' }, { id: 'S6', name: "หนองกุงศรีฯ", type: 'PRI' },
+    { id: 'S7', name: "โนนไหมฯ", type: 'PRI' }, { id: 'S8', name: "ด้วงฯ-ชำฯ", type: 'PRI' },
+    { id: 'S9', name: "โนนเมือง", type: 'PRI' },
+    // Secondary Schools (Subset or separate, based on prompt context, assuming specific 4)
+    { id: 'M1', name: "หนองกุงศรีฯ (ม)", type: 'SEC' }, { id: 'M2', name: "ภูพระฯ (ม)", type: 'SEC' },
+    { id: 'M3', name: "โนนม่วง (ม)", type: 'SEC' }, { id: 'M4', name: "โนนเมือง (ม)", type: 'SEC' }
+];
 
-    // กำหนดเวลา (นาทีนับจาก 00:00)
-    // D1-2: 13:00 (780) - 16:30 (990)
-    // D3-4: 08:30 (510) - 16:30 (990)
-    const daysConfig = [
-        { day: 1, name: "จ.16 ธ.ค.", start: 780, end: 990 },
-        { day: 2, name: "อ.17 ธ.ค.", start: 780, end: 990 },
-        { day: 3, name: "พ.18 ธ.ค.", start: 510, end: 990 },
-        { day: 4, name: "พฤ.19 ธ.ค.", start: 510, end: 990 }
-    ];
+// 2. Categories (20 Items)
+const categories = [
+    // Football
+    { id: 'FB_K_M', sp: 'FB', name: 'บอลอนุบาล ชาย', dur: 30, field: 'สนามอนุบาล', lv: 'K', gd: 'M', format: 'group' },
+    { id: 'FB_K_F', sp: 'FB', name: 'บอลอนุบาล หญิง', dur: 30, field: 'สนามอนุบาล', lv: 'K', gd: 'F', format: 'group' },
+    { id: 'FB_P13_M', sp: 'FB', name: 'บอล ป.ต้น ชาย', dur: 45, field: 'สนาม ป.ต้น', lv: 'P13', gd: 'M', format: 'group' },
+    { id: 'FB_P13_F', sp: 'FB', name: 'บอล ป.ต้น หญิง', dur: 45, field: 'สนาม ป.ต้น', lv: 'P13', gd: 'F', format: 'group' },
+    { id: 'FB_P46_M', sp: 'FB', name: 'บอล ป.ปลาย ชาย', dur: 60, field: 'สนาม ป.ปลาย', lv: 'P46', gd: 'M', format: 'group' },
+    { id: 'FB_P46_F', sp: 'FB', name: 'บอล ป.ปลาย หญิง', dur: 60, field: 'สนาม ป.ปลาย', lv: 'P46', gd: 'F', format: 'group' },
+    { id: 'FB_SEC_M', sp: 'FB', name: 'บอล มัธยม ชาย', dur: 60, field: 'สนาม มัธยม', lv: 'SEC', gd: 'M', format: 'league' },
+    { id: 'FB_SEC_F', sp: 'FB', name: 'บอล มัธยม หญิง', dur: 60, field: 'สนาม มัธยม', lv: 'SEC', gd: 'F', format: 'league' },
+    // Volleyball
+    { id: 'VB_P46_M', sp: 'VB', name: 'วอลเลย์ ป.ปลาย ชาย', dur: 60, field: 'วอลเลย์ 1 (ป.ปลาย)', lv: 'P46', gd: 'M', format: 'group' },
+    { id: 'VB_P46_F', sp: 'VB', name: 'วอลเลย์ ป.ปลาย หญิง', dur: 60, field: 'วอลเลย์ 1 (ป.ปลาย)', lv: 'P46', gd: 'F', format: 'group' },
+    { id: 'VB_SEC_M', sp: 'VB', name: 'วอลเลย์ มัธยม ชาย', dur: 60, field: 'วอลเลย์ 2 (มัธยม)', lv: 'SEC', gd: 'M', format: 'league' },
+    { id: 'VB_SEC_F', sp: 'VB', name: 'วอลเลย์ มัธยม หญิง', dur: 60, field: 'วอลเลย์ 2 (มัธยม)', lv: 'SEC', gd: 'F', format: 'league' },
+    // Takraw (Bottleneck: 1 Court)
+    { id: 'TK_P46_M', sp: 'TK', name: 'ตะกร้อ ป.ปลาย ชาย', dur: 45, field: 'สนามตะกร้อ (รวม)', lv: 'P46', gd: 'M', format: 'group' },
+    { id: 'TK_P46_F', sp: 'TK', name: 'ตะกร้อ ป.ปลาย หญิง', dur: 45, field: 'สนามตะกร้อ (รวม)', lv: 'P46', gd: 'F', format: 'group' },
+    { id: 'TK_SEC_M', sp: 'TK', name: 'ตะกร้อ มัธยม ชาย', dur: 45, field: 'สนามตะกร้อ (รวม)', lv: 'SEC', gd: 'M', format: 'league' },
+    { id: 'TK_SEC_F', sp: 'TK', name: 'ตะกร้อ มัธยม หญิง', dur: 45, field: 'สนามตะกร้อ (รวม)', lv: 'SEC', gd: 'F', format: 'league' },
+    // Petanque
+    { id: 'PT_P46_M', sp: 'PT', name: 'เปตอง ป.ปลาย ชาย', dur: 60, field: 'เปตอง 1 (ป.ปลาย)', lv: 'P46', gd: 'M', format: 'group' },
+    { id: 'PT_P46_F', sp: 'PT', name: 'เปตอง ป.ปลาย หญิง', dur: 60, field: 'เปตอง 1 (ป.ปลาย)', lv: 'P46', gd: 'F', format: 'group' },
+    { id: 'PT_SEC_M', sp: 'PT', name: 'เปตอง มัธยม ชาย', dur: 60, field: 'เปตอง 2 (มัธยม)', lv: 'SEC', gd: 'M', format: 'league' },
+    { id: 'PT_SEC_F', sp: 'PT', name: 'เปตอง มัธยม หญิง', dur: 60, field: 'เปตอง 2 (มัธยม)', lv: 'SEC', gd: 'F', format: 'league' }
+];
 
+// 3. Time Slots
+const days = [
+    { d:1, start: 780, end: 990, label: 'วันที่ 1 (บ่าย 13.00-16.30)' },
+    { d:2, start: 780, end: 990, label: 'วันที่ 2 (บ่าย 13.00-16.30)' },
+    { d:3, start: 510, end: 990, label: 'วันที่ 3 (เต็ม 08.30-16.30)' },
+    { d:4, start: 510, end: 990, label: 'วันที่ 4 (เต็ม 08.30-16.30)' }
+];
+
+// Global State
+let scheduleData = [];
+let currentDay = 1;
+let currentFilter = 'ALL';
+
+/**
+ * CORE LOGIC: SCHEDULER ENGINE
+ */
+function generateSchedule() {
     let matches = [];
-    let currentDay = 'day1';
-    let currentMode = 'welcome';
-    let currentFilter = { sp: 'ALL', cat: '' };
+    let priSchools = schools.filter(s => s.type === 'PRI');
+    let secSchools = schools.filter(s => s.type === 'SEC');
 
-    // --- 2. LOGIC ENGINE (Auto Scheduler) ---
-    function generateMatches() {
-        let pool = [];
+    // Step 1: Generate All Matches (Unscheduled)
+    categories.forEach(cat => {
+        let teams = (cat.lv === 'SEC') ? secSchools : priSchools;
         
-        sportsConfig.forEach(cfg => {
-            let teams = (cfg.lv === 'มัธยม') ? schoolsSecondary : schoolsPrimary;
+        if (cat.format === 'group') {
+            // Shuffle & Split into A, B, C
+            let shuffled = [...teams].sort(() => 0.5 - Math.random());
+            let groups = { 'A': shuffled.slice(0,3), 'B': shuffled.slice(3,6), 'C': shuffled.slice(6,9) };
             
-            if (cfg.type === 'group') {
-                // Shuffle & Group A,B,C
-                let shuffled = [...teams].sort(() => 0.5 - Math.random());
-                let groups = { 'A': shuffled.slice(0,3), 'B': shuffled.slice(3,6), 'C': shuffled.slice(6,9) };
-                
-                // Group Matches
-                ['A','B','C'].forEach(gName => {
-                    let gTeams = groups[gName];
-                    for(let i=0; i<gTeams.length; i++) {
-                        for(let j=i+1; j<gTeams.length; j++) {
-                            pool.push({
-                                cfg: cfg, round: `รอบแรก สาย ${gName}`, t1: gTeams[i], t2: gTeams[j], priority: 1
-                            });
-                        }
-                    }
-                });
-                
-                // Knockouts (Placeholder)
-                pool.push({ cfg: cfg, round: "รอบรองฯ (ที่ 1A vs ที่ 1B)", t1: "(รอผล)", t2: "(รอผล)", priority: 2 });
-                pool.push({ cfg: cfg, round: "รอบรองฯ (ที่ 1C vs ที่ 2ดีสุด)", t1: "(รอผล)", t2: "(รอผล)", priority: 2 });
-                pool.push({ cfg: cfg, round: "ชิงที่ 3", t1: "(รอผล)", t2: "(รอผล)", priority: 3 });
-                pool.push({ cfg: cfg, round: "ชิงชนะเลิศ", t1: "(รอผล)", t2: "(รอผล)", priority: 3 });
-
-            } else {
-                // Round Robin (Secondary)
-                for(let i=0; i<teams.length; i++) {
-                    for(let j=i+1; j<teams.length; j++) {
-                        pool.push({
-                            cfg: cfg, round: `พบกันหมด`, t1: teams[i], t2: teams[j], priority: 1
+            // Group Stage (Round Robin)
+            ['A','B','C'].forEach(gName => {
+                let gTeams = groups[gName];
+                gTeams.forEach((t1, i) => {
+                    for(let j=i+1; j<gTeams.length; j++) {
+                        matches.push({
+                            uid: `${cat.id}_${matches.length}`,
+                            cat: cat,
+                            round: `รอบแรก สาย ${gName}`,
+                            t1: t1, t2: gTeams[j],
+                            stage: 'GROUP', group: gName,
+                            priority: 1 // High priority to clear groups first
                         });
                     }
-                }
-                pool.push({ cfg: cfg, round: "ชิงที่ 3 (อันดับ 3 vs 4)", t1: "(รอผล)", t2: "(รอผล)", priority: 2 });
-                pool.push({ cfg: cfg, round: "ชิงชนะเลิศ (อันดับ 1 vs 2)", t1: "(รอผล)", t2: "(รอผล)", priority: 2 });
-            }
-        });
-
-        // Sort by priority (Group -> Knockout)
-        pool.sort((a,b) => a.priority - b.priority);
-        return pool;
-    }
-
-    function runScheduler() {
-        let pool = generateMatches();
-        let result = [];
-        
-        // Trackers
-        let fieldFreeAt = {}; // { FieldName_Day: minutes }
-        let teamBusyUntil = {}; // { SchoolName_Level_Gender_Day: minutes }
-        
-        // Init Field Times
-        sportsConfig.forEach(c => {
-            daysConfig.forEach(d => fieldFreeAt[`${c.field}_D${d.day}`] = d.start);
-        });
-
-        // Loop Days
-        for (let dIdx = 0; dIdx < daysConfig.length; dIdx++) {
-            let day = daysConfig[dIdx];
-            let nextDayPool = [];
-
-            // Reset trackers for new day (teamBusy resets, Field set to start time)
-            // Note: fieldFreeAt is cumulative if we want strict continuous, but here we enforce day bounds.
-            // Reset fields to day start if they are behind
-            Object.keys(fieldFreeAt).forEach(k => {
-                if(k.includes(`D${day.day}`) && fieldFreeAt[k] < day.start) fieldFreeAt[k] = day.start;
+                });
             });
 
-            for (let i = 0; i < pool.length; i++) {
-                let m = pool[i];
-                let fKey = `${m.cfg.field}_D${day.day}`;
-                
-                // Get earliest available time for Field
-                let fieldTime = fieldFreeAt[fKey];
-                
-                // *** CONSTRAINT A: Same Athlete Check ***
-                // Key = "School_Level_Gender_Day"
-                let t1Key = `${m.t1}_${m.cfg.lv}_${m.cfg.gd}_D${day.day}`;
-                let t2Key = `${m.t2}_${m.cfg.lv}_${m.cfg.gd}_D${day.day}`;
-                
-                let t1Free = teamBusyUntil[t1Key] || day.start;
-                let t2Free = teamBusyUntil[t2Key] || day.start;
-                
-                // Start time is Max of (Field, Team1, Team2)
-                let startTime = Math.max(fieldTime, t1Free, t2Free);
-                let endTime = startTime + m.cfg.dur;
+            // Knockout placeholders (Semis & Finals)
+            matches.push({ uid: `${cat.id}_SF1`, cat:cat, round:'รอบรองฯ 1', t1:{name:'ที่ 1 สาย A', id:'W_A'}, t2:{name:'ที่ดีสุด', id:'BEST_2'}, stage:'SEMI', priority: 2 });
+            matches.push({ uid: `${cat.id}_SF2`, cat:cat, round:'รอบรองฯ 2', t1:{name:'ที่ 1 สาย B', id:'W_B'}, t2:{name:'ที่ 1 สาย C', id:'W_C'}, stage:'SEMI', priority: 2 });
+            matches.push({ uid: `${cat.id}_3RD`, cat:cat, round:'ชิงที่ 3', t1:{name:'แพ้รอง 1', id:'L_SF1'}, t2:{name:'แพ้รอง 2', id:'L_SF2'}, stage:'FINAL', priority: 3 });
+            matches.push({ uid: `${cat.id}_FN`, cat:cat, round:'ชิงชนะเลิศ', t1:{name:'ชนะรอง 1', id:'W_SF1'}, t2:{name:'ชนะรอง 2', id:'W_SF2'}, stage:'FINAL', priority: 3 });
 
-                // *** CONSTRAINT: Kinder finish early ***
-                if (m.cfg.lv === 'อนุบาล' && endTime > 930) { // 15:30 = 930 mins
-                     // If too late for kinder, push to next day
-                     nextDayPool.push(m);
-                     continue;
+        } else {
+            // League (4 Teams)
+            teams.forEach((t1, i) => {
+                for(let j=i+1; j<teams.length; j++) {
+                    matches.push({
+                        uid: `${cat.id}_${matches.length}`,
+                        cat: cat,
+                        round: 'รอบพบกันหมด',
+                        t1: t1, t2: teams[j],
+                        stage: 'LEAGUE',
+                        priority: 1
+                    });
                 }
-
-                // *** Check Day End ***
-                if (endTime > day.end) {
-                    nextDayPool.push(m);
-                    continue;
-                }
-
-                // *** CONSTRAINT D: Referee (Coach) ***
-                // Pick a referee school that is NOT t1 or t2
-                // Since coaches are referees, we just assign a School Name.
-                // Simple logic: Pick a school from the list that isn't playing.
-                let potentialRefs = (m.cfg.lv === 'มัธยม' ? schoolsSecondary : schoolsPrimary).filter(s => s !== m.t1 && s !== m.t2 && s !== '(รอผล)');
-                let referee = potentialRefs.length > 0 ? potentialRefs[Math.floor(Math.random()*potentialRefs.length)] : "กรรมการกลาง";
-                // Note: บอลอนุบาลใช้กรรมการร่วม (ไม่ต้องซีเรียสเรื่องโค้ช) แต่ใส่ไว้เพื่อความครบถ้วน
-
-                // SCHEDULING SUCCESS
-                result.push({
-                    id: `M${result.length+1}`,
-                    d: `day${day.day}`,
-                    tStr: formatTime(startTime),
-                    tStart: startTime,
-                    cfg: m.cfg,
-                    t1: m.t1, t2: m.t2, s1: '', s2: '',
-                    round: m.round,
-                    ref: referee
-                });
-
-                // Update Trackers
-                fieldFreeAt[fKey] = endTime;
-                
-                // *** Gap Rule: Rest 1 match duration ***
-                let restTime = m.cfg.dur; 
-                if(!m.t1.includes('(')) teamBusyUntil[t1Key] = endTime + restTime;
-                if(!m.t2.includes('(')) teamBusyUntil[t2Key] = endTime + restTime;
-            }
-            pool = nextDayPool;
+            });
+            // Finals
+            matches.push({ uid: `${cat.id}_3RD`, cat:cat, round:'ชิงที่ 3', t1:{name:'อันดับ 3', id:'R3'}, t2:{name:'อันดับ 4', id:'R4'}, stage:'FINAL', priority: 2 });
+            matches.push({ uid: `${cat.id}_FN`, cat:cat, round:'ชิงชนะเลิศ', t1:{name:'อันดับ 1', id:'R1'}, t2:{name:'อันดับ 2', id:'R2'}, stage:'FINAL', priority: 2 });
         }
-
-        // Add Fixed Events
-        result.push({ id:'EV1', d:'day2', tStr:'08.00', tStart:480, cfg:{sp:'AT', lv:'ALL', gd:'', field:'สนามกลาง'}, t1:'-', t2:'-', round:'ขบวนพาเหรด', ref:'-' });
-        result.push({ id:'EV2', d:'day2', tStr:'09.00', tStart:540, cfg:{sp:'AT', lv:'ALL', gd:'', field:'สนามกลาง'}, t1:'-', t2:'-', round:'พิธีเปิด', ref:'-' });
-
-        return result;
-    }
-
-    function formatTime(mins) {
-        let h = Math.floor(mins / 60);
-        let m = mins % 60;
-        return `${h.toString().padStart(2,'0')}.${m.toString().padStart(2,'0')}`;
-    }
-
-    // --- 3. UI RENDERER ---
-    document.addEventListener('DOMContentLoaded', () => {
-        let saved = localStorage.getItem('ns_games_v2');
-        if(saved) matches = JSON.parse(saved);
-        else {
-            matches = runScheduler();
-            saveData(false);
-        }
-        render();
     });
 
-    function render() {
-        const area = document.getElementById('content-area');
-        area.innerHTML = '';
+    // Step 2: Scheduling Loop (Greedy with Constraints)
+    // Sort matches: Priority 1 (Groups) -> Takraw (Limited Resource) -> Others
+    matches.sort((a,b) => {
+        if(a.priority !== b.priority) return a.priority - b.priority;
+        if(a.cat.sp === 'TK' && b.cat.sp !== 'TK') return -1; // Prioritize Takraw to fill the bottleneck
+        return 0;
+    });
 
-        if (currentMode === 'welcome') {
-            area.innerHTML = `
-                <div class="welcome-box">
-                    <i class="fas fa-medal welcome-icon"></i>
-                    <div class="welcome-title">ยินดีต้อนรับสู่ระบบจัดการแข่งขัน</div>
-                    <div style="color:#64748b;">ระบบจัดตารางอัตโนมัติ 20 รายการแข่งขัน<br>พร้อมระบบตรวจสอบกรรมการและเวลาพักนักกีฬา</div>
-                    <div class="welcome-grid">
-                        <div class="w-btn" onclick="filterSport('FB')"><i class="fas fa-futbol" style="color:var(--c-fb); font-size:2rem;"></i><span>ฟุตบอล</span></div>
-                        <div class="w-btn" onclick="filterSport('VB')"><i class="fas fa-volleyball-ball" style="color:var(--c-vb); font-size:2rem;"></i><span>วอลเลย์บอล</span></div>
-                        <div class="w-btn" onclick="filterSport('TK')"><i class="fas fa-baseball-ball" style="color:var(--c-tk); font-size:2rem;"></i><span>ตะกร้อ</span></div>
-                        <div class="w-btn" onclick="filterSport('PT')"><i class="fas fa-bowling-ball" style="color:var(--c-pt); font-size:2rem;"></i><span>เปตอง</span></div>
+    let scheduled = [];
+    let fieldBusyUntil = {}; // { 'FieldID_Day': timestamp }
+    let athleteBusyUntil = {}; // { 'SchoolID_Level_Gender_Day': timestamp } -> Constraint A
+
+    // Iterate Days & Time
+    let queue = [...matches];
+    
+    // Helper: Find Referee
+    const getReferee = (day, time, cat, team1, team2) => {
+        if(cat.lv === 'K') return "กรรมการกลาง"; // Kindergarten shared
+        
+        let candidates = (cat.lv === 'SEC') ? secSchools : priSchools;
+        // Filter out playing teams
+        candidates = candidates.filter(s => s.id !== team1.id && s.id !== team2.id);
+        
+        // Filter out teams whose coach is busy (Playing same Level+Gender at this time)
+        // Note: Coach is busy if their team is playing.
+        let validRef = candidates.find(s => {
+            let busyKey = `${s.id}_${cat.lv}_${cat.gd}_${day}`;
+            let busyTime = athleteBusyUntil[busyKey] || 0;
+            return busyTime <= time;
+        });
+
+        return validRef ? `ครู ${validRef.name}` : "กรรมการกลาง";
+    };
+
+    days.forEach(dayConf => {
+        let nextQueue = [];
+        
+        // Reset field availability for new day start
+        categories.forEach(c => {
+             if(!fieldBusyUntil[`${c.field}_${dayConf.d}`]) fieldBusyUntil[`${c.field}_${dayConf.d}`] = dayConf.start;
+        });
+
+        queue.forEach(m => {
+            // Kindergarten Time Constraint (Must finish before 15:30)
+            let maxTime = (m.cat.lv === 'K') ? 930 : dayConf.end; // 930 = 15:30
+
+            // 1. Check Field Avail
+            let fieldKey = `${m.cat.field}_${dayConf.d}`;
+            let fieldStart = fieldBusyUntil[fieldKey];
+            
+            // 2. Check Athlete Avail (Team 1 & 2)
+            // Key: SchoolID + Level + Gender (e.g., S1_P46_M)
+            let t1Key = m.t1.id.length > 3 ? null : `${m.t1.id}_${m.cat.lv}_${m.cat.gd}_${dayConf.d}`;
+            let t2Key = m.t2.id.length > 3 ? null : `${m.t2.id}_${m.cat.lv}_${m.cat.gd}_${dayConf.d}`;
+            
+            let t1Start = t1Key ? (athleteBusyUntil[t1Key] || dayConf.start) : dayConf.start;
+            let t2Start = t2Key ? (athleteBusyUntil[t2Key] || dayConf.start) : dayConf.start;
+
+            // 3. Determine Start Time (Max of all constraints)
+            let startTime = Math.max(fieldStart, t1Start, t2Start);
+            let endTime = startTime + m.cat.dur;
+
+            // 4. Validate Time
+            if (endTime <= maxTime) {
+                // Success! Schedule it.
+                // Find Referee
+                let ref = getReferee(dayConf.d, startTime, m.cat, m.t1, m.t2);
+
+                scheduled.push({
+                    ...m,
+                    day: dayConf.d,
+                    timeStart: startTime,
+                    timeEnd: endTime,
+                    s1: '', s2: '',
+                    referee: ref
+                });
+
+                // Update Constraints
+                fieldBusyUntil[fieldKey] = endTime;
+                
+                // REST PERIOD: Athletes must rest 1 match duration (approx 45-60 mins)
+                // We add gap equal to match duration
+                let gap = m.cat.dur; 
+                if(t1Key) athleteBusyUntil[t1Key] = endTime + gap;
+                if(t2Key) athleteBusyUntil[t2Key] = endTime + gap;
+
+            } else {
+                // No time left today, push to next day
+                nextQueue.push(m);
+            }
+        });
+        queue = nextQueue;
+    });
+
+    return scheduled;
+}
+
+/**
+ * UI & UTILITIES
+ */
+function setDay(d) {
+    currentDay = d;
+    document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+    renderSchedule();
+}
+
+function filterSport(sp) {
+    currentFilter = sp;
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    renderSchedule();
+    renderStandings();
+}
+
+function formatTime(min) {
+    let h = Math.floor(min / 60);
+    let m = min % 60;
+    return `${h.toString().padStart(2,'0')}.${m.toString().padStart(2,'0')}`;
+}
+
+function renderSchedule() {
+    const container = document.getElementById('mainContent');
+    container.innerHTML = '';
+
+    let list = scheduleData.filter(m => m.day === currentDay);
+    if(currentFilter !== 'ALL') list = list.filter(m => m.cat.sp === currentFilter);
+    list.sort((a,b) => a.timeStart - b.timeStart);
+
+    if(list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; color:#94a3b8;">ไม่มีการแข่งขันในวันนี้</div>`;
+        return;
+    }
+
+    // Group by time for visual consistency
+    let timeSlots = [...new Set(list.map(m => m.timeStart))].sort((a,b)=>a-b);
+
+    timeSlots.forEach(t => {
+        let items = list.filter(m => m.timeStart === t);
+        let card = document.createElement('div');
+        card.className = 'time-card';
+        
+        let rows = items.map(m => {
+            let badgeClass = `bg-${m.cat.sp}`;
+            return `
+            <div class="match-row b-${m.cat.sp}">
+                <div class="m-left">
+                    <span class="badge ${badgeClass}">${m.cat.sp}</span>
+                    <span style="font-size:0.75rem; color:#64748b; font-weight:600;">${m.cat.lv} ${m.cat.gd}</span>
+                </div>
+                <div class="m-center">
+                    <div class="versus">
+                        <span>${m.t1.name}</span>
+                        <div style="display:flex; gap:5px;">
+                            <input type="text" class="score-inp" value="${m.s1}" onchange="updateScore('${m.uid}', 1, this.value)">
+                            <span style="color:#94a3b8">:</span>
+                            <input type="text" class="score-inp" value="${m.s2}" onchange="updateScore('${m.uid}', 2, this.value)">
+                        </div>
+                        <span>${m.t2.name}</span>
+                    </div>
+                    <div class="field-ref">
+                        <span><i class="fas fa-map-marker-alt"></i> ${m.cat.field}</span>
+                        <span>|</span>
+                        <span>${m.round}</span>
+                        <span class="ref-badge"><i class="fas fa-whistle"></i> ${m.referee}</span>
                     </div>
                 </div>
-            `;
-            renderStandings(true);
-            return;
-        }
+            </div>`;
+        }).join('');
 
-        // Filter Logic
-        let list = matches.filter(m => m.d === currentDay);
-        if (currentFilter.sp !== 'ALL') {
-            list = list.filter(m => m.cfg.sp === currentFilter.sp);
-            if(currentFilter.cat) list = list.filter(m => m.cfg.lv === currentFilter.cat);
-        }
-        
-        list.sort((a,b) => a.tStart - b.tStart);
+        card.innerHTML = `<div class="time-head"><i class="far fa-clock"></i> ${formatTime(t)} - ${formatTime(items[0].timeEnd)} น.</div>${rows}`;
+        container.appendChild(card);
+    });
+}
 
-        if (list.length === 0) {
-            area.innerHTML = `<div style="text-align:center; padding:40px; color:#cbd5e1;">ไม่มีการแข่งขันในหมวดหมู่นี้สำหรับวันนี้</div>`;
-            return;
-        }
-
-        let grid = document.createElement('div');
-        grid.className = 'schedule-grid';
-
-        // Group by Time
-        let times = [...new Set(list.map(m => m.tStr))];
-        times.forEach(time => {
-            let tBlock = document.createElement('div');
-            tBlock.className = 'time-block';
-            
-            let matchesAtTime = list.filter(m => m.tStr === time);
-            let rows = matchesAtTime.map(m => {
-                let spColor = `var(--c-${m.cfg.sp.toLowerCase()})`;
-                if(m.cfg.sp === 'AT') spColor = 'var(--c-at)';
-                
-                let s1 = parseInt(m.s1)||0, s2 = parseInt(m.s2)||0;
-                let w1 = (m.s1!=='' && s1>s2) ? 'color:#10b981' : '';
-                let w2 = (m.s2!=='' && s2>s1) ? 'color:#10b981' : '';
-
-                if(m.cfg.sp === 'AT') {
-                     return `<div class="match-row b-AT">
-                        <div class="m-info">
-                            <div class="m-cat"><span class="tag" style="background:${spColor}">${m.cfg.sp}</span> ${m.round}</div>
-                            <div class="m-sub"><i class="fas fa-map-marker-alt"></i> ${m.cfg.field}</div>
-                        </div>
-                     </div>`;
-                }
-
-                return `
-                <div class="match-row b-${m.cfg.sp}">
-                    <div class="m-info">
-                        <div class="m-cat">
-                            <span class="tag" style="background:${spColor}">${m.cfg.sp}</span>
-                            <span>${m.cfg.lv} ${m.cfg.gd}</span>
-                        </div>
-                        <div class="m-vs">
-                            <span style="${w1}">${m.t1}</span>
-                            <div class="score-box">
-                                <input type="number" value="${m.s1}" onchange="upd('${m.id}',1,this.value)">:
-                                <input type="number" value="${m.s2}" onchange="upd('${m.id}',2,this.value)">
-                            </div>
-                            <span style="${w2}">${m.t2}</span>
-                        </div>
-                        <div class="m-sub">
-                            <span><i class="fas fa-map-marker-alt"></i> ${m.cfg.field}</span>
-                            <span><i class="fas fa-tag"></i> ${m.round}</span>
-                            <span><i class="fas fa-whistle"></i> อ.${m.ref}</span>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-
-            tBlock.innerHTML = `<div class="time-header"><i class="far fa-clock"></i> ${time} น.</div>${rows}`;
-            grid.appendChild(tBlock);
-        });
-
-        area.appendChild(grid);
-        renderStandings();
-    }
-
-    function renderStandings(isEmpty = false) {
-        const div = document.getElementById('standings-area');
-        div.innerHTML = '';
-        if(isEmpty) { div.innerHTML='<div style="text-align:center;color:#94a3b8;padding:20px;">เลือกกีฬาเพื่อดูผลคะแนน</div>'; return; }
-
-        let activeSp = currentFilter.sp === 'ALL' ? 'FB' : currentFilter.sp; // Default to FB
-        if(activeSp === 'AT') return;
-
-        // Group by Categories
-        let relevantMatches = matches.filter(m => m.cfg.sp === activeSp && m.round.includes('รอบแรก') || m.round.includes('พบกันหมด'));
-        let cats = [...new Set(relevantMatches.map(m => `${m.cfg.lv} ${m.cfg.gd}`))];
-
-        cats.forEach(catName => {
-            let catMatches = relevantMatches.filter(m => `${m.cfg.lv} ${m.cfg.gd}` === catName);
-            let stats = {};
-
-            catMatches.forEach(m => {
-                [m.t1, m.t2].forEach(t => { if(!stats[t]) stats[t] = { P:0, W:0, D:0, L:0, Pts:0 }; });
-                if(m.s1 !== '' && m.s2 !== '') {
-                    let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
-                    stats[m.t1].P++; stats[m.t2].P++;
-                    if(s1>s2) { stats[m.t1].W++; stats[m.t1].Pts+=3; stats[m.t2].L++; }
-                    else if(s2>s1) { stats[m.t2].W++; stats[m.t2].Pts+=3; stats[m.t1].L++; }
-                    else { stats[m.t1].D++; stats[m.t1].Pts+=1; stats[m.t2].D++; stats[m.t2].Pts+=1; }
-                }
-            });
-
-            let sorted = Object.keys(stats).sort((a,b) => stats[b].Pts - stats[a].Pts);
-            if(sorted.length===0) return;
-
-            let box = document.createElement('div');
-            box.className = 'st-box';
-            let rows = sorted.map((t,i) => {
-                let s = stats[t];
-                return `<tr><td>${i+1}</td><td>${t}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td class="st-pts">${s.Pts}</td></tr>`;
-            }).join('');
-            box.innerHTML = `<div class="st-head">${catName}</div><table class="st-table"><tr><th>#</th><th>ทีม</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>${rows}</table>`;
-            div.appendChild(box);
-        });
-    }
-
-    // --- 4. ACTIONS ---
-    function switchDay(d) { currentDay = d; currentMode = 'schedule'; updateActiveBtn('.day-btn', event.target); render(); }
-    function filterSport(sp) { currentFilter = { sp: sp, cat: '' }; currentMode = 'schedule'; updateActiveBtn('.nav-item', event.currentTarget); render(); }
-    function filterCat(sp, cat) { currentFilter = { sp: sp, cat: cat }; currentMode = 'schedule'; updateActiveBtn('.nav-item', event.currentTarget); render(); }
-    function goHome() { currentMode = 'welcome'; currentFilter = { sp:'ALL', cat:'' }; render(); }
+function renderStandings() {
+    const container = document.getElementById('standingsContent');
+    container.innerHTML = '';
     
-    function updateActiveBtn(sel, target) {
-        document.querySelectorAll(sel).forEach(b => b.classList.remove('active'));
-        if(target) target.classList.add('active');
+    // If ALL, show summary text
+    if(currentFilter === 'ALL') {
+        container.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">เลือกชนิดกีฬาด้านซ้าย<br>เพื่อดูตารางคะแนน</div>`;
+        return;
     }
 
-    function upd(id, slot, val) {
-        let m = matches.find(x => x.id === id);
-        if(m) {
-            if(slot === 1) m.s1 = val; else m.s2 = val;
-            saveData(true);
-            renderStandings();
+    // Filter categories by current sport
+    let sportCats = categories.filter(c => c.sp === currentFilter);
+    
+    sportCats.forEach(cat => {
+        // Calculate Standings based on matches in scheduleData
+        let matches = scheduleData.filter(m => m.cat.id === cat.id && m.stage === 'GROUP' && m.s1 !== '' && m.s2 !== '');
+        let teams = {};
+        
+        // Init stats
+        matches.forEach(m => {
+            if(!teams[m.t1.name]) teams[m.t1.name] = { P:0, W:0, D:0, L:0, PTS:0, G:m.group };
+            if(!teams[m.t2.name]) teams[m.t2.name] = { P:0, W:0, D:0, L:0, PTS:0, G:m.group };
+            
+            let s1 = parseInt(m.s1), s2 = parseInt(m.s2);
+            teams[m.t1.name].P++; teams[m.t2.name].P++;
+            
+            if(s1 > s2) { teams[m.t1.name].W++; teams[m.t1.name].PTS+=3; teams[m.t2.name].L++; }
+            else if(s2 > s1) { teams[m.t2.name].W++; teams[m.t2.name].PTS+=3; teams[m.t1.name].L++; }
+            else { teams[m.t1.name].D++; teams[m.t1.name].PTS+=1; teams[m.t2.name].D++; teams[m.t2.name].PTS+=1; }
+        });
+
+        // Determine State: Group/League or Knockout
+        // Check if Finals exist
+        let finals = scheduleData.filter(m => m.cat.id === cat.id && m.stage === 'FINAL');
+        let semis = scheduleData.filter(m => m.cat.id === cat.id && m.stage === 'SEMI');
+        
+        let card = document.createElement('div');
+        card.className = 'st-card';
+        
+        let headerHtml = `<div class="st-title">${cat.name}</div>`;
+        let bodyHtml = '';
+
+        // Logic: Show Table first. If Knockout matches have scores, show Bracket.
+        if (cat.format === 'group') {
+             // Show Group Tables A, B, C
+             ['A','B','C'].forEach(g => {
+                 let gTeams = Object.keys(teams).filter(k => teams[k].G === g).sort((a,b) => teams[b].PTS - teams[a].PTS);
+                 if(gTeams.length > 0) {
+                     bodyHtml += `<div style="background:#f8fafc; padding:4px 8px; font-size:0.75rem; font-weight:700;">สาย ${g}</div>`;
+                     bodyHtml += `<table class="st-table"><tr><th>#</th><th>ทีม</th><th>P</th><th>Pts</th></tr>`;
+                     gTeams.forEach((t, i) => {
+                         bodyHtml += `<tr><td>${i+1}</td><td>${t}</td><td>${teams[t].P}</td><td class="hl-pts">${teams[t].PTS}</td></tr>`;
+                     });
+                     bodyHtml += `</table>`;
+                 }
+             });
+        } else {
+             // League Table
+             let lTeams = Object.keys(teams).sort((a,b) => teams[b].PTS - teams[a].PTS);
+             if(lTeams.length > 0) {
+                 bodyHtml += `<table class="st-table"><tr><th>#</th><th>ทีม</th><th>P</th><th>Pts</th></tr>`;
+                 lTeams.forEach((t, i) => {
+                     bodyHtml += `<tr><td>${i+1}</td><td>${t}</td><td>${teams[t].P}</td><td class="hl-pts">${teams[t].PTS}</td></tr>`;
+                 });
+                 bodyHtml += `</table>`;
+             }
         }
-    }
 
-    function saveData(toast) { localStorage.setItem('ns_games_v2', JSON.stringify(matches)); if(toast) showToast(); }
-    function saveDataManual() { saveData(true); }
-    function resetData() { 
-        if(confirm('ต้องการสุ่มสายและจัดตารางใหม่ทั้งหมด? ข้อมูลคะแนนจะหายไป')) {
-            matches = runScheduler();
-            saveData(false);
-            location.reload();
-        } 
+        // Add Knockout Results if available
+        let koMatches = [...semis, ...finals].filter(m => m.s1 !== '' && m.s2 !== '');
+        if(koMatches.length > 0) {
+            bodyHtml += `<div style="padding:10px; border-top:1px solid #e2e8f0;">`;
+            bodyHtml += `<div style="font-size:0.75rem; font-weight:700; margin-bottom:5px;">ผลรอบน็อคเอาท์</div>`;
+            koMatches.forEach(m => {
+                let w = parseInt(m.s1) > parseInt(m.s2) ? m.t1.name : m.t2.name;
+                bodyHtml += `<div class="bracket-row"><span>${m.round}</span> <span style="font-weight:700; color:var(--primary)">${w} ชนะ</span></div>`;
+            });
+            bodyHtml += `</div>`;
+        } else if (scheduleData.some(m => m.cat.id === cat.id && m.stage === 'SEMI')) {
+            // Show placeholder bracket
+            bodyHtml += `<div class="winner-bracket text-center text-gray-400">รอผลรอบแบ่งกลุ่ม...</div>`;
+        }
+
+        card.innerHTML = headerHtml + bodyHtml;
+        container.appendChild(card);
+    });
+}
+
+// Data Persistence
+function updateScore(uid, slot, val) {
+    let m = scheduleData.find(x => x.uid === uid);
+    if(m) {
+        if(slot === 1) m.s1 = val; else m.s2 = val;
+        saveToLocal(true); // silent save
+        renderStandings(); // Realtime update standings
     }
-    function showToast() { let t = document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 2000); }
+}
+
+function saveToLocal(silent) {
+    localStorage.setItem('ns_games_v40', JSON.stringify(scheduleData));
+    if(!silent) {
+        let t = document.getElementById('toast');
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2000);
+    }
+}
+
+function resetSystem() {
+    if(confirm('ระบบจะทำการสุ่มจับสลากและจัดตารางเวลาใหม่ทั้งหมด ข้อมูลคะแนนจะหายไป ยืนยันหรือไม่?')) {
+        scheduleData = generateSchedule();
+        saveToLocal();
+        location.reload();
+    }
+}
+
+// Init
+window.onload = () => {
+    let saved = localStorage.getItem('ns_games_v40');
+    if(saved) scheduleData = JSON.parse(saved);
+    else scheduleData = generateSchedule();
+    
+    renderSchedule();
+    renderStandings();
+};
 
 </script>
 </body>
