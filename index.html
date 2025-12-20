@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard โนนสวรรค์ เกมส์ 2568 (V.37 Final Logic)</title>
+<title>Dashboard โนนสวรรค์ เกมส์ 2568 (V.38 Complete & Safe)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
     :root { 
         --header-h: 60px;
         --sidebar-w: 220px;
-        --primary: #2563eb; --bg: #f8fafc; --text: #0f172a; --white: #ffffff;
+        --primary: #1e40af; --bg: #f1f5f9; --text: #1e293b; --white: #ffffff;
         --border: #e2e8f0; --accent: #f59e0b;
-        --c-fb: #3b82f6; --c-vb: #f97316; --c-tk: #10b981; --c-pt: #8b5cf6; --c-at: #ef4444;
+        --c-fb: #2563eb; --c-vb: #f97316; --c-tk: #059669; --c-pt: #7c3aed; --c-at: #db2777;
     }
     * { box-sizing: border-box; }
     body { font-family: 'Sarabun', sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
@@ -25,17 +25,17 @@
     }
     .app-title { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; cursor: pointer; }
     
-    .day-tabs { display: flex; gap: 5px; background: #f1f5f9; padding: 4px; border-radius: 8px; }
+    .day-tabs { display: flex; gap: 5px; background: #e2e8f0; padding: 4px; border-radius: 8px; }
     .day-btn {
         border: none; background: transparent; padding: 6px 16px; border-radius: 6px;
         font-size: 0.9rem; cursor: pointer; color: #64748b; font-weight: 600; transition: 0.2s;
     }
-    .day-btn:hover { background: #e2e8f0; color: #334155; }
+    .day-btn:hover { background: #cbd5e1; color: #334155; }
     .day-btn.active { background: var(--white); color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
     .actions { display: flex; gap: 10px; }
     .btn-icon { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-    .btn-icon:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
+    .btn-icon:hover { background: #eff6ff; color: var(--primary); border-color: var(--primary); }
     .btn-save { color: #10b981; border-color: #bbf7d0; background: #f0fdf4; }
     .btn-reset { color: #ef4444; border-color: #fecaca; background: #fef2f2; }
 
@@ -56,7 +56,7 @@
     /* CONTENT */
     .content-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
     
-    /* Welcome Screen */
+    /* Welcome */
     .welcome-box { 
         display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; color: #475569; 
         animation: fadeIn 0.5s ease;
@@ -72,10 +72,10 @@
     .w-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); border-color: var(--primary); color: var(--primary); }
     .w-btn i { font-size: 2rem; }
 
-    /* Schedule Grid */
+    /* Schedule */
     .schedule-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
     .time-block { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); break-inside: avoid; }
-    .time-header { background: #f1f5f9; padding: 8px 15px; border-bottom: 1px solid var(--border); font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+    .time-header { background: #f8fafc; padding: 8px 15px; border-bottom: 1px solid var(--border); font-weight: 700; color: #334155; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
     
     .match-row { display: flex; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--border); position: relative; gap: 10px; font-size: 0.9rem; }
     .match-row:last-child { border-bottom: none; }
@@ -89,7 +89,7 @@
     .m-cat span { background: #e2e8f0; padding: 1px 6px; border-radius: 4px; }
     .m-vs { font-size: 0.95rem; font-weight: 600; color: #1e293b; display: flex; justify-content: space-between; align-items: center; }
     
-    .score-box { display: flex; align-items: center; gap: 5px; background: #f8fafc; padding: 2px 6px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    .score-box { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 2px 6px; border-radius: 6px; border: 1px solid #e2e8f0; }
     input[type="number"] { width: 30px; border: none; background: transparent; text-align: center; font-weight: 700; font-size: 1rem; color: var(--primary); padding: 0; }
     input:focus { outline: none; }
 
@@ -164,10 +164,14 @@
     let currentSport = '';
 
     const secTeams = ["หนองกุงศรีฯ", "ภูพระฯ", "โนนม่วง", "โนนเมือง"];
-    const priTeams = { A: ["โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ"], B: ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"], C: ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"] };
+    const priTeams = { 
+        A: ["โนนสวรรค์ฯ", "ท่าอุทัย", "ภูพระฯ"],
+        B: ["โนนสวาทฯ", "หนองกุงศรีฯ", "โนนไหมฯ"],
+        C: ["ด้วงฯ-ชำฯ", "โนนเมือง", "โนนม่วง"]
+    };
     const anuTeams = { A: ["โนนม่วง", "โนนสวาทฯ", "โนนเมือง"], B: ["ท่าอุทัย", "โนนสวรรค์ฯ", "หนองกุงศรีฯ"], C: ["ภูพระฯ", "ด้วงฯ-ชำฯ", "โนนไหมฯ"] };
     
-    // Group configs
+    // Group Configs
     const groupsConfig = {
         "FB_ANU": anuTeams, "FB_P13": priTeams, "FB_P46": priTeams, "FB_SEC": { "ลีก": secTeams },
         "VB_P46": priTeams, "VB_SEC": { "ลีก": secTeams },
@@ -175,6 +179,7 @@
         "PT_P46": priTeams, "PT_SEC": { "ลีก": secTeams }
     };
 
+    // 20 Categories
     const categories = [
         { code: "FB_ANU_M", sp: "FB", lv: "ANU", gd: "M", name: "บอลอนุบาล ชาย" },
         { code: "FB_ANU_F", sp: "FB", lv: "ANU", gd: "F", name: "บอลอนุบาล หญิง" },
@@ -198,7 +203,7 @@
         { code: "PT_SEC_F", sp: "PT", lv: "SEC", gd: "F", name: "เปตอง มัธยม หญิง" }
     ];
 
-    // --- 2. GENERATOR (Final Logic) ---
+    // --- 2. GENERATOR (Final Logic V.38) ---
     function generateSchedule() {
         let generated = [];
         
@@ -221,17 +226,24 @@
             PT1: { d:1, h:13, m:0 }, PT2: { d:1, h:13, m:0 }
         };
 
-        const advanceTime = (q, dur) => {
+        const advanceTime = (q, dur, isAnu) => {
+            // Kindergarten Safety: Don't start after 15.30
+            if(isAnu && q.h >= 15 && q.m >= 30) {
+                if(q.d===1) { q.d=2; q.h=13; q.m=0; }
+                else if(q.d===2) { q.d=3; q.h=9; q.m=0; }
+                return;
+            }
+
             q.m += dur; 
             while(q.m>=60){ q.m-=60; q.h++; }
             
             // Lunch Break 12.00-13.00
             if(q.h === 12) { q.h = 13; q.m = 0; }
 
-            // End of Day Check
-            if(q.h >= 16 && q.m > 30) { // Safety buffer before 16.30
+            // End of Day Check (16.30)
+            if(q.h >= 16 && q.m > 30) { 
                 if(q.d===1) { q.d=2; q.h=13; q.m=0; }
-                else if(q.d===2) { q.d=3; q.h=8; q.m=30; }
+                else if(q.d===2) { q.d=3; q.h=8; q.m=30; } // Day 3 starts 8.30
                 else if(q.d===3) { q.d=4; q.h=8; q.m=30; } // Overflow to Day 4
             }
         };
@@ -240,15 +252,15 @@
 
         const getField = (sp, lv) => {
             if(sp==='FB') {
-                if(lv==='ANU') return {q: queues.FBA, name:'สนามเด็ก', dur:30};
+                if(lv==='ANU') return {q: queues.FBA, name:'สนามเด็ก', dur:30, isAnu:true};
                 let q1=queues.FB1, q2=queues.FB2, q3=queues.FB3;
                 if(compareTime(q1,q2)<=0 && compareTime(q1,q3)<=0) return {q:q1, name:'สนาม 1', dur:60};
                 if(compareTime(q2,q3)<=0) return {q:q2, name:'สนาม 2', dur:60};
                 return {q:q3, name:'สนาม 3', dur:60};
             }
-            if(sp==='VB') return (compareTime(queues.VB1,queues.VB2)<=0) ? {q:queues.VB1, name:'วอลเลย์ 1', dur:60} : {q:queues.VB2, name:'วอลเลย์ 2', dur:60};
-            if(sp==='TK') return {q:queues.TK1, name:'ตะกร้อ 1', dur:60};
-            if(sp==='PT') return (compareTime(queues.PT1,queues.PT2)<=0) ? {q:queues.PT1, name:'เปตอง 1', dur:60} : {q:queues.PT2, name:'เปตอง 2', dur:60};
+            if(sp==='VB') return (compareTime(queues.VB1,queues.VB2)<=0) ? {q:queues.VB1, name:'วอลเลย์ 1', dur:45} : {q:queues.VB2, name:'วอลเลย์ 2', dur:45};
+            if(sp==='TK') return {q:queues.TK1, name:'ตะกร้อ 1', dur:45};
+            if(sp==='PT') return (compareTime(queues.PT1,queues.PT2)<=0) ? {q:queues.PT1, name:'เปตอง 1', dur:45} : {q:queues.PT2, name:'เปตอง 2', dur:45};
             return null;
         };
 
@@ -257,7 +269,7 @@
         categories.forEach(cat => {
             let pairings = [];
             
-            // SEC: Single Round Robin (6 matches) + 3rd Place + Final
+            // SEC: Single Round Robin (6 matches) + Finals
             if(cat.lv === 'SEC') { 
                 let t = secTeams;
                 // Round Robin
@@ -265,37 +277,38 @@
                 pairings.push({t1:t[0], t2:t[2], st:'รอบแรก'}, {t1:t[1], t2:t[3], st:'รอบแรก'});
                 pairings.push({t1:t[0], t2:t[3], st:'รอบแรก'}, {t1:t[1], t2:t[2], st:'รอบแรก'});
                 
-                // Add Placeholders for 3rd Place & Final (To be scheduled later)
-                // We add them to pairings but mark them to be scheduled on Day 4 priority or late Day 3
-                // For simplicity, let's schedule them sequentially after group stage
-                pairings.push({t1:'(ที่ 3 ลีก)', t2:'(ที่ 4 ลีก)', st:'ชิงที่ 3'});
-                pairings.push({t1:'(ที่ 1 ลีก)', t2:'(ที่ 2 ลีก)', st:'ชิงชนะเลิศ'});
+                // Add Final Matches (Scheduled Day 4)
+                pairings.push({t1:'(ที่ 3 ลีก)', t2:'(ที่ 4 ลีก)', st:'ชิงที่ 3', forceDay4:true});
+                pairings.push({t1:'(ที่ 1 ลีก)', t2:'(ที่ 2 ลีก)', st:'ชิงชนะเลิศ', forceDay4:true});
             } 
-            // Others: Groups (3 matches/group)
+            // Others: Groups (3 matches/group) + Knockout
             else { 
                 ['A','B','C'].forEach(g => {
                     let t = (cat.lv==='ANU')? anuTeams[g] : priTeams[g]; 
                     pairings.push({t1:t[0], t2:t[1], st:`สาย ${g}`}, {t1:t[1], t2:t[2], st:`สาย ${g}`}, {t1:t[2], t2:t[0], st:`สาย ${g}`});
                 });
-                // Add Knockout place holders
-                // QF -> SF -> Final (Will be handled by logic or manually added here)
-                // For layout simplicity, let's auto-generate QF/SF/Final slots
-                if(cat.lv !== 'ANU') { // Anu usually no QF/SF in simple format, but let's assume
-                     // QF 4 matches
+                
+                // Knockout (QF, SF, Final)
+                if(cat.lv !== 'ANU') { // อนุบาลแข่งเสร็จแล้วจบเลย หรือชิงแค่คู่เดียวตามบริบททั่วไป
+                     // QF
                      for(let i=1; i<=4; i++) pairings.push({t1:'(ที่ 1)', t2:'(ที่ 3)', st:'รอบ 8 ทีม'});
-                     // SF 2 matches
+                     // SF
                      for(let i=1; i<=2; i++) pairings.push({t1:'(ชนะ QF)', t2:'(ชนะ QF)', st:'รอบรองฯ'});
                      // Final
-                     pairings.push({t1:'(รอชิง)', t2:'(รอชิง)', st:'ชิงชนะเลิศ'});
+                     pairings.push({t1:'(รอชิง)', t2:'(รอชิง)', st:'ชิงชนะเลิศ', forceDay4:true});
                 } else {
-                     pairings.push({t1:'(รอชิง)', t2:'(รอชิง)', st:'ชิงชนะเลิศ'});
+                     pairings.push({t1:'(รอชิง)', t2:'(รอชิง)', st:'ชิงชนะเลิศ', forceDay4:true});
                 }
             }
             pairings.forEach((p,i) => allPairings.push({...p, cat:cat, idx:i}));
         });
 
-        // Interleave sports to share slots fairly
+        // Interleave sports
         allPairings.sort((a,b) => {
+            // Force Finals to end of list
+            if(a.forceDay4 && !b.forceDay4) return 1;
+            if(!a.forceDay4 && b.forceDay4) return -1;
+            
             // Priority: Group stage first, then Knockout
             let stageA = a.st.includes('สาย') || a.st.includes('รอบแรก') ? 1 : 2;
             let stageB = b.st.includes('สาย') || b.st.includes('รอบแรก') ? 1 : 2;
@@ -306,10 +319,9 @@
         allPairings.forEach(p => {
             let slot = getField(p.cat.sp, p.cat.lv);
             if(slot) {
-                // Check if Day 4 (Finals only preferred)
-                // If it's a final match, try to push to Day 4 if slot is Day 3
-                if(p.st === 'ชิงชนะเลิศ' && slot.q.d < 4) {
-                    slot.q.d = 4; slot.q.h = 9; slot.q.m = 0; // Force start Day 4
+                // If force Day 4, overwrite slot
+                if(p.forceDay4 && slot.q.d < 4) {
+                    slot.q.d = 4; slot.q.h = 9; slot.q.m = 0; 
                 }
 
                 generated.push({
@@ -317,7 +329,7 @@
                     sp: p.cat.sp, lv: p.cat.lv, gd: p.cat.gd, t1: p.t1, t2: p.t2, s1:"", s2:"", cat: p.st,
                     desc: `${p.cat.name} ${p.st}`
                 });
-                advanceTime(slot.q, slot.dur);
+                advanceTime(slot.q, slot.dur, slot.isAnu);
             }
         });
 
@@ -326,7 +338,7 @@
 
     // --- 3. INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-        let d = localStorage.getItem('ns_v37_db');
+        let d = localStorage.getItem('ns_v38_db');
         if(d) matches = JSON.parse(d);
         else { matches = generateSchedule(); saveData(false); }
         render();
@@ -342,7 +354,7 @@
             <div class="welcome-box">
                 <i class="fas fa-medal welcome-icon"></i>
                 <div class="welcome-title">ยินดีต้อนรับสู่ระบบจัดการแข่งขัน</div>
-                <div class="welcome-text">ระบบจัดตารางเวลาอัตโนมัติ<br>คำนวณตามจำนวนสนามและเวลาจริง (08.30-16.30 น.)</div>
+                <div class="welcome-text">ระบบจัดตารางเวลาอัตโนมัติ (V.38)<br>คำนวณตามจำนวนสนามและเวลาจริง (08.30-16.30 น.)</div>
                 <div class="welcome-grid">
                     <div class="w-btn" onclick="filterSport('FB')"><i class="fas fa-futbol" style="color:var(--c-fb)"></i><span>ฟุตบอล</span></div>
                     <div class="w-btn" onclick="filterSport('VB')"><i class="fas fa-volleyball-ball" style="color:var(--c-vb)"></i><span>วอลเลย์</span></div>
@@ -405,12 +417,13 @@
     }
 
     function renderStandings() {
-        const box = document.getElementById('standings-area');
-        box.innerHTML = '';
-        if(currentMode === 'welcome' || currentSport === 'AT') { box.innerHTML = `<div class="empty-state">เลือกกีฬาเพื่อดูคะแนน</div>`; return; }
+        const container = document.getElementById('standings-area');
+        container.innerHTML = '';
+        if(currentMode === 'welcome' || currentSport === 'AT') { container.innerHTML = `<div class="empty-state">เลือกกีฬาเพื่อดูคะแนน</div>`; return; }
 
         categories.filter(c => c.sp === currentSport).forEach(cat => {
             let stats = {};
+            // Init
             let groupSet = groupsConfig[`${cat.sp}_${cat.lv}`];
             if(groupSet) {
                 if(groupSet.ลีก) groupSet.ลีก.forEach(t => stats[t]={P:0,W:0,D:0,L:0,GF:0,GA:0,PTS:0});
@@ -433,17 +446,24 @@
 
             if(groupSet) {
                 Object.keys(groupSet).forEach(gKey => {
-                    let sorted = groupSet[gKey].sort((a,b) => (stats[b]?.PTS||0) - (stats[a]?.PTS||0));
+                    let teamList = groupSet[gKey];
+                    let sorted = teamList.sort((a,b) => {
+                        let sA = stats[a], sB = stats[b];
+                        if(sB.PTS !== sA.PTS) return sB.PTS - sA.PTS;
+                        return (sB.GF - sB.GA) - (sA.GF - sA.GA);
+                    });
+
+                    let box = document.createElement('div');
+                    box.className = 'st-box';
                     let title = (cat.lv==='SEC')?`${cat.name} (ลีก)`:`${cat.name} สาย ${gKey}`;
                     let rows = sorted.map((t,i) => {
                         let s = stats[t];
                         return `<tr><td>${i+1}</td><td>${t}</td><td>${s.P}</td><td>${s.W}</td><td>${s.D}</td><td>${s.L}</td><td class="st-pts">${s.PTS}</td></tr>`;
                     }).join('');
                     
-                    let div = document.createElement('div');
-                    div.className = 'st-box';
-                    div.innerHTML = `<div class="st-head">${title}</div><table class="st-table"><tr><th>#</th><th>ทีม</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>${rows}</table>`;
-                    box.appendChild(div);
+                    box.innerHTML = `<div class="st-head">${title}</div><table class="st-table"><tr><th>#</th><th>ทีม</th><th>P</th><th>W</th><th>D</th><th>L</th><th>Pts</th></tr>${rows}</table>`;
+                    let wrap = document.createElement('div'); wrap.style.marginBottom="15px"; wrap.appendChild(box);
+                    container.appendChild(wrap);
                 });
             }
         });
@@ -453,10 +473,10 @@
     function filterSport(sp) { currentSport=sp; currentMode='schedule'; document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active')); event.currentTarget.classList.add('active'); render(); }
     function goHome() { currentMode='welcome'; currentSport='ALL'; document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active')); render(); }
     function upd(id, slot, val) { let m = matches.find(x=>x.id===id); if(m){ if(slot==1)m.s1=val; else m.s2=val; saveData(true); renderStandings(); } }
-    function saveData(toast) { localStorage.setItem('ns_v37_db', JSON.stringify(matches)); if(toast) showToast(); }
+    function saveData(toast) { localStorage.setItem('ns_v38_db', JSON.stringify(matches)); if(toast) showToast(); }
     function saveDataManual() { saveData(true); }
     function showToast() { let t=document.getElementById('toast'); t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2000); }
-    function resetData() { if(confirm('รีเซ็ตข้อมูล?')) { localStorage.removeItem('ns_v37_db'); location.reload(); } }
+    function resetData() { if(confirm('รีเซ็ตข้อมูลทั้งหมด?')) { localStorage.removeItem('ns_v38_db'); location.reload(); } }
 </script>
 </body>
 </html>
