@@ -3,320 +3,350 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบจัดตารางการแข่งขันกีฬาสี - 9 โรงเรียน</title>
+    <title>ระบบจัดตารางการแข่งขันกีฬาสี (Smart Scheduler)</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <style>
-        body { font-family: 'Sarabun', sans-serif; background-color: #f3f4f6; }
-        .school-tag { font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; color: white; }
+        body { font-family: 'Sarabun', sans-serif; background-color: #f1f5f9; }
+        .match-card { transition: all 0.2s; }
+        .match-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
     </style>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h1 class="text-2xl font-bold text-blue-800 mb-2">🏅 ระบบบริหารจัดการตารางแข่งขัน (แยกสนามตามรุ่น)</h1>
-        <p class="text-gray-600 text-sm">เงื่อนไข: 9 โรงเรียน | 4 วัน (2 บ่าย + 2 เต็ม) | ตะกร้อใช้สนามร่วม | กีฬาอื่นแยกสนามตามรุ่น</p>
-        
-        <div class="mt-4 flex gap-4 flex-wrap">
-            <button onclick="generateSchedule()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow transition">
-                🔄 ประมวลผลและจัดตารางแข่งขันใหม่
+    <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-slate-800"><i class="fa-solid fa-calendar-days text-blue-600 mr-2"></i>ระบบจัดตารางการแข่งขัน</h1>
+                <p class="text-slate-500 mt-1">
+                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full border border-blue-200">9 โรงเรียน</span>
+                    <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full border border-indigo-200">4 วัน (2 บ่าย + 2 เต็ม)</span>
+                    <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full border border-orange-200">พัก 1 ช่วงแมตช์ (เผื่อตัดสิน)</span>
+                </p>
+            </div>
+            <button onclick="generateSchedule()" class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg transition flex items-center gap-2">
+                <i class="fa-solid fa-rotate"></i> ประมวลผลใหม่
             </button>
-            <div class="text-sm text-gray-500 self-center">
-                *ระบบจะเช็คไม่ให้โรงเรียนเดียวกันแข่งซ้อนรายการ (แก้ปัญหาครู/นักกีฬาชุดเดิม)
-            </div>
         </div>
     </div>
 
-    <div id="outputArea" class="max-w-7xl mx-auto hidden">
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-indigo-100 p-4 rounded-lg border-l-4 border-indigo-500">
-                <h3 class="font-bold text-indigo-700">จำนวนแมตช์ทั้งหมด</h3>
-                <p class="text-2xl font-bold" id="totalMatches">0</p>
-            </div>
-            <div class="bg-green-100 p-4 rounded-lg border-l-4 border-green-500">
-                <h3 class="font-bold text-green-700">เวลาสิ้นสุดล่าสุด</h3>
-                <p class="text-xl font-bold" id="lastMatchTime">-</p>
-            </div>
-            <div class="bg-yellow-100 p-4 rounded-lg border-l-4 border-yellow-500">
-                <h3 class="font-bold text-yellow-700">ตะกร้อ (สนามรวม)</h3>
-                <p class="text-sm">สถานะ: <span id="takrawStatus">รอประมวลผล</span></p>
-            </div>
+    <div id="statusArea" class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 hidden">
+        <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
+            <p class="text-sm text-gray-500">จำนวนแมตช์รวม</p>
+            <p class="text-2xl font-bold text-slate-800" id="statTotal">0</p>
         </div>
-
-        <div class="space-y-6" id="scheduleContainer">
-            </div>
-
+        <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-green-500">
+            <p class="text-sm text-gray-500">แมตช์สุดท้ายจบเวลา</p>
+            <p class="text-2xl font-bold text-slate-800" id="statLastTime">-</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-yellow-500">
+            <p class="text-sm text-gray-500">ตะกร้อ (สนามรวม)</p>
+            <p class="text-lg font-bold text-yellow-700" id="statTakraw">รอผล</p>
+        </div>
+        <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-red-500">
+            <p class="text-sm text-gray-500">สถานะฟุตบอล</p>
+            <p class="text-lg font-bold text-red-700" id="statFootball">รอผล</p>
+        </div>
     </div>
+
+    <div id="scheduleOutput" class="max-w-7xl mx-auto space-y-8"></div>
 
 <script>
-    // --- 1. ข้อมูลตั้งต้น ---
+    // --- Configuration ---
     const schools = [
-        { id: 1, name: "รร.บ้าน 1", color: "bg-red-500" },
-        { id: 2, name: "รร.บ้าน 2", color: "bg-blue-500" },
-        { id: 3, name: "รร.บ้าน 3", color: "bg-green-500" },
-        { id: 4, name: "รร.บ้าน 4", color: "bg-yellow-500" },
-        { id: 5, name: "รร.บ้าน 5", color: "bg-purple-500" },
-        { id: 6, name: "รร.บ้าน 6", color: "bg-pink-500" },
-        { id: 7, name: "รร.บ้าน 7", color: "bg-orange-500" },
-        { id: 8, name: "รร.บ้าน 8", color: "bg-teal-500" },
-        { id: 9, name: "รร.บ้าน 9", color: "bg-gray-600" }
+        { id: 1, name: "รร.1", color: "bg-red-50 text-red-700 border-red-200" },
+        { id: 2, name: "รร.2", color: "bg-blue-50 text-blue-700 border-blue-200" },
+        { id: 3, name: "รร.3", color: "bg-green-50 text-green-700 border-green-200" },
+        { id: 4, name: "รร.4", color: "bg-yellow-50 text-yellow-700 border-yellow-200" },
+        { id: 5, name: "รร.5", color: "bg-purple-50 text-purple-700 border-purple-200" },
+        { id: 6, name: "รร.6", color: "bg-pink-50 text-pink-700 border-pink-200" },
+        { id: 7, name: "รร.7", color: "bg-orange-50 text-orange-700 border-orange-200" },
+        { id: 8, name: "รร.8", color: "bg-teal-50 text-teal-700 border-teal-200" },
+        { id: 9, name: "รร.9", color: "bg-slate-100 text-slate-700 border-slate-300" }
     ];
 
-    // โครงสร้างกีฬา
     const sportsConfig = [
-        // ฟุตบอล (แยกสนาม)
-        { id: 'FB_KINDER', name: 'ฟุตบอล อนุบาล', field: 'สนามฟุตบอล 1 (อนุบาล)', duration: 30, type: 'group_9' },
-        { id: 'FB_P_LOW', name: 'ฟุตบอล ป.ต้น', field: 'สนามฟุตบอล 2 (ป.ต้น)', duration: 45, type: 'group_9' },
-        { id: 'FB_P_HIGH', name: 'ฟุตบอล ป.ปลาย', field: 'สนามฟุตบอล 3 (ป.ปลาย)', duration: 60, type: 'group_9' },
-        { id: 'FB_M_HIGH', name: 'ฟุตบอล มัธยม', field: 'สนามฟุตบอล 4 (มัธยม)', duration: 60, type: 'round_4' }, // สมมติมัธยมมี 4 ทีมตามที่แก้
-        
-        // วอลเลย์บอล (แยกสนามตามรุ่น)
-        { id: 'VB_P_HIGH', name: 'วอลเลย์ ป.ปลาย', field: 'สนามวอลเลย์ 1 (ป.ปลาย)', duration: 60, type: 'group_9' },
-        { id: 'VB_M_HIGH', name: 'วอลเลย์ มัธยม', field: 'สนามวอลเลย์ 2 (มัธยม)', duration: 60, type: 'round_4' },
+        // Football (Field Separated)
+        { id: 'FB_K', name: 'ฟุตบอล อนุบาล', field: 'สนามฟุตบอล 1 (อนุบาล)', duration: 30, type: 'group_9', icon: 'fa-futbol', color: 'text-emerald-600 bg-emerald-50' },
+        { id: 'FB_PL', name: 'ฟุตบอล ป.ต้น', field: 'สนามฟุตบอล 2 (ป.ต้น)', duration: 45, type: 'group_9', icon: 'fa-futbol', color: 'text-green-600 bg-green-50' },
+        { id: 'FB_PH', name: 'ฟุตบอล ป.ปลาย', field: 'สนามฟุตบอล 3 (ป.ปลาย)', duration: 60, type: 'group_9', icon: 'fa-futbol', color: 'text-teal-600 bg-teal-50' },
+        { id: 'FB_MH', name: 'ฟุตบอล มัธยม', field: 'สนามฟุตบอล 4 (มัธยม)', duration: 60, type: 'round_4', icon: 'fa-futbol', color: 'text-cyan-600 bg-cyan-50' },
 
-        // เปตอง (แยกสนาม)
-        { id: 'PT_P_HIGH', name: 'เปตอง ป.ปลาย', field: 'สนามเปตอง 1 (ป.ปลาย)', duration: 60, type: 'group_9' },
-        { id: 'PT_M_HIGH', name: 'เปตอง มัธยม', field: 'สนามเปตอง 2 (มัธยม)', duration: 60, type: 'round_4' },
+        // Volleyball
+        { id: 'VB_PH', name: 'วอลเลย์ ป.ปลาย', field: 'สนามวอลเลย์ 1', duration: 60, type: 'group_9', icon: 'fa-volleyball', color: 'text-indigo-600 bg-indigo-50' },
+        { id: 'VB_MH', name: 'วอลเลย์ มัธยม', field: 'สนามวอลเลย์ 2', duration: 60, type: 'round_4', icon: 'fa-volleyball', color: 'text-violet-600 bg-violet-50' },
 
-        // ตะกร้อ (สนามรวม - Critical Resource)
-        { id: 'TK_P_HIGH', name: 'ตะกร้อ ป.ปลาย', field: 'สนามตะกร้อ (รวม)', duration: 45, type: 'group_9' },
-        { id: 'TK_M_HIGH', name: 'ตะกร้อ มัธยม', field: 'สนามตะกร้อ (รวม)', duration: 45, type: 'round_4' }
+        // Petanque
+        { id: 'PT_PH', name: 'เปตอง ป.ปลาย', field: 'สนามเปตอง 1', duration: 60, type: 'group_9', icon: 'fa-circle', color: 'text-amber-600 bg-amber-50' },
+        { id: 'PT_MH', name: 'เปตอง มัธยม', field: 'สนามเปตอง 2', duration: 60, type: 'round_4', icon: 'fa-circle', color: 'text-orange-600 bg-orange-50' },
+
+        // Takraw (Shared Field)
+        { id: 'TK_PH', name: 'ตะกร้อ ป.ปลาย', field: 'สนามตะกร้อ (รวม)', duration: 45, type: 'group_9', icon: 'fa-baseball', color: 'text-rose-600 bg-rose-50' },
+        { id: 'TK_MH', name: 'ตะกร้อ มัธยม', field: 'สนามตะกร้อ (รวม)', duration: 45, type: 'round_4', icon: 'fa-baseball', color: 'text-red-600 bg-red-50' }
     ];
 
-    // กำหนดช่วงเวลา (Time Slots)
-    // วันที่ 1,2: 13.00 (780นาที) - 16.30 (990นาที)
-    // วันที่ 3,4: 08.30 (510นาที) - 16.30 (990นาที)
+    // Time: Minutes from midnight (00:00)
+    // 13:00 = 780, 16:30 = 990
+    // 08:30 = 510, 16:30 = 990
     const daysConfig = [
-        { day: 1, name: "วันที่ 1 (บ่าย)", start: 780, end: 990 },
-        { day: 2, name: "วันที่ 2 (บ่าย)", start: 780, end: 990 },
+        { day: 1, name: "วันที่ 1 (ช่วงบ่าย)", start: 780, end: 990 },
+        { day: 2, name: "วันที่ 2 (ช่วงบ่าย)", start: 780, end: 990 },
         { day: 3, name: "วันที่ 3 (เต็มวัน)", start: 510, end: 990 },
         { day: 4, name: "วันที่ 4 (เต็มวัน)", start: 510, end: 990 }
     ];
 
+    // --- Logic ---
     let allMatches = [];
     let scheduleResult = [];
 
-    // --- 2. Logic การสร้างแมตช์ ---
     function generateMatches() {
         allMatches = [];
-        
+        let schoolList = [...schools];
+
         sportsConfig.forEach(sport => {
             if (sport.type === 'group_9') {
-                // 1. จับสลากแบ่งสาย A(3), B(3), C(3)
-                let shuffled = [...schools].sort(() => 0.5 - Math.random());
-                let groupA = shuffled.slice(0,3);
-                let groupB = shuffled.slice(3,6);
-                let groupC = shuffled.slice(6,9);
+                // Shuffle & Group
+                let shuffled = [...schoolList].sort(() => 0.5 - Math.random());
+                let groups = [shuffled.slice(0,3), shuffled.slice(3,6), shuffled.slice(6,9)];
+                let groupNames = ['A', 'B', 'C'];
 
-                // รอบแรก (พบกันหมดในสาย)
-                const createGroupMatches = (group, gName) => {
-                    for(let i=0; i<group.length; i++) {
-                        for(let j=i+1; j<group.length; j++) {
+                // Round Robin in Group
+                groups.forEach((g, idx) => {
+                    for(let i=0; i<g.length; i++) {
+                        for(let j=i+1; j<g.length; j++) {
                             allMatches.push({
                                 sport: sport,
-                                round: `รอบแรก สาย ${gName}`,
-                                team1: group[i],
-                                team2: group[j],
-                                priority: 1
+                                round: `รอบแรก สาย ${groupNames[idx]}`,
+                                team1: g[i],
+                                team2: g[j],
+                                priority: 1,
+                                duration: sport.duration
                             });
                         }
                     }
-                };
-                createGroupMatches(groupA, 'A');
-                createGroupMatches(groupB, 'B');
-                createGroupMatches(groupC, 'C');
+                });
 
-                // รอบน็อคเอาท์ (Placeholder)
-                // รอบ 4 ทีม (ที่ 1 A, B, C + ดีสุด) -> ตัดเชือก -> ชิง
-                // เพื่อความง่ายในการจัดตาราง จะสร้างแมตช์จำลองชื่อ "ผู้ชนะ..."
-                let dummyT1 = { name: "ที่ 1 สาย A", id: 99 };
-                let dummyT2 = { name: "ที่ 1 สาย B", id: 99 };
-                let dummyT3 = { name: "ที่ 1 สาย C", id: 99 };
-                let dummyT4 = { name: "ที่ 2 ที่ดีที่สุด", id: 99 };
+                // Knockout (Placeholder for winners)
+                allMatches.push({ sport: sport, round: "รอบรองฯ 1", team1: {name:"ที่ 1 สาย A", id:'W1'}, team2: {name:"ที่ดีสุด", id:'W4'}, priority: 2, duration: sport.duration });
+                allMatches.push({ sport: sport, round: "รอบรองฯ 2", team1: {name:"ที่ 1 สาย B", id:'W2'}, team2: {name:"ที่ 1 สาย C", id:'W3'}, priority: 2, duration: sport.duration });
+                allMatches.push({ sport: sport, round: "ชิงที่ 3", team1: {name:"แพ้รอง 1", id:'L1'}, team2: {name:"แพ้รอง 2", id:'L2'}, priority: 3, duration: sport.duration });
+                allMatches.push({ sport: sport, round: "ชิงชนะเลิศ", team1: {name:"ชนะรอง 1", id:'WF1'}, team2: {name:"ชนะรอง 2", id:'WF2'}, priority: 3, duration: sport.duration });
 
-                allMatches.push({ sport: sport, round: "รอบรองชนะเลิศ 1", team1: dummyT1, team2: dummyT4, priority: 2 });
-                allMatches.push({ sport: sport, round: "รอบรองชนะเลิศ 2", team1: dummyT2, team2: dummyT3, priority: 2 });
-                allMatches.push({ sport: sport, round: "ชิงอันดับ 3", team1: {name:"แพ้รอบรอง 1"}, team2: {name:"แพ้รอบรอง 2"}, priority: 3 });
-                allMatches.push({ sport: sport, round: "ชิงชนะเลิศ", team1: {name:"ชนะรอบรอง 1"}, team2: {name:"ชนะรอบรอง 2"}, priority: 3 });
-
-            } else if (sport.type === 'round_4') {
-                // มัธยม 4 ทีม (สมมติเลือกทีม 1-4 มาแข่ง หรือเป็นโรงเรียนขยายโอกาส)
-                let mTeams = schools.slice(0, 4); 
-                
-                // พบกันหมด
+            } else {
+                // Secondary 4 Teams (Randomly pick 4 for simulation)
+                let mTeams = schoolList.slice(0, 4);
                 for(let i=0; i<mTeams.length; i++) {
                     for(let j=i+1; j<mTeams.length; j++) {
                         allMatches.push({
                             sport: sport,
-                            round: `รอบพบกันหมด`,
+                            round: `พบกันหมด`,
                             team1: mTeams[i],
                             team2: mTeams[j],
-                            priority: 1
+                            priority: 1,
+                            duration: sport.duration
                         });
                     }
                 }
-                // ชิง
-                allMatches.push({ sport: sport, round: "ชิงอันดับ 3", team1: {name:"อันดับ 3"}, team2: {name:"อันดับ 4"}, priority: 2 });
-                allMatches.push({ sport: sport, round: "ชิงชนะเลิศ", team1: {name:"อันดับ 1"}, team2: {name:"อันดับ 2"}, priority: 2 });
+                allMatches.push({ sport: sport, round: "ชิงที่ 3", team1: {name:"อันดับ 3", id:'M3'}, team2: {name:"อันดับ 4", id:'M4'}, priority: 2, duration: sport.duration });
+                allMatches.push({ sport: sport, round: "ชิงชนะเลิศ", team1: {name:"อันดับ 1", id:'M1'}, team2: {name:"อันดับ 2", id:'M2'}, priority: 2, duration: sport.duration });
             }
         });
-
-        // Sort by priority (Group stage first)
+        
+        // Sort: Group matches first
         allMatches.sort((a,b) => a.priority - b.priority);
     }
 
-    // --- 3. Logic การลงตาราง (Scheduler) ---
     function runScheduler() {
         scheduleResult = [];
-        // Track field usage time (minutes from start of day) per day
-        let fieldCursors = {}; 
+        
+        // Trackers
+        let fieldNextFree = {}; // When is the field free?
+        let schoolNextFree = {}; // When is the school free? (Including Rest Gap)
+
+        // Init Field Trackers
         sportsConfig.forEach(s => {
             daysConfig.forEach(d => {
-                fieldCursors[`${s.field}_D${d.day}`] = d.start;
+                fieldNextFree[`${s.field}_D${d.day}`] = d.start;
             });
         });
 
-        // Track Team Availability to prevent overlap (School X is busy until Time T on Day D)
-        let schoolBusyUntil = {}; // Key: "D1_SchoolID", Value: minute
+        // Init School Trackers
+        schools.forEach(s => {
+            daysConfig.forEach(d => {
+                schoolNextFree[`${s.id}_D${d.day}`] = d.start;
+            });
+        });
 
-        // Clone matches list to process
         let queue = [...allMatches];
-        let processed = [];
+        let pendingNextDay = [];
 
-        // วนลูปตามวัน (1 -> 4)
         for (let d = 0; d < daysConfig.length; d++) {
-            let currentDay = daysConfig[d];
-            let dayKey = currentDay.day;
+            let dayConf = daysConfig[d];
+            let dayKey = dayConf.day;
+            let todaysQueue = [...queue]; // Try to schedule everything
+            let nextDaysQueue = [];
 
-            // พยายามยัดแมตช์ลงในวันนี้
-            let remainingQueue = [];
-            
-            for (let m = 0; m < queue.length; m++) {
-                let match = queue[m];
-                let fieldKey = `${match.sport.field}_D${dayKey}`;
-                let currentTime = fieldCursors[fieldKey];
-                
-                // เช็คว่าเวลาเกินวันหรือไม่
-                if (currentTime + match.sport.duration > currentDay.end) {
-                    remainingQueue.push(match); // ยกไปวันถัดไป
+            // Reset field cursors to day start if not already set (safety)
+            sportsConfig.forEach(s => {
+                if(!fieldNextFree[`${s.field}_D${dayKey}`]) fieldNextFree[`${s.field}_D${dayKey}`] = dayConf.start;
+            });
+
+            // Process Queue
+            for (let i = 0; i < todaysQueue.length; i++) {
+                let m = todaysQueue[i];
+                let fKey = `${m.sport.field}_D${dayKey}`;
+                let fieldTime = fieldNextFree[fKey];
+
+                // 1. Check Field Availability
+                if (fieldTime + m.duration > dayConf.end) {
+                    nextDaysQueue.push(m); // Field full for today
                     continue;
                 }
 
-                // *** CONFLICT CHECK ***
-                // เช็คว่าโรงเรียนว่างไหมในเวลานี้ (สำหรับทีมที่มี ID จริง)
-                let t1Busy = (match.team1.id) ? (schoolBusyUntil[`D${dayKey}_${match.team1.id}`] || 0) : 0;
-                let t2Busy = (match.team2.id) ? (schoolBusyUntil[`D${dayKey}_${match.team2.id}`] || 0) : 0;
+                // 2. Check Team Availability (Crucial Logic Here)
+                let t1Ready = dayConf.start;
+                let t2Ready = dayConf.start;
 
-                let startTime = Math.max(currentTime, t1Busy, t2Busy);
-                let finishTime = startTime + match.sport.duration;
+                if (m.team1.id) t1Ready = schoolNextFree[`${m.team1.id}_D${dayKey}`] || dayConf.start;
+                if (m.team2.id) t2Ready = schoolNextFree[`${m.team2.id}_D${dayKey}`] || dayConf.start;
 
-                // เช็คอีกทีว่าหลังจากรอโรงเรียนว่าง เวลาจะเกินวันไหม
-                if (finishTime > currentDay.end) {
-                    remainingQueue.push(match);
+                // ** KEY CHANGE: Start time is Max(Field, Team1, Team2) **
+                let possibleStart = Math.max(fieldTime, t1Ready, t2Ready);
+                let possibleEnd = possibleStart + m.duration;
+
+                if (possibleEnd > dayConf.end) {
+                    nextDaysQueue.push(m); // No time left today due to busy teams
                     continue;
                 }
 
-                // ผ่าน! ลงตารางได้
+                // Success! Schedule it
                 scheduleResult.push({
-                    day: currentDay.name,
-                    timeStart: formatTime(startTime),
-                    timeEnd: formatTime(finishTime),
-                    sport: match.sport.name,
-                    field: match.sport.field,
-                    match: `${match.team1.name} vs ${match.team2.name}`,
-                    round: match.round,
-                    color: match.sport.id.includes('TK') ? 'bg-orange-100 border-orange-500' : 'bg-white border-blue-200'
+                    dayId: dayKey,
+                    dayName: dayConf.name,
+                    start: formatTime(possibleStart),
+                    end: formatTime(possibleEnd),
+                    sport: m.sport,
+                    match: m,
+                    displayTime: `${formatTime(possibleStart)} - ${formatTime(possibleEnd)}`
                 });
 
-                // Update Cursors
-                fieldCursors[fieldKey] = finishTime; // สนามนี้ไม่ว่างจนถึงเวลานี้
-                if(match.team1.id) schoolBusyUntil[`D${dayKey}_${match.team1.id}`] = finishTime + 10; // โรงเรียนไม่ว่าง + พัก 10 นาที
-                if(match.team2.id) schoolBusyUntil[`D${dayKey}_${match.team2.id}`] = finishTime + 10;
+                // ** UPDATE TRACKERS WITH GAP **
+                // Field is busy until match ends
+                fieldNextFree[fKey] = possibleEnd; 
 
-                // Update processed list (ไม่ต้องใส่กลับ queue)
+                // Teams are busy until match ends + GAP (equal to match duration)
+                // เพื่อให้พักและไปช่วยตัดสินคู่ถัดไปได้
+                let gap = m.duration; // พักเท่ากับเวลาแข่ง 1 แมตช์
+                
+                if (m.team1.id) schoolNextFree[`${m.team1.id}_D${dayKey}`] = possibleEnd + gap;
+                if (m.team2.id) schoolNextFree[`${m.team2.id}_D${dayKey}`] = possibleEnd + gap;
             }
-            queue = remainingQueue; // แมตช์ที่เหลือยกไปวันหน้า
-        }
-
-        // เก็บตกแมตช์ที่หลุด (ถ้ามี)
-        if (queue.length > 0) {
-            alert(`คำเตือน: มีแมตช์ตกหล่น ${queue.length} คู่ เนื่องจากเวลาไม่พอ (อาจเกิดจากตะกร้อสนามเดียว)`);
+            
+            queue = nextDaysQueue; // What's left goes to next day
         }
     }
 
-    function formatTime(minutes) {
-        let h = Math.floor(minutes / 60);
-        let m = minutes % 60;
+    function formatTime(mins) {
+        let h = Math.floor(mins / 60);
+        let m = mins % 60;
         return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`;
     }
 
-    // --- 4. Render UI ---
-    function renderSchedule() {
-        const container = document.getElementById('scheduleContainer');
-        container.innerHTML = '';
+    // --- Renderer ---
+    function render() {
+        const output = document.getElementById('scheduleOutput');
+        output.innerHTML = '';
+        
+        const days = [...new Set(scheduleResult.map(s => s.dayId))];
+        
+        days.forEach(dayId => {
+            let dayData = scheduleResult.filter(s => s.dayId === dayId);
+            dayData.sort((a,b) => a.start.localeCompare(b.start));
 
-        // Group by Day
-        const days = [...new Set(scheduleResult.map(item => item.day))];
-
-        days.forEach(day => {
-            let matchesToday = scheduleResult.filter(m => m.day === day);
-            // Sort by Time then Field
-            matchesToday.sort((a,b) => a.timeStart.localeCompare(b.timeStart));
+            let dayName = daysConfig.find(d => d.day === dayId).name;
 
             let html = `
-                <div class="bg-white rounded-xl shadow overflow-hidden">
-                    <div class="bg-gray-800 text-white px-6 py-3 flex justify-between items-center">
-                        <h2 class="text-xl font-bold">${day}</h2>
-                        <span class="text-sm bg-gray-600 px-3 py-1 rounded-full">${matchesToday.length} คู่</span>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-800 text-white px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-xl font-bold tracking-wide"><i class="fa-regular fa-clock mr-2"></i>${dayName}</h2>
+                        <span class="bg-slate-600 px-3 py-1 rounded-lg text-sm">${dayData.length} แมตช์</span>
                     </div>
+                    
                     <div class="overflow-x-auto">
-                        <table class="w-full text-sm text-left">
-                            <thead class="text-xs text-gray-700 uppercase bg-gray-100">
-                                <tr>
-                                    <th class="px-6 py-3">เวลา</th>
-                                    <th class="px-6 py-3">สนาม</th>
-                                    <th class="px-6 py-3">รายการ</th>
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-sm uppercase tracking-wider">
+                                    <th class="px-6 py-3 w-32">เวลา</th>
+                                    <th class="px-6 py-3 w-48">สนาม</th>
+                                    <th class="px-6 py-3">กีฬา</th>
                                     <th class="px-6 py-3">คู่แข่งขัน</th>
                                     <th class="px-6 py-3">รอบ</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-slate-100">
             `;
 
-            matchesToday.forEach(m => {
+            dayData.forEach(item => {
+                let t1Color = item.match.team1.color || "bg-gray-100 text-gray-600";
+                let t2Color = item.match.team2.color || "bg-gray-100 text-gray-600";
+                
                 html += `
-                    <tr class="border-b hover:bg-gray-50 border-l-4 ${m.color.replace('bg-', 'border-').split(' ')[1]}">
-                        <td class="px-6 py-4 font-mono font-bold text-gray-600">${m.timeStart} - ${m.timeEnd}</td>
-                        <td class="px-6 py-4 font-semibold">${m.field}</td>
-                        <td class="px-6 py-4">${m.sport}</td>
-                        <td class="px-6 py-4 font-medium text-blue-900">${m.match}</td>
-                        <td class="px-6 py-4 text-gray-500">${m.round}</td>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="px-6 py-4 font-mono font-bold text-slate-600 whitespace-nowrap">${item.displayTime}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-slate-700">
+                            <i class="fa-solid fa-location-dot text-slate-300 mr-1"></i>${item.sport.field.replace('สนาม', '')}
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-sm font-bold border ${item.sport.color}">
+                                <i class="fa-solid ${item.sport.icon}"></i> ${item.sport.name}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-1 rounded border text-sm font-semibold ${t1Color}">${item.match.team1.name}</span>
+                                <span class="text-slate-300 font-bold">VS</span>
+                                <span class="px-2 py-1 rounded border text-sm font-semibold ${t2Color}">${item.match.team2.name}</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-slate-500">${item.match.round}</td>
                     </tr>
                 `;
             });
 
             html += `</tbody></table></div></div>`;
-            container.innerHTML += html;
+            output.innerHTML += html;
         });
 
-        document.getElementById('totalMatches').innerText = scheduleResult.length;
+        // Update Stats
+        document.getElementById('statTotal').innerText = scheduleResult.length;
         if(scheduleResult.length > 0) {
             let last = scheduleResult[scheduleResult.length-1];
-            document.getElementById('lastMatchTime').innerText = `${last.day} ${last.timeEnd}`;
-            document.getElementById('takrawStatus').innerText = "จัดลงสนามรวมเรียบร้อย";
-            document.getElementById('takrawStatus').className = "text-green-600 font-bold";
+            document.getElementById('statLastTime').innerText = `วันที่ ${last.dayId} (${last.end} น.)`;
         }
         
-        document.getElementById('outputArea').classList.remove('hidden');
+        let tkCount = scheduleResult.filter(s => s.sport.id.includes('TK')).length;
+        let tkStatus = document.getElementById('statTakraw');
+        if(tkCount >= 18) { // 9+9 matches roughly
+            tkStatus.innerText = "ครบถ้วน"; tkStatus.className = "text-lg font-bold text-green-600";
+        } else {
+            tkStatus.innerText = "แน่นมาก"; tkStatus.className = "text-lg font-bold text-orange-600";
+        }
+
+        let fbCount = scheduleResult.filter(s => s.sport.id.includes('FB')).length;
+        document.getElementById('statFootball').innerText = `${fbCount} แมตช์`;
+        
+        document.getElementById('statusArea').classList.remove('hidden');
     }
 
-    // --- Main Function ---
     function generateSchedule() {
         generateMatches();
         runScheduler();
-        renderSchedule();
+        render();
     }
+
+    // Auto Run on Load
+    generateSchedule();
 
 </script>
 
