@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard โนนสวรรค์ เกมส์ 2568 (V.32 Complete)</title>
+<title>ระบบจัดการแข่งขัน โนนสวรรค์ เกมส์ 2568 (V.33 Corrected Logic)</title>
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
     :root { 
         --header-h: 60px;
         --sidebar-w: 220px;
-        --primary: #2563eb; --bg: #f1f5f9; --text: #1e293b; --white: #ffffff;
+        --primary: #2563eb; --bg: #f8fafc; --text: #0f172a; --white: #ffffff;
         --border: #e2e8f0; --accent: #f59e0b;
         /* Sport Colors */
         --c-fb: #3b82f6; --c-vb: #f97316; --c-tk: #10b981; --c-pt: #8b5cf6; --c-at: #ef4444;
@@ -22,102 +22,109 @@
     .app-header {
         height: var(--header-h); background: var(--white); border-bottom: 1px solid var(--border);
         display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.05); z-index: 10;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05); z-index: 10;
     }
-    .app-title { font-size: 1.2rem; font-weight: bold; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+    .app-title { font-size: 1.25rem; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
     
-    .day-tabs { display: flex; gap: 5px; background: var(--bg); padding: 4px; border-radius: 8px; }
+    .day-tabs { display: flex; gap: 5px; background: #f1f5f9; padding: 4px; border-radius: 8px; }
     .day-btn {
-        border: none; background: transparent; padding: 6px 12px; border-radius: 6px;
+        border: none; background: transparent; padding: 6px 16px; border-radius: 6px;
         font-size: 0.9rem; cursor: pointer; color: #64748b; font-weight: 600; transition: 0.2s;
     }
-    .day-btn:hover { background: #e2e8f0; }
+    .day-btn:hover { background: #e2e8f0; color: #334155; }
     .day-btn.active { background: var(--white); color: var(--primary); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
 
     .actions { display: flex; gap: 10px; }
-    .btn-icon { width: 36px; height: 36px; border-radius: 6px; border: 1px solid var(--border); background: var(--white); cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-    .btn-icon:hover { background: #f8fafc; color: var(--primary); }
+    .btn-icon { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); cursor: pointer; color: #64748b; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+    .btn-icon:hover { background: #f8fafc; color: var(--primary); border-color: var(--primary); }
     .btn-save { color: #10b981; border-color: #bbf7d0; background: #f0fdf4; }
     .btn-reset { color: #ef4444; border-color: #fecaca; background: #fef2f2; }
 
     /* --- MAIN LAYOUT --- */
     .main-container { flex: 1; display: flex; overflow: hidden; }
 
-    /* SIDEBAR (Sport Filter) */
-    .sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 15px; overflow-y: auto; }
-    .menu-title { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: bold; margin-bottom: 10px; letter-spacing: 0.5px; }
+    /* SIDEBAR */
+    .sidebar { width: var(--sidebar-w); background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 20px 15px; overflow-y: auto; }
+    .menu-title { font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; font-weight: 700; margin-bottom: 12px; letter-spacing: 0.5px; }
     .nav-item {
-        display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-bottom: 5px;
+        display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 4px;
         border-radius: 8px; cursor: pointer; font-weight: 500; color: #475569; transition: 0.2s;
     }
     .nav-item:hover { background: #f1f5f9; color: var(--primary); }
-    .nav-item.active { background: #eff6ff; color: var(--primary); }
-    .nav-icon { width: 24px; text-align: center; }
+    .nav-item.active { background: #eff6ff; color: var(--primary); font-weight: 600; }
+    .nav-icon { width: 24px; text-align: center; font-size: 1.1em; }
 
     /* CENTER (Schedule) */
     .content-area { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; scroll-behavior: smooth; }
     
-    .match-table-container { background: var(--white); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .match-header { background:#f8fafc; padding:8px 15px; border-bottom:1px solid var(--border); font-weight:bold; color:#64748b; font-size:0.9rem; display: flex; align-items: center; gap: 8px; }
+    .match-table-container { background: var(--white); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .match-header { background:#f8fafc; padding:10px 20px; border-bottom:1px solid var(--border); font-weight:700; color:#475569; font-size:0.95rem; display: flex; align-items: center; gap: 8px; }
     
     .match-row {
-        display: grid; grid-template-columns: 70px 150px 1fr 100px 100px;
-        align-items: center; padding: 10px 15px; border-bottom: 1px solid var(--border);
-        font-size: 0.95rem; transition: 0.1s;
+        display: grid; grid-template-columns: 60px 160px 1fr 100px 120px;
+        align-items: center; padding: 12px 20px; border-bottom: 1px solid var(--border);
+        font-size: 0.95rem; transition: background 0.1s;
     }
     .match-row:last-child { border-bottom: none; }
     .match-row:hover { background: #f8fafc; }
     
-    .m-time { font-weight: bold; color: var(--primary); font-family: 'Courier New', monospace; }
-    .m-cat { display: flex; flex-direction: column; font-size: 0.85rem; line-height: 1.2; }
-    .cat-name { font-weight: 600; }
-    .cat-sub { color: #94a3b8; font-size: 0.75rem; }
+    .m-time { font-weight: 700; color: var(--primary); font-family: 'Courier New', monospace; letter-spacing: -0.5px; }
+    .m-cat { display: flex; flex-direction: column; line-height: 1.3; }
+    .cat-name { font-weight: 600; font-size: 0.9rem; }
+    .cat-sub { color: #94a3b8; font-size: 0.8rem; }
     
-    .m-vs { display: flex; align-items: center; gap: 10px; justify-content: center; }
-    .t-name { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
+    .m-vs { display: flex; align-items: center; gap: 15px; justify-content: center; }
+    .t-name { flex: 1; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 1rem; color: #334155; }
     .t-right { text-align: right; } .t-left { text-align: left; }
     
-    .score-inputs { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 2px 6px; border-radius: 6px; }
-    .score-inp { width: 30px; border: none; background: transparent; text-align: center; font-weight: bold; font-size: 1.1rem; color: var(--primary); padding: 0; }
-    .score-inp:focus { outline: none; background: #e2e8f0; }
+    .score-inputs { display: flex; align-items: center; gap: 5px; background: #f1f5f9; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); }
+    .score-inp { width: 30px; border: none; background: transparent; text-align: center; font-weight: 700; font-size: 1.1rem; color: var(--primary); padding: 0; }
+    .score-inp:focus { outline: none; background: #e2e8f0; border-radius: 4px; }
 
-    .m-field { font-size: 0.8rem; color: #64748b; text-align: center; background: #f1f5f9; padding: 2px 8px; border-radius: 4px; display: inline-block; white-space: nowrap; }
+    .m-field { font-size: 0.8rem; color: #64748b; text-align: center; background: #f1f5f9; padding: 4px 10px; border-radius: 20px; display: inline-block; white-space: nowrap; font-weight: 500; }
     .m-status { text-align: right; color: #cbd5e1; font-size: 1.2rem; }
     .m-status.done { color: #10b981; }
 
     /* RIGHT (Standings) */
-    .right-panel { width: 340px; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
-    .panel-header { padding: 15px; border-bottom: 1px solid var(--border); font-weight: bold; color: var(--text); background: #f8fafc; }
-    .standings-list { padding: 15px; display: flex; flex-direction: column; gap: 20px; }
+    .right-panel { width: 360px; background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
+    .panel-header { padding: 15px 20px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--text); background: #f8fafc; font-size: 1rem; }
+    .standings-list { padding: 20px; display: flex; flex-direction: column; gap: 25px; }
     
-    .st-box { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .st-head { background: #f1f5f9; padding: 8px 12px; font-size: 0.85rem; font-weight: bold; color: #475569; border-bottom: 1px solid var(--border); }
+    .st-group { margin-bottom: 5px; }
+    .st-title { font-size: 0.9rem; font-weight: 700; color: var(--primary); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
+    .st-box { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+    .st-head { background: #f8fafc; padding: 8px 12px; font-size: 0.8rem; font-weight: 700; color: #64748b; border-bottom: 1px solid var(--border); }
     .st-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-    .st-table td, .st-table th { padding: 6px 8px; text-align: center; border-bottom: 1px solid #f1f5f9; }
-    .st-table th { color: #94a3b8; font-weight: 500; font-size: 0.8rem; }
-    .st-table td:nth-child(2) { text-align: left; font-weight: 600; color: var(--text); width: 50%; }
-    .st-pts { background: #eff6ff; color: var(--primary); font-weight: bold; }
+    .st-table td, .st-table th { padding: 8px 10px; text-align: center; border-bottom: 1px solid #f1f5f9; }
+    .st-table th { color: #94a3b8; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+    .st-table td:nth-child(2) { text-align: left; font-weight: 600; color: #334155; width: 55%; }
+    .st-pts { background: #eff6ff; color: var(--primary); font-weight: 700; }
 
     /* Empty State */
-    .empty-state { text-align: center; padding: 40px; color: #94a3b8; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #94a3b8; }
+    .empty-icon { font-size: 3rem; margin-bottom: 15px; opacity: 0.5; }
     
-    #toast { visibility: hidden; min-width: 200px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 12px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 0.9rem; }
-    #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+    #toast { visibility: hidden; min-width: 200px; background-color: #1e293b; color: #fff; text-align: center; border-radius: 6px; padding: 12px 20px; position: fixed; z-index: 9999; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 0.9rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+    #toast.show { visibility: visible; animation: fadein 0.3s, fadeout 0.3s 2.0s; }
 
-    @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    @keyframes fadein { from {bottom: 10px; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+    @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 10px; opacity: 0;} }
 
+    @media (max-width: 1200px) {
+        .match-row { grid-template-columns: 60px 140px 1fr 90px 90px; }
+    }
     @media (max-width: 1024px) {
-        .right-panel { display: none; }
-        .match-row { grid-template-columns: 60px 1fr 80px; gap: 5px; }
-        .m-cat, .m-field { display: none; }
+        .right-panel { display: none; } /* Hide standings on tablet */
+        .match-row { grid-template-columns: 60px 1fr 80px; gap: 10px; }
+        .m-cat, .m-field { display: none; } /* Compact view */
+        .match-header { font-size: 0.85rem; }
     }
 </style>
 </head>
 <body>
 
 <header class="app-header">
-    <div class="app-title"><i class="fas fa-trophy"></i> โนนสวรรค์ เกมส์</div>
+    <div class="app-title"><i class="fas fa-trophy"></i> โนนสวรรค์ เกมส์ 2568</div>
     <div class="day-tabs">
         <button class="day-btn active" onclick="switchDay('day1')">16 ธ.ค.</button>
         <button class="day-btn" onclick="switchDay('day2')">17 ธ.ค.</button>
@@ -125,8 +132,8 @@
         <button class="day-btn" onclick="switchDay('day4')">19 ธ.ค.</button>
     </div>
     <div class="actions">
-        <button class="btn-icon btn-save" title="บันทึก" onclick="saveDataManual()"><i class="fas fa-save"></i></button>
-        <button class="btn-icon btn-reset" title="รีเซ็ตใหม่ทั้งหมด" onclick="resetData()"><i class="fas fa-redo-alt"></i></button>
+        <button class="btn-icon btn-save" title="บันทึกผล" onclick="saveDataManual()"><i class="fas fa-save"></i></button>
+        <button class="btn-icon btn-reset" title="สร้างตารางใหม่" onclick="resetData()"><i class="fas fa-redo-alt"></i></button>
     </div>
 </header>
 
@@ -145,7 +152,12 @@
 
     <aside class="right-panel">
         <div class="panel-header"><i class="fas fa-chart-bar"></i> ตารางคะแนน</div>
-        <div class="standings-list" id="standings-area"></div>
+        <div class="standings-list" id="standings-area">
+            <div class="empty-state">
+                <div class="empty-icon"><i class="fas fa-chart-pie"></i></div>
+                <div>เลือกประเภทกีฬาทางซ้าย<br>เพื่อดูตารางคะแนน</div>
+            </div>
+        </div>
     </aside>
 </div>
 
@@ -188,7 +200,7 @@
     let currentDay = 'day1';
     let currentSport = 'ALL';
 
-    // --- 2. GENERATOR (สร้างตารางแข่งอัตโนมัติ) ---
+    // --- 2. GENERATOR (Corrected Logic V.33) ---
     function generateSchedule() {
         let generated = [];
         
@@ -237,15 +249,27 @@
         let allPairings = [];
         categories.forEach(cat => {
             let pairings = [];
-            if(cat.lv === 'SEC') { // ลีก 4 ทีม (พบกันหมด 1 รอบ = 6 นัด)
+            
+            // --- LOGIC 1: มัธยม (SEC) ---
+            if(cat.lv === 'SEC') { 
                 let t = secTeams;
-                pairings.push({t1:t[0], t2:t[1], st:'ลีก'}, {t1:t[2], t2:t[3], st:'ลีก'});
-                pairings.push({t1:t[0], t2:t[2], st:'ลีก'}, {t1:t[1], t2:t[3], st:'ลีก'});
-                pairings.push({t1:t[0], t2:t[3], st:'ลีก'}, {t1:t[1], t2:t[2], st:'ลีก'});
-            } else { // แบ่งสาย (9 ทีม)
+                // Round 1 (ทุกกีฬา)
+                pairings.push({t1:t[0], t2:t[1], st:'ลีก 1'}, {t1:t[2], t2:t[3], st:'ลีก 1'});
+                pairings.push({t1:t[0], t2:t[2], st:'ลีก 1'}, {t1:t[1], t2:t[3], st:'ลีก 1'});
+                pairings.push({t1:t[0], t2:t[3], st:'ลีก 1'}, {t1:t[1], t2:t[2], st:'ลีก 1'});
+                
+                // Round 2 (เฉพาะ ฟุตบอล & วอลเลย์ -> เหย้าเยือน 12 นัด)
+                if(cat.sp === 'FB' || cat.sp === 'VB') {
+                    pairings.push({t1:t[1], t2:t[0], st:'ลีก 2'}, {t1:t[3], t2:t[2], st:'ลีก 2'});
+                    pairings.push({t1:t[2], t2:t[0], st:'ลีก 2'}, {t1:t[3], t2:t[1], st:'ลีก 2'});
+                    pairings.push({t1:t[3], t2:t[0], st:'ลีก 2'}, {t1:t[2], t2:t[1], st:'ลีก 2'});
+                }
+            } 
+            // --- LOGIC 2: ประถม/อนุบาล (Groups) ---
+            else { 
                 ['A','B','C'].forEach(g => {
-                    let t = (cat.lv==='ANU')? ["โนนม่วง","ท่าอุทัย","ภูพระฯ"] : priTeams[g]; // Simplify Anu for demo
-                    if(cat.lv!=='ANU') t = priTeams[g]; // Use correct teams
+                    let t = (cat.lv==='ANU')? ["โนนม่วง","ท่าอุทัย","ภูพระฯ"] : priTeams[g]; 
+                    if(cat.lv!=='ANU') t = priTeams[g];
                     pairings.push({t1:t[0], t2:t[1], st:`สาย ${g}`}, {t1:t[1], t2:t[2], st:`สาย ${g}`}, {t1:t[2], t2:t[0], st:`สาย ${g}`});
                 });
             }
@@ -280,7 +304,7 @@
 
     // --- 3. INIT ---
     document.addEventListener('DOMContentLoaded', () => {
-        let d = localStorage.getItem('ns_v32_db');
+        let d = localStorage.getItem('ns_v33_db');
         if(d) matches = JSON.parse(d);
         else { matches = generateSchedule(); saveData(); }
         render();
@@ -304,7 +328,7 @@
         list.sort((a,b) => a.t.localeCompare(b.t));
 
         if(list.length === 0) {
-            container.innerHTML = `<div class="empty-state">ไม่มีรายการแข่งขัน</div>`;
+            container.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="far fa-calendar-times"></i></div><div>ไม่มีรายการแข่งขัน</div></div>`;
             return;
         }
 
@@ -335,7 +359,7 @@
                     <div class="match-row">
                         <div class="m-time" style="color:${spColor}">${m.sp}</div>
                         <div class="m-cat">
-                            <span class="cat-name">${spName} ${m.lv} ${m.gd}</span>
+                            <span class="cat-name" style="color:${spColor}">${spName} ${m.lv} ${m.gd}</span>
                             <span class="cat-sub">${m.cat}</span>
                         </div>
                         <div class="m-vs">
@@ -360,12 +384,10 @@
         const container = document.getElementById('standings-area');
         container.innerHTML = '';
         if(currentSport === 'ALL' || currentSport === 'AT') {
-            container.innerHTML = `<div class="empty-state" style="font-size:0.9rem;">เลือกกีฬาเพื่อดูคะแนน</div>`; return;
+            container.innerHTML = `<div class="empty-state"><div class="empty-icon"><i class="fas fa-chart-pie"></i></div><div>เลือกประเภทกีฬาทางซ้าย<br>เพื่อดูตารางคะแนน</div></div>`; return;
         }
 
-        // Filter Categories
         categories.filter(c => c.sp === currentSport).forEach(cat => {
-            // Calc stats
             let stats = {};
             matches.forEach(m => {
                 if(m.sp===cat.sp && m.lv===cat.lv && m.gd===cat.gd && m.s1 && m.s2) {
@@ -376,24 +398,23 @@
                 }
             });
 
-            // Get Teams List
-            let teamList = (cat.lv==='SEC') ? secTeams : [...priTeams.A, ...priTeams.B, ...priTeams.C];
-            if(cat.lv==='ANU') teamList = ["โนนม่วง","ท่าอุทัย","ภูพระฯ","โนนสวาทฯ","โนนสวรรค์ฯ","หนองกุงศรีฯ","โนนเมือง","ด้วงฯ-ชำฯ","โนนไหมฯ"]; // Simplified pool
+            // Set Title based on Format
+            let formatText = (cat.lv === 'SEC' && (cat.sp==='FB'||cat.sp==='VB')) ? 'ลีก (เหย้า-เยือน)' 
+                           : (cat.lv === 'SEC') ? 'ลีก (พบกันหมด)' 
+                           : 'รอบแบ่งสาย';
 
-            let sorted = teamList.sort((a,b) => (stats[b]?.PTS||0) - (stats[a]?.PTS||0));
+            let teams = Object.keys(stats).sort((a,b) => stats[b].PTS - stats[a].PTS);
+            if(teams.length === 0) return; // Hide empty
 
-            // Render Table
             let box = document.createElement('div');
-            box.className = 'st-box';
-            let html = `<div class="st-head">${cat.name}</div>
-            <table class="st-table">
-                <tr><th>#</th><th>ทีม</th><th>แข่ง</th><th>แต้ม</th></tr>
-                ${sorted.map((t,i) => {
-                    let s = stats[t] || {P:0, PTS:0};
-                    return `<tr><td>${i+1}</td><td>${t}</td><td>${s.P}</td><td class="st-pts">${s.PTS}</td></tr>`;
-                }).join('')}
-            </table>`;
-            box.innerHTML = html;
+            box.className = 'st-group';
+            box.innerHTML = `<div class="st-title"><span>${cat.name}</span> <span style="font-size:0.7em; background:#e2e8f0; padding:2px 6px; border-radius:4px; color:#64748b;">${formatText}</span></div>
+            <div class="st-box">
+                <table class="st-table">
+                    <tr><th>#</th><th>ทีม</th><th>แข่ง</th><th>แต้ม</th></tr>
+                    ${teams.map((t,i) => `<tr><td>${i+1}</td><td>${t}</td><td>${stats[t].P}</td><td class="st-pts">${stats[t].PTS}</td></tr>`).join('')}
+                </table>
+            </div>`;
             container.appendChild(box);
         });
     }
@@ -419,9 +440,9 @@
     // Helpers
     function getSportName(c) { const m={FB:'ฟุตบอล',VB:'วอลเลย์',TK:'ตะกร้อ',PT:'เปตอง',AT:'กรีฑา',EV:'กิจกรรม'}; return m[c]||c; }
     function showToast() { let t=document.getElementById('toast'); t.className='show'; setTimeout(()=>t.className='', 2000); }
-    function saveData() { localStorage.setItem('ns_v32_db', JSON.stringify(matches)); }
+    function saveData() { localStorage.setItem('ns_v33_db', JSON.stringify(matches)); }
     function saveDataManual() { saveData(); showToast(); }
-    function resetData() { if(confirm('รีเซ็ตข้อมูลทั้งหมด?')) { localStorage.removeItem('ns_v32_db'); location.reload(); } }
+    function resetData() { if(confirm('รีเซ็ตข้อมูลทั้งหมดและสร้างใหม่?')) { localStorage.removeItem('ns_v33_db'); location.reload(); } }
 </script>
 </body>
 </html>
